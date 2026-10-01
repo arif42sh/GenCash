@@ -125,7 +125,7 @@ export const AppNavigator = () => {
                 <Ionicons
                   name={activeTab === 'Home' ? 'home' : 'home-outline'}
                   size={22}
-                  color={activeTab === 'Home' ? colors.primary : colors.textMuted}
+                  color={activeTab === 'Home' ? '#00D09C' : '#7BA599'}
                 />
                 <Text
                   style={[
@@ -144,7 +144,7 @@ export const AppNavigator = () => {
                 <Ionicons
                   name={activeTab === 'Transactions' ? 'receipt' : 'receipt-outline'}
                   size={22}
-                  color={activeTab === 'Transactions' ? colors.primary : colors.textMuted}
+                  color={activeTab === 'Transactions' ? '#00D09C' : '#7BA599'}
                 />
                 <Text
                   style={[
@@ -166,7 +166,7 @@ export const AppNavigator = () => {
                 <Text
                   style={[
                     styles.tabLabel,
-                    { color: activeTab === 'AIHub' ? colors.primary : colors.textMuted },
+                    { color: activeTab === 'AIHub' ? '#00D09C' : '#7BA599' },
                     activeTab === 'AIHub' && styles.tabLabelActive,
                   ]}
                 >
@@ -181,7 +181,7 @@ export const AppNavigator = () => {
                 <Ionicons
                   name={activeTab === 'Profile' ? 'person' : 'person-outline'}
                   size={22}
-                  color={activeTab === 'Profile' ? colors.primary : colors.textMuted}
+                  color={activeTab === 'Profile' ? '#00D09C' : '#7BA599'}
                 />
                 <Text
                   style={[
@@ -216,18 +216,20 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
-    borderTopWidth: 1,
-    borderTopColor: colors.cardBorder,
+    backgroundColor: '#043227',
+    borderTopWidth: 0,
+    marginHorizontal: 12,
+    marginBottom: Platform.OS === 'ios' ? 10 : 12,
+    borderRadius: 28,
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     justifyContent: 'space-around',
     alignItems: 'center',
     height: 64,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
+    shadowColor: '#043227',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
     elevation: 8,
   },
   tabItem: {
@@ -238,11 +240,11 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: colors.textMuted,
+    color: '#7BA599',
     marginTop: 3,
   },
   tabLabelActive: {
-    color: colors.primary,
+    color: '#00D09C',
     fontWeight: '700',
   },
   aiTabItem: {
@@ -252,11 +254,11 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: 'rgba(10, 61, 98, 0.4)',
+    backgroundColor: 'rgba(0, 208, 156, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   aiIconBubbleActive: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#00D09C',
   },
 });

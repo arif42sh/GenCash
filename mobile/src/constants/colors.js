@@ -1,44 +1,44 @@
 export const colors = {
-  // Backgrounds & Surfaces (Corporate Clean Light Theme)
-  background: "#F8F9FA",        // Screen Off-White / Light Grey
+  // Backgrounds & Surfaces (Islamic / Modern Emerald Mint FinTech Theme)
+  background: "#F3F9F6",        // Gentle Pale Mint Off-White
   surface: "#FFFFFF",           // Pure White
-  surfaceLight: "#EDF2F7",      // Soft Cool Grey
+  surfaceLight: "#E8F6F0",      // Soft Mint Tint (Pills, Categories, Icon wrappers)
   card: "#FFFFFF",              // Card Surface (Pure White)
-  cardHover: "#F1F5F9",
-  cardBorder: "#E2E8F0",        // Crisp Border
+  cardHover: "#EDF8F3",
+  cardBorder: "#E2EFE9",        // Crisp Mint-Grey Border
   
-  // Brand - Corporate Navy & Steel Sky
-  primary: "#0A3D62",           // Deep Corporate Navy Blue
-  primaryDark: "#072C46",       // Darker Midnight Navy
-  primaryLight: "#1E6F9F",      // Muted Steel Sky Blue
-  primaryGradient: ["#0A3D62", "#1E6F9F"],
+  // Brand - Deep Forest Emerald & Vivid Mint
+  primary: "#064E3B",           // Deep Pine / Forest Emerald
+  primaryDark: "#043227",       // Dark Obsidian Pine (Dark Bottom Nav / Header Hero)
+  primaryLight: "#00D09C",      // Vivid Mint Green (Buttons, Active Icons, Accents)
+  primaryGradient: ["#043227", "#085442"], // Deep Emerald Gradient
   
   // Interactive & Financial Actions
-  secondary: "#1E6F9F",         // Interactive Steel Blue
-  success: "#2ECC71",           // Clean Financial Green (Money In / Received)
-  successBg: "rgba(46, 204, 113, 0.12)",
-  danger: "#E74C3C",            // Soft Red (Expense / Money Out / Alert)
-  dangerBg: "rgba(231, 76, 60, 0.12)",
-  warning: "#F39C12",           // Financial Gold / Pending
-  warningBg: "rgba(243, 156, 18, 0.12)",
+  secondary: "#00D09C",         // Electric Mint Action Green
+  success: "#00D09C",           // Clean Financial Green (Money In / Received)
+  successBg: "rgba(0, 208, 156, 0.14)",
+  danger: "#F43F5E",            // Soft Red (Money Out / Expense / Alert)
+  dangerBg: "rgba(244, 63, 94, 0.12)",
+  warning: "#EAB308",           // Lime-Yellow / Pending Progress
+  warningBg: "rgba(234, 179, 8, 0.14)",
   
   // AI Intelligence Theme
-  aiPrimary: "#3C6382",         // Sophisticated Indigo / Deep Steel
-  aiGradient: ["#0A3D62", "#3C6382"],
-  aiCardBg: "rgba(30, 111, 159, 0.08)",
-  aiBorder: "rgba(30, 111, 159, 0.25)",
+  aiPrimary: "#00D09C",         // Mint Intelligence Accent
+  aiGradient: ["#043227", "#00D09C"],
+  aiCardBg: "rgba(0, 208, 156, 0.08)",
+  aiBorder: "rgba(0, 208, 156, 0.28)",
 
   // Typography
-  textPrimary: "#1C2833",       // Charcoal Black
-  textSecondary: "#4A5568",     // Slate Body Text
-  textMuted: "#7F8C8D",         // Slate Grey Subtitles
-  textHighlight: "#1E6F9F",     // Steel Blue Link/Accent
+  textPrimary: "#0B251E",       // Deep Forest Charcoal
+  textSecondary: "#47665C",     // Muted Pine Slate
+  textMuted: "#7B968D",         // Soft Muted Sage
+  textHighlight: "#00B887",     // Vibrant Mint Link/Accent
 
   // Inputs & Dividers
   inputBg: "#FFFFFF",
-  inputBorder: "#D5DBDB",
-  inputBorderFocus: "#1E6F9F",
-  divider: "#E5E8EB",
+  inputBorder: "#D2E6DC",
+  inputBorderFocus: "#00D09C",
+  divider: "#E4EFE9",
   
   // Operator Brand Colors (Mobile Recharge)
   operators: {
