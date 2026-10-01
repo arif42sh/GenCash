@@ -1,28 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 
-export const BalanceCard = ({ balance = 0, currency = 'BDT', onRefresh }) => {
-  const [isRevealed, setIsRevealed] = useState(false);
-  const [fadeAnim] = useState(new Animated.Value(0));
+export const BalanceCard = ({
+  balance = 0,
+  currency = 'BDT',
+  onRefresh,
+  onAction,
+  onOpenQR,
+}) => {
+  const [isRevealed, setIsRevealed] = useState(true);
+  const [fadeAnim] = useState(new Animated.Value(1));
 
   const handleToggle = () => {
-    if (!isRevealed) {
-      setIsRevealed(true);
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 250,
-        useNativeDriver: true,
-      }).start();
-
-      // Auto hide balance after 6 seconds
-      setTimeout(() => {
-        setIsRevealed(false);
-      }, 6000);
-    } else {
-      setIsRevealed(false);
-    }
+    setIsRevealed((prev) => !prev);
   };
 
   const formattedBalance = Number(balance || 0).toLocaleString('en-US', {
@@ -32,134 +24,196 @@ export const BalanceCard = ({ balance = 0, currency = 'BDT', onRefresh }) => {
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.cardHeader}>
-        <View style={styles.badge}>
-          <View style={styles.pulseDot} />
-          <Text style={styles.badgeText}>MFS Active Wallet</Text>
+      {/* Top Row: Wallet label & QR Code button */}
+      <View style={styles.topRow}>
+        <View style={styles.labelGroup}>
+          <Ionicons name="wallet-outline" size={16} color="#A7D8CA" style={{ marginRight: 6 }} />
+          <Text style={styles.walletLabel}>Your wallet Balance</Text>
         </View>
-        <TouchableOpacity onPress={onRefresh} style={styles.refreshBtn}>
-          <Ionicons name="sync-outline" size={16} color={colors.textSecondary} />
+
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.qrButton}
+          onPress={onOpenQR}
+        >
+          <Ionicons name="qr-code-outline" size={22} color="#34D399" />
         </TouchableOpacity>
       </View>
 
+      {/* Middle Row: Large Balance */}
       <TouchableOpacity
-        activeOpacity={0.85}
+        activeOpacity={0.9}
         onPress={handleToggle}
-        style={styles.balancePill}
+        style={styles.balanceRow}
       >
-        <View style={styles.pillIconContainer}>
-          <Ionicons
-            name={isRevealed ? "eye-off" : "eye"}
-            size={18}
-            color={colors.primaryLight}
-          />
-        </View>
-
+        <Text style={styles.currencySymbol}>৳</Text>
         {isRevealed ? (
-          <View style={styles.balanceContent}>
-            <Text style={styles.currencySymbol}>৳</Text>
-            <Text style={styles.balanceText}>{formattedBalance}</Text>
-          </View>
+          <Text style={styles.balanceText}>{formattedBalance}</Text>
         ) : (
-          <View style={styles.hiddenContent}>
-            <Text style={styles.tapToRevealText}>Tap for Balance</Text>
-          </View>
+          <Text style={styles.balanceHiddenText}>••••••••</Text>
         )}
+        <Ionicons
+          name={isRevealed ? "eye-outline" : "eye-off-outline"}
+          size={18}
+          color="#A7D8CA"
+          style={styles.eyeIcon}
+        />
       </TouchableOpacity>
 
-      <Text style={styles.subHint}>
-        {isRevealed ? "Tap again or wait to hide" : "Available in your primary account"}
-      </Text>
+      {/* Bottom 5 Quick-Action Round Buttons */}
+      <View style={styles.actionsRow}>
+        <TouchableOpacity
+          activeOpacity={0.75}
+          style={styles.actionItem}
+          onPress={handleToggle}
+        >
+          <View style={styles.actionIconCircle}>
+            <Ionicons name="cash-outline" size={18} color="#FFFFFF" />
+          </View>
+          <Text style={styles.actionLabel}>Balance</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.75}
+          style={styles.actionItem}
+          onPress={() => onAction && onAction('AddMoney')}
+        >
+          <View style={styles.actionIconCircle}>
+            <Ionicons name="card-outline" size={18} color="#FFFFFF" />
+          </View>
+          <Text style={styles.actionLabel}>Add Money</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.75}
+          style={styles.actionItem}
+          onPress={() => onAction && onAction('SendMoney')}
+        >
+          <View style={styles.actionIconCircle}>
+            <Ionicons name="arrow-up" size={18} color="#FFFFFF" />
+          </View>
+          <Text style={styles.actionLabel}>Send</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.75}
+          style={styles.actionItem}
+          onPress={onOpenQR}
+        >
+          <View style={styles.actionIconCircle}>
+            <Ionicons name="arrow-down" size={18} color="#FFFFFF" />
+          </View>
+          <Text style={styles.actionLabel}>Receive</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.75}
+          style={styles.actionItem}
+          onPress={() => onAction && onAction('Transactions')}
+        >
+          <View style={styles.actionIconCircle}>
+            <Ionicons name="time-outline" size={18} color="#FFFFFF" />
+          </View>
+          <Text style={styles.actionLabel}>History</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    padding: 18,
+    backgroundColor: '#1B4D3E',
+    borderRadius: 24,
+    paddingVertical: 20,
+    paddingHorizontal: 18,
     marginHorizontal: 16,
-    marginVertical: 12,
-    borderWidth: 1,
-    borderColor: colors.cardBorder,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    elevation: 6,
+    marginVertical: 10,
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  cardHeader: {
+  topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 6,
   },
-  badge: {
+  labelGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(56, 189, 248, 0.12)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
   },
-  pulseDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: colors.success,
-    marginRight: 6,
+  walletLabel: {
+    color: '#A7D8CA',
+    fontSize: 13,
+    fontWeight: '500',
+    letterSpacing: 0.2,
   },
-  badgeText: {
-    color: colors.textHighlight,
-    fontSize: 12,
-    fontWeight: '600',
+  qrButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  refreshBtn: {
-    padding: 4,
-  },
-  balancePill: {
+  balanceRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(59, 130, 246, 0.3)',
-    alignSelf: 'flex-start',
-    minWidth: 200,
-  },
-  pillIconContainer: {
-    marginRight: 10,
-  },
-  balanceContent: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
+    marginTop: 4,
+    marginBottom: 18,
   },
   currencySymbol: {
-    color: colors.success,
-    fontSize: 20,
-    fontWeight: '700',
-    marginRight: 4,
+    color: '#FFFFFF',
+    fontSize: 26,
+    fontWeight: '800',
+    marginRight: 6,
   },
   balanceText: {
-    color: colors.textPrimary,
-    fontSize: 22,
+    color: '#FFFFFF',
+    fontSize: 28,
     fontWeight: '800',
     letterSpacing: 0.5,
   },
-  hiddenContent: {
+  balanceHiddenText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '800',
+    letterSpacing: 4,
+  },
+  eyeIcon: {
+    marginLeft: 10,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  actionItem: {
+    alignItems: 'center',
     justifyContent: 'center',
+    flex: 1,
   },
-  tapToRevealText: {
-    color: colors.textPrimary,
-    fontSize: 15,
-    fontWeight: '600',
+  actionIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.22)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
-  subHint: {
-    color: colors.textMuted,
+  actionLabel: {
+    color: '#D1EFE6',
     fontSize: 11,
-    marginTop: 10,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });

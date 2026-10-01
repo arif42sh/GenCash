@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
@@ -7,34 +7,30 @@ import { useAuth } from '../context/AuthContext';
 export const SplashScreen = ({ navigation }) => {
   const { user, isLoading } = useAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.85)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 900,
+        duration: 800,
         useNativeDriver: true,
       }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 5,
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
         useNativeDriver: true,
       }),
     ]).start();
+  }, []);
 
-    const timer = setTimeout(() => {
-      if (!isLoading) {
-        if (user) {
-          navigation.replace('Main');
-        } else {
-          navigation.replace('Login');
-        }
-      }
-    }, 1800);
-
-    return () => clearTimeout(timer);
-  }, [user, isLoading]);
+  const handleContinue = () => {
+    if (user) {
+      navigation.replace('Main');
+    } else {
+      navigation.replace('Login');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -43,30 +39,49 @@ export const SplashScreen = ({ navigation }) => {
           styles.content,
           {
             opacity: fadeAnim,
-            transform: [{ scale: scaleAnim }],
+            transform: [{ translateY: slideAnim }],
           },
         ]}
       >
-        <View style={styles.logoCircle}>
-          <Ionicons name="wallet" size={48} color={colors.primary} />
-          <View style={styles.sparkleBadge}>
-            <Ionicons name="sparkles" size={16} color={colors.secondary} />
+        {/* Top Hero Icon Illustration Box */}
+        <View style={styles.heroBox}>
+          <View style={styles.heroCircle}>
+            <Ionicons name="shield-checkmark" size={64} color="#00D09C" />
+          </View>
+          <View style={styles.floatingBadge1}>
+            <Ionicons name="lock-closed" size={16} color="#1B4D3E" />
+          </View>
+          <View style={styles.floatingBadge2}>
+            <Ionicons name="sparkles" size={16} color="#00D09C" />
           </View>
         </View>
 
-        <Text style={styles.brandTitle}>GenCash</Text>
-        <Text style={styles.tagline}>AI-Powered Smart Digital Finance</Text>
-
-        <View style={styles.hackathonBadge}>
-          <Text style={styles.hackathonText}>AI Hackathon 2026</Text>
-          <Text style={styles.hackathonSub}>DIU CPC × upay</Text>
+        {/* Title and Description */}
+        <View style={styles.textGroup}>
+          <Text style={styles.mainTitle}>
+            Secure Transactions &{'\n'}Reliable Anytime
+          </Text>
+          <Text style={styles.subTitle}>
+            You can get 100% security in every transaction. So, you can blindly rely on us.
+          </Text>
         </View>
 
-        <ActivityIndicator
-          size="small"
-          color={colors.primaryLight}
-          style={styles.spinner}
-        />
+        {/* Indicator Dots */}
+        <View style={styles.dotsRow}>
+          <View style={styles.dotInactive} />
+          <View style={styles.dotActive} />
+          <View style={styles.dotInactive} />
+        </View>
+
+        {/* Continue CTA Button */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.continueButton}
+          onPress={handleContinue}
+        >
+          <Text style={styles.continueButtonText}>Continue</Text>
+          <Ionicons name="arrow-forward" size={18} color="#FFFFFF" style={{ marginLeft: 8 }} />
+        </TouchableOpacity>
       </Animated.View>
     </View>
   );
@@ -75,75 +90,123 @@ export const SplashScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
+    paddingHorizontal: 24,
   },
   content: {
     alignItems: 'center',
   },
-  logoCircle: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: colors.card,
+  heroBox: {
+    width: 200,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40,
+    position: 'relative',
+  },
+  heroCircle: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: '#E8F7F0',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: colors.cardBorder,
-    position: 'relative',
-    shadowColor: '#0A3D62',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 6,
+    borderColor: '#D2EFE2',
   },
-  sparkleBadge: {
+  floatingBadge1: {
     position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 4,
-    borderWidth: 1.5,
-    borderColor: colors.secondary,
-  },
-  brandTitle: {
-    color: colors.primary,
-    fontSize: 34,
-    fontWeight: '900',
-    marginTop: 20,
-    letterSpacing: 0.8,
-  },
-  tagline: {
-    color: colors.textSecondary,
-    fontSize: 14,
-    fontWeight: '500',
-    marginTop: 6,
-  },
-  hackathonBadge: {
-    marginTop: 40,
-    backgroundColor: colors.surfaceLight,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    top: 20,
+    left: 15,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  hackathonText: {
-    color: colors.primary,
-    fontSize: 12,
+  floatingBadge2: {
+    position: 'absolute',
+    bottom: 25,
+    right: 15,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#1B4D3E',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  textGroup: {
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 28,
+  },
+  mainTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#0F172A',
+    textAlign: 'center',
+    lineHeight: 30,
+    letterSpacing: 0.2,
+  },
+  subTitle: {
+    fontSize: 13,
+    color: '#64748B',
+    textAlign: 'center',
+    lineHeight: 19,
+    marginTop: 10,
+  },
+  dotsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 36,
+  },
+  dotInactive: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#CBD5E1',
+    marginHorizontal: 4,
+  },
+  dotActive: {
+    width: 22,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#1B4D3E',
+    marginHorizontal: 4,
+  },
+  continueButton: {
+    width: '100%',
+    height: 52,
+    borderRadius: 16,
+    backgroundColor: '#1B4D3E',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  continueButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  hackathonSub: {
-    color: colors.textMuted,
-    fontSize: 10,
-    marginTop: 2,
-  },
-  spinner: {
-    marginTop: 32,
+    letterSpacing: 0.3,
   },
 });

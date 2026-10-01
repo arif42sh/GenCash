@@ -7,38 +7,38 @@ const TYPE_CONFIG = {
   SEND_MONEY: {
     icon: 'paper-plane',
     label: 'Send Money',
-    color: '#3B82F6',
-    bgColor: 'rgba(59, 130, 246, 0.15)',
+    tagColor: '#00B887',
+    avatarBg: '#E8F7F0',
   },
   CASH_OUT: {
     icon: 'cash',
-    label: 'Cash Out',
-    color: '#F59E0B',
-    bgColor: 'rgba(245, 158, 11, 0.15)',
+    label: 'Cashout',
+    tagColor: '#F43F5E',
+    avatarBg: '#FCEEF0',
   },
   RECHARGE: {
     icon: 'phone-portrait',
     label: 'Recharge',
-    color: '#10B981',
-    bgColor: 'rgba(16, 185, 129, 0.15)',
+    tagColor: '#10B981',
+    avatarBg: '#E8F7F0',
   },
   ADD_MONEY: {
     icon: 'card',
     label: 'Add Money',
-    color: '#8B5CF6',
-    bgColor: 'rgba(139, 92, 246, 0.15)',
+    tagColor: '#00D09C',
+    avatarBg: '#EAF6F5',
   },
   MERCHANT_PAYMENT: {
     icon: 'cart',
     label: 'Payment',
-    color: '#EC4899',
-    bgColor: 'rgba(236, 72, 153, 0.15)',
+    tagColor: '#8B5CF6',
+    avatarBg: '#F0EDFA',
   },
   RECEIVE_MONEY: {
     icon: 'arrow-down-circle',
     label: 'Received',
-    color: '#10B981',
-    bgColor: 'rgba(16, 185, 129, 0.15)',
+    tagColor: '#10B981',
+    avatarBg: '#E8F7F0',
   },
 };
 
@@ -48,8 +48,8 @@ export const TransactionItem = ({ transaction, onPress }) => {
   const config = TYPE_CONFIG[transaction.transaction_type] || {
     icon: 'receipt',
     label: transaction.transaction_type,
-    color: colors.primary,
-    bgColor: 'rgba(37, 99, 235, 0.15)',
+    tagColor: '#00B887',
+    avatarBg: '#E8F7F0',
   };
 
   const isCredit = transaction.direction === 'CREDIT';
@@ -58,34 +58,35 @@ export const TransactionItem = ({ transaction, onPress }) => {
     maximumFractionDigits: 2,
   });
 
-  const displayTitle = () => {
+  const getDisplayName = () => {
     if (transaction.transaction_type === 'SEND_MONEY') {
       return isCredit
-        ? `Received from ${transaction.sender_name || transaction.sender_phone || 'User'}`
-        : `Sent to ${transaction.receiver_name || transaction.receiver_phone || 'User'}`;
+        ? (transaction.sender_name || transaction.sender_phone || 'Customer')
+        : (transaction.receiver_name || transaction.receiver_phone || 'Recipient');
     }
     if (transaction.transaction_type === 'RECHARGE') {
-      return `Recharge • ${transaction.operator || transaction.recipient_phone || 'Mobile'}`;
+      return transaction.operator || transaction.recipient_phone || 'Mobile Topup';
     }
     if (transaction.transaction_type === 'MERCHANT_PAYMENT') {
-      return `Paid to ${transaction.merchant_name || 'Merchant'}`;
+      return transaction.merchant_name || 'Merchant Store';
     }
     if (transaction.transaction_type === 'ADD_MONEY') {
-      return 'Added to Wallet';
+      return 'Bank Deposit';
     }
     if (transaction.transaction_type === 'CASH_OUT') {
-      return `Cash Out (${transaction.recipient_phone || 'Agent'})`;
+      return transaction.recipient_phone ? `Agent (${transaction.recipient_phone})` : 'Agent Cashout';
     }
     return config.label;
   };
 
   const dateObj = new Date(transaction.transaction_time || transaction.created_at);
   const timeStr = dateObj.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }) + ' ' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const initialLetter = getDisplayName().charAt(0).toUpperCase() || 'T';
 
   return (
     <TouchableOpacity
@@ -93,22 +94,24 @@ export const TransactionItem = ({ transaction, onPress }) => {
       style={styles.container}
       onPress={() => onPress && onPress(transaction)}
     >
-      <View style={[styles.iconWrapper, { backgroundColor: config.bgColor }]}>
-        <Ionicons name={config.icon} size={20} color={config.color} />
-      </View>
-
-      <View style={styles.details}>
-        <Text style={styles.title} numberOfLines={1}>
-          {displayTitle()}
+      {/* Left Avatar circle */}
+      <View style={[styles.avatarCircle, { backgroundColor: config.avatarBg }]}>
+        <Text style={[styles.avatarLetter, { color: config.tagColor }]}>
+          {initialLetter}
         </Text>
-        <Text style={styles.timestamp}>{timeStr}</Text>
-        {transaction.note ? (
-          <Text style={styles.note} numberOfLines={1}>
-            💬 {transaction.note}
-          </Text>
-        ) : null}
       </View>
 
+      {/* Center Details */}
+      <View style={styles.details}>
+        <Text style={styles.personName} numberOfLines={1}>
+          {getDisplayName()}
+        </Text>
+        <Text style={[styles.typeTag, { color: config.tagColor }]}>
+          {config.label}
+        </Text>
+      </View>
+
+      {/* Right Amount & Timestamp */}
       <View style={styles.amountContainer}>
         <Text
           style={[
@@ -116,11 +119,9 @@ export const TransactionItem = ({ transaction, onPress }) => {
             isCredit ? styles.creditAmount : styles.debitAmount,
           ]}
         >
-          {isCredit ? '+৳' : '-৳'} {amountFormatted}
+          {isCredit ? '+$' : '-$'}{amountFormatted}
         </Text>
-        {transaction.fee > 0 && !isCredit && (
-          <Text style={styles.feeText}>Fee: ৳{transaction.fee.toFixed(2)}</Text>
-        )}
+        <Text style={styles.timestamp}>{timeStr}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -130,57 +131,59 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: 14,
-    padding: 14,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
     marginVertical: 4,
+    marginHorizontal: 16,
     borderWidth: 1,
     borderColor: colors.cardBorder,
   },
-  iconWrapper: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+  avatarCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
+  avatarLetter: {
+    fontSize: 16,
+    fontWeight: '800',
+  },
   details: {
     flex: 1,
+    justifyContent: 'center',
   },
-  title: {
-    color: colors.textPrimary,
+  personName: {
+    color: '#1E293B',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 2,
   },
-  timestamp: {
-    color: colors.textMuted,
+  typeTag: {
     fontSize: 11,
-  },
-  note: {
-    color: colors.textSecondary,
-    fontSize: 11,
-    marginTop: 2,
-    fontStyle: 'italic',
+    fontWeight: '600',
   },
   amountContainer: {
     alignItems: 'flex-end',
     marginLeft: 8,
   },
   amount: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
+    marginBottom: 2,
   },
   creditAmount: {
-    color: colors.success,
+    color: '#10B981',
   },
   debitAmount: {
-    color: colors.danger,
+    color: '#F43F5E',
   },
-  feeText: {
-    color: colors.textMuted,
+  timestamp: {
+    color: '#94A3B8',
     fontSize: 10,
-    marginTop: 2,
+    fontWeight: '500',
   },
 });

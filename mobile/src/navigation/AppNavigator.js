@@ -17,12 +17,14 @@ import { MerchantPaymentScreen } from '../screens/MerchantPaymentScreen';
 import { TransactionsScreen } from '../screens/TransactionsScreen';
 import { AIHubScreen } from '../screens/AIHubScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
+import { QRScannerModal } from '../components/QRScannerModal';
 
 export const AppNavigator = () => {
   const { user } = useAuth();
   const [currentScreen, setCurrentScreen] = useState('Splash');
   const [activeTab, setActiveTab] = useState('Home');
   const [screenStack, setScreenStack] = useState(['Splash']);
+  const [showQRScanner, setShowQRScanner] = useState(false);
 
   const navigate = (screenName) => {
     setScreenStack((prev) => [...prev, screenName]);
@@ -60,7 +62,7 @@ export const AppNavigator = () => {
         setActiveTab('Home');
         return true;
       }
-      return false; // let OS exit app if already on Home tab
+      return false;
     };
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', handleHardwareBack);
@@ -71,6 +73,11 @@ export const AppNavigator = () => {
     navigate,
     replace,
     goBack,
+  };
+
+  const handleQRScanned = (scannedData) => {
+    setShowQRScanner(false);
+    navigate('MerchantPayment');
   };
 
   const renderActiveTabContent = () => {
@@ -117,82 +124,75 @@ export const AppNavigator = () => {
         return (
           <View style={styles.mainContainer}>
             <View style={styles.tabContent}>{renderActiveTabContent()}</View>
-            <View style={styles.bottomBar}>
-              <TouchableOpacity
-                style={styles.tabItem}
-                onPress={() => setActiveTab('Home')}
-              >
-                <Ionicons
-                  name={activeTab === 'Home' ? 'home' : 'home-outline'}
-                  size={22}
-                  color={activeTab === 'Home' ? '#00D09C' : '#7BA599'}
-                />
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    activeTab === 'Home' && styles.tabLabelActive,
-                  ]}
-                >
-                  Home
-                </Text>
-              </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.tabItem}
-                onPress={() => setActiveTab('Transactions')}
-              >
-                <Ionicons
-                  name={activeTab === 'Transactions' ? 'receipt' : 'receipt-outline'}
-                  size={22}
-                  color={activeTab === 'Transactions' ? '#00D09C' : '#7BA599'}
-                />
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    activeTab === 'Transactions' && styles.tabLabelActive,
-                  ]}
+            {/* Floating Modern White Bottom Navigation Bar */}
+            <View style={styles.bottomBarContainer}>
+              <View style={styles.bottomBar}>
+                {/* 1. Home */}
+                <TouchableOpacity
+                  style={styles.tabItem}
+                  onPress={() => setActiveTab('Home')}
                 >
-                  History
-                </Text>
-              </TouchableOpacity>
+                  <Ionicons
+                    name={activeTab === 'Home' ? 'home' : 'home-outline'}
+                    size={24}
+                    color={activeTab === 'Home' ? '#1B4D3E' : '#94A3B8'}
+                  />
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.tabItem, styles.aiTabItem]}
-                onPress={() => setActiveTab('AIHub')}
-              >
-                <View style={[styles.aiIconBubble, activeTab === 'AIHub' && styles.aiIconBubbleActive]}>
-                  <Ionicons name="sparkles" size={18} color="#fff" />
-                </View>
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    { color: activeTab === 'AIHub' ? '#00D09C' : '#7BA599' },
-                    activeTab === 'AIHub' && styles.tabLabelActive,
-                  ]}
+                {/* 2. Transactions */}
+                <TouchableOpacity
+                  style={styles.tabItem}
+                  onPress={() => setActiveTab('Transactions')}
                 >
-                  AI Intel
-                </Text>
-              </TouchableOpacity>
+                  <Ionicons
+                    name={activeTab === 'Transactions' ? 'receipt' : 'receipt-outline'}
+                    size={24}
+                    color={activeTab === 'Transactions' ? '#1B4D3E' : '#94A3B8'}
+                  />
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.tabItem}
-                onPress={() => setActiveTab('Profile')}
-              >
-                <Ionicons
-                  name={activeTab === 'Profile' ? 'person' : 'person-outline'}
-                  size={22}
-                  color={activeTab === 'Profile' ? '#00D09C' : '#7BA599'}
-                />
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    activeTab === 'Profile' && styles.tabLabelActive,
-                  ]}
+                {/* 3. Center Elevated Pine Green QR Scan Button */}
+                <TouchableOpacity
+                  style={styles.centerQrButton}
+                  activeOpacity={0.85}
+                  onPress={() => setShowQRScanner(true)}
                 >
-                  Profile
-                </Text>
-              </TouchableOpacity>
+                  <Ionicons name="scan-outline" size={26} color="#34D399" />
+                </TouchableOpacity>
+
+                {/* 4. AI Intel */}
+                <TouchableOpacity
+                  style={styles.tabItem}
+                  onPress={() => setActiveTab('AIHub')}
+                >
+                  <Ionicons
+                    name={activeTab === 'AIHub' ? 'sparkles' : 'sparkles-outline'}
+                    size={24}
+                    color={activeTab === 'AIHub' ? '#1B4D3E' : '#94A3B8'}
+                  />
+                </TouchableOpacity>
+
+                {/* 5. Profile */}
+                <TouchableOpacity
+                  style={styles.tabItem}
+                  onPress={() => setActiveTab('Profile')}
+                >
+                  <Ionicons
+                    name={activeTab === 'Profile' ? 'person' : 'person-outline'}
+                    size={24}
+                    color={activeTab === 'Profile' ? '#1B4D3E' : '#94A3B8'}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
+
+            {/* QR Scanner Modal */}
+            <QRScannerModal
+              visible={showQRScanner}
+              onClose={() => setShowQRScanner(false)}
+              onScan={handleQRScanned}
+            />
           </View>
         );
     }
@@ -204,61 +204,57 @@ export const AppNavigator = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
     paddingTop: Platform.OS === 'android' ? 24 : 0,
   },
   mainContainer: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
   },
   tabContent: {
     flex: 1,
   },
+  bottomBarContainer: {
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? 14 : 12,
+    left: 16,
+    right: 16,
+  },
   bottomBar: {
     flexDirection: 'row',
-    backgroundColor: '#043227',
-    borderTopWidth: 0,
-    marginHorizontal: 12,
-    marginBottom: Platform.OS === 'ios' ? 10 : 12,
-    borderRadius: 28,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 36,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     justifyContent: 'space-around',
     alignItems: 'center',
     height: 64,
-    shadowColor: '#043227',
+    shadowColor: '#1B4D3E',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
     elevation: 8,
+    borderWidth: 1,
+    borderColor: '#E2EFE9',
   },
   tabItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
+    width: 44,
+    height: 44,
   },
-  tabLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#7BA599',
-    marginTop: 3,
-  },
-  tabLabelActive: {
-    color: '#00D09C',
-    fontWeight: '700',
-  },
-  aiTabItem: {
-    position: 'relative',
-  },
-  aiIconBubble: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: 'rgba(0, 208, 156, 0.25)',
+  centerQrButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 20,
+    backgroundColor: '#1B4D3E',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  aiIconBubbleActive: {
-    backgroundColor: '#00D09C',
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6,
+    marginTop: -8,
   },
 });

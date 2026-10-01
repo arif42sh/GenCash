@@ -16,6 +16,7 @@ import { BalanceCard } from '../components/BalanceCard';
 import { ActionGrid } from '../components/ActionGrid';
 import { AIInsightCard } from '../components/AIInsightCard';
 import { TransactionItem } from '../components/TransactionItem';
+import { QRScannerModal } from '../components/QRScannerModal';
 
 export const HomeScreen = ({ navigation }) => {
   const { user, wallet, refreshWallet } = useAuth();
@@ -24,6 +25,7 @@ export const HomeScreen = ({ navigation }) => {
   const [primaryInsight, setPrimaryInsight] = useState(null);
   const [offers, setOffers] = useState([]);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
+  const [showQRScanner, setShowQRScanner] = useState(false);
 
   const loadDashboardData = useCallback(async () => {
     try {
@@ -73,6 +75,13 @@ export const HomeScreen = ({ navigation }) => {
     } catch (e) {}
   };
 
+  const handleQRScanned = (scannedData) => {
+    setShowQRScanner(false);
+    navigation.navigate('MerchantPayment');
+  };
+
+  const userName = user?.name ? user.name.split(' ')[0] : 'Jixan';
+
   return (
     <View style={styles.container}>
       {/* Top Bar Header */}
@@ -83,28 +92,21 @@ export const HomeScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('Profile')}
           >
             <Text style={styles.avatarText}>
-              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              {userName.charAt(0).toUpperCase()}
             </Text>
           </TouchableOpacity>
           <View style={styles.userInfo}>
-            <Text style={styles.greetingText}>Good Day,</Text>
-            <Text style={styles.userNameText}>{user?.name || 'GenCash User'}</Text>
+            <Text style={styles.greetingText}>Hello {userName},</Text>
+            <Text style={styles.userNameText}>Welcome Back!</Text>
           </View>
         </View>
 
         <View style={styles.headerIcons}>
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => navigation.navigate('AIHub')}
-          >
-            <Ionicons name="sparkles" size={20} color={colors.aiPrimary} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.iconBtn}
             onPress={() => Alert.alert('Notifications', `${unreadNotifCount} unread system notifications.`)}
           >
-            <Ionicons name="notifications-outline" size={20} color={colors.textPrimary} />
+            <Ionicons name="notifications-outline" size={20} color="#1E293B" />
             {unreadNotifCount > 0 && (
               <View style={styles.notifBadge}>
                 <Text style={styles.notifBadgeText}>{unreadNotifCount}</Text>
@@ -120,18 +122,20 @@ export const HomeScreen = ({ navigation }) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={colors.primaryLight}
+            tintColor="#00D09C"
           />
         }
       >
-        {/* Wallet Balance Card */}
+        {/* Wallet Balance Card (Pine Green Hero Card) */}
         <BalanceCard
           balance={wallet?.balance || 0}
           currency={wallet?.currency || 'BDT'}
           onRefresh={onRefresh}
+          onAction={handleActionSelect}
+          onOpenQR={() => setShowQRScanner(true)}
         />
 
-        {/* Action Grid (6 Services) */}
+        {/* Other Services (8 Pastel Icon Grid) */}
         <ActionGrid onSelectAction={handleActionSelect} />
 
         {/* AI Insight Teaser Card */}
@@ -143,12 +147,12 @@ export const HomeScreen = ({ navigation }) => {
           />
         ) : null}
 
-        {/* Active Offers Section */}
+        {/* Great Deals / Offers Section */}
         {offers.length > 0 && (
           <View style={styles.sectionContainer}>
             <View style={styles.sectionHeaderRow}>
-              <Text style={styles.sectionTitle}>Exclusive Offers</Text>
-              <TouchableOpacity onPress={() => Alert.alert('Offers', 'Explore all campaign promos.')}>
+              <Text style={styles.sectionTitle}>Great Deals</Text>
+              <TouchableOpacity onPress={() => Alert.alert('Deals', 'Explore all deals & discounts.')}>
                 <Text style={styles.seeAllText}>See All</Text>
               </TouchableOpacity>
             </View>
@@ -175,8 +179,8 @@ export const HomeScreen = ({ navigation }) => {
                       }
                     }}
                   >
-                    <Text style={styles.claimBtnText}>Use Offer</Text>
-                    <Ionicons name="chevron-forward" size={14} color={colors.textHighlight} />
+                    <Text style={styles.claimBtnText}>Claim Now</Text>
+                    <Ionicons name="arrow-forward" size={14} color="#00B887" />
                   </TouchableOpacity>
                 </View>
               ))}
@@ -184,10 +188,10 @@ export const HomeScreen = ({ navigation }) => {
           </View>
         )}
 
-        {/* Recent Transactions */}
+        {/* Transactions Section */}
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeaderRow}>
-            <Text style={styles.sectionTitle}>Recent Transactions</Text>
+            <Text style={styles.sectionTitle}>Transactions</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Transactions')}>
               <Text style={styles.seeAllText}>View All</Text>
             </TouchableOpacity>
@@ -195,7 +199,7 @@ export const HomeScreen = ({ navigation }) => {
 
           {recentTxns.length === 0 ? (
             <View style={styles.emptyCard}>
-              <Ionicons name="receipt-outline" size={32} color={colors.textMuted} />
+              <Ionicons name="receipt-outline" size={32} color="#94A3B8" />
               <Text style={styles.emptyText}>No recent transactions found.</Text>
             </View>
           ) : (
@@ -209,8 +213,15 @@ export const HomeScreen = ({ navigation }) => {
           )}
         </View>
 
-        <View style={{ height: 30 }} />
+        <View style={{ height: 40 }} />
       </ScrollView>
+
+      {/* QR Scanner Modal */}
+      <QRScannerModal
+        visible={showQRScanner}
+        onClose={() => setShowQRScanner(false)}
+        onScan={handleQRScanned}
+      />
     </View>
   );
 };
@@ -218,7 +229,7 @@ export const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
   },
   topHeader: {
     flexDirection: 'row',
@@ -226,10 +237,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 10,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    paddingBottom: 12,
+    backgroundColor: '#F3F9F6',
   },
   userProfileRow: {
     flexDirection: 'row',
@@ -239,15 +248,15 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: colors.primaryDark,
+    backgroundColor: '#E8F7F0',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: 12,
     borderWidth: 1.5,
-    borderColor: colors.primaryLight,
+    borderColor: '#00D09C',
   },
   avatarText: {
-    color: '#fff',
+    color: '#064E3B',
     fontSize: 18,
     fontWeight: '800',
   },
@@ -255,36 +264,41 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   greetingText: {
-    color: colors.textMuted,
-    fontSize: 11,
+    color: '#64748B',
+    fontSize: 12,
     fontWeight: '500',
   },
   userNameText: {
-    color: colors.textPrimary,
-    fontSize: 15,
-    fontWeight: '700',
+    color: '#0F172A',
+    fontSize: 16,
+    fontWeight: '800',
+    letterSpacing: 0.2,
   },
   headerIcons: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   iconBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: colors.card,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 8,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
     position: 'relative',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   notifBadge: {
     position: 'absolute',
     top: -2,
     right: -2,
-    backgroundColor: colors.danger,
+    backgroundColor: '#F43F5E',
     borderRadius: 8,
     minWidth: 16,
     height: 16,
@@ -298,7 +312,6 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   sectionContainer: {
-    marginHorizontal: 16,
     marginTop: 14,
   },
   sectionHeaderRow: {
@@ -306,50 +319,58 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+    marginHorizontal: 16,
   },
   sectionTitle: {
-    color: colors.textPrimary,
+    color: '#1E293B',
     fontSize: 16,
     fontWeight: '700',
+    letterSpacing: 0.2,
   },
   seeAllText: {
-    color: colors.textHighlight,
+    color: '#00B887',
     fontSize: 13,
     fontWeight: '600',
   },
   offersScroll: {
+    paddingLeft: 16,
     paddingBottom: 6,
   },
   offerCard: {
     width: 240,
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 14,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 16,
     marginRight: 12,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
   },
   offerBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    backgroundColor: 'rgba(0, 208, 156, 0.12)',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
     marginBottom: 8,
   },
   offerBadgeText: {
-    color: colors.success,
+    color: '#00B887',
     fontSize: 10,
     fontWeight: '700',
   },
   offerTitle: {
-    color: colors.textPrimary,
+    color: '#1E293B',
     fontSize: 13,
     fontWeight: '700',
     marginBottom: 4,
   },
   offerDesc: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 11,
     lineHeight: 15,
     marginBottom: 10,
@@ -360,20 +381,23 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   claimBtnText: {
-    color: colors.textHighlight,
+    color: '#00B887',
     fontSize: 12,
     fontWeight: '700',
     marginRight: 4,
   },
   emptyCard: {
-    backgroundColor: colors.card,
-    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#E2EFE9',
   },
   emptyText: {
-    color: colors.textMuted,
+    color: '#94A3B8',
     fontSize: 13,
     marginTop: 8,
   },
