@@ -18,13 +18,35 @@ import { CustomInput } from '../components/CustomInput';
 import { CustomButton } from '../components/CustomButton';
 import { SuccessModal } from '../components/SuccessModal';
 
-const RECHARGE_PACKS = [
-  { amount: 20, label: 'Emergency', sub: 'Talktime' },
-  { amount: 50, label: 'Regular', sub: '50 Min' },
-  { amount: 100, label: 'Smart Pack', sub: '2GB + 100 Min' },
-  { amount: 200, label: 'Weekly Booster', sub: '5GB + 200 Min' },
-  { amount: 498, label: 'Monthly Unlimited', sub: '25GB Combo' },
-];
+const PACKAGE_TABS = ['Internet', 'Minutes', 'Combo Offer', 'Special'];
+
+const PACKAGES_DATA = {
+  Internet: [
+    { amount: 48, title: '1.5 GB Internet', validity: '3 Days', badge: 'Popular' },
+    { amount: 108, title: '5 GB Internet', validity: '7 Days', badge: 'Best Value' },
+    { amount: 249, title: '15 GB Internet', validity: '30 Days', badge: 'Monthly' },
+    { amount: 399, title: '30 GB Internet', validity: '30 Days', badge: 'Heavy' },
+    { amount: 499, title: '50 GB Internet', validity: '30 Days', badge: 'Super' },
+  ],
+  Minutes: [
+    { amount: 34, title: '45 Minutes', validity: '2 Days', badge: 'Quick' },
+    { amount: 97, title: '140 Minutes', validity: '7 Days', badge: 'Weekly' },
+    { amount: 199, title: '320 Minutes', validity: '30 Days', badge: 'Monthly' },
+    { amount: 349, title: '600 Minutes', validity: '30 Days', badge: 'Super Talk' },
+    { amount: 599, title: '1100 Minutes', validity: '30 Days', badge: 'Unlimited' },
+  ],
+  'Combo Offer': [
+    { amount: 148, title: '3 GB + 80 Min', validity: '7 Days', badge: 'Hot' },
+    { amount: 299, title: '10 GB + 200 Min', validity: '30 Days', badge: 'Most Popular' },
+    { amount: 498, title: '25 GB + 450 Min', validity: '30 Days', badge: 'Executive' },
+    { amount: 699, title: '40 GB + 800 Min', validity: '30 Days', badge: 'VIP Pack' },
+  ],
+  Special: [
+    { amount: 20, title: 'Emergency Talktime', validity: '1 Day', badge: 'Instant' },
+    { amount: 50, title: 'Regular Flexiload', validity: 'Regular', badge: 'Standard' },
+    { amount: 100, title: 'Full Talktime', validity: 'Regular', badge: 'Top Up' },
+  ],
+};
 
 export const MobileRechargeScreen = ({ navigation }) => {
   const { user, wallet, refreshWallet } = useAuth();
@@ -32,10 +54,15 @@ export const MobileRechargeScreen = ({ navigation }) => {
   const [selectedOperator, setSelectedOperator] = useState(MOBILE_OPERATORS[0]);
   const [rechargeType, setRechargeType] = useState('PREPAID');
   const [amount, setAmount] = useState('50');
+  const [activePackTab, setActivePackTab] = useState('Combo Offer');
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successTxn, setSuccessTxn] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSelectPackage = (pack) => {
+    setAmount(pack.amount.toString());
+  };
 
   const handleRecharge = async () => {
     if (!mobileNumber.trim() || mobileNumber.length < 10) {
@@ -87,9 +114,9 @@ export const MobileRechargeScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         {/* Promotional Cashback Banner */}
         <View style={styles.cashbackBanner}>
-          <Ionicons name="gift" size={20} color="#F59E0B" />
+          <Ionicons name="gift" size={20} color="#00D09C" />
           <Text style={styles.cashbackText}>
-            🎉 10% Instant Cashback applied automatically to recharges above ৳100!
+            🎉 10% Instant Cashback applied automatically to recharge packs above ৳100!
           </Text>
         </View>
 
@@ -166,23 +193,59 @@ export const MobileRechargeScreen = ({ navigation }) => {
             keyboardType="numeric"
           />
 
-          {/* Popular Packs */}
-          <Text style={styles.fieldLabel}>Popular Airtime & Data Packs</Text>
-          <View style={styles.packGrid}>
-            {RECHARGE_PACKS.map((pack, idx) => (
+          {/* Package Categories Tabs */}
+          <Text style={styles.fieldLabel}>Packs & Bundle Offers ({selectedOperator.name})</Text>
+          <View style={styles.packTabContainer}>
+            {PACKAGE_TABS.map((tab) => (
               <TouchableOpacity
-                key={idx}
+                key={tab}
                 style={[
-                  styles.packCard,
-                  amount === pack.amount.toString() && styles.packCardActive,
+                  styles.packTab,
+                  activePackTab === tab && styles.packTabActive,
                 ]}
-                onPress={() => setAmount(pack.amount.toString())}
+                onPress={() => setActivePackTab(tab)}
               >
-                <Text style={styles.packAmount}>৳{pack.amount}</Text>
-                <Text style={styles.packLabel}>{pack.label}</Text>
-                <Text style={styles.packSub}>{pack.sub}</Text>
+                <Text
+                  style={[
+                    styles.packTabText,
+                    activePackTab === tab && styles.packTabTextActive,
+                  ]}
+                >
+                  {tab}
+                </Text>
               </TouchableOpacity>
             ))}
+          </View>
+
+          {/* Dynamic Packages List */}
+          <View style={styles.packList}>
+            {PACKAGES_DATA[activePackTab]?.map((pack, idx) => {
+              const isSelected = amount === pack.amount.toString();
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  style={[styles.packCardItem, isSelected && styles.packCardItemActive]}
+                  onPress={() => handleSelectPackage(pack)}
+                  activeOpacity={0.75}
+                >
+                  <View style={styles.packInfo}>
+                    <View style={styles.packTopRow}>
+                      <Text style={styles.packTitle}>{pack.title}</Text>
+                      {pack.badge && (
+                        <View style={styles.packBadge}>
+                          <Text style={styles.packBadgeText}>{pack.badge}</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={styles.packValidity}>Validity: {pack.validity}</Text>
+                  </View>
+                  <View style={styles.packPriceContainer}>
+                    <Text style={styles.packPrice}>৳{pack.amount}</Text>
+                    <Text style={styles.packSelectLabel}>{isSelected ? 'Selected' : 'Tap to Pick'}</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
           <CustomButton
@@ -190,7 +253,7 @@ export const MobileRechargeScreen = ({ navigation }) => {
             onPress={handleRecharge}
             isLoading={loading}
             iconRight="flash"
-            style={{ marginTop: 14 }}
+            style={{ marginTop: 16 }}
           />
         </View>
       </ScrollView>
@@ -210,7 +273,7 @@ export const MobileRechargeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
   },
   header: {
     flexDirection: 'row',
@@ -218,68 +281,74 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    borderBottomColor: '#E2EFE9',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.card,
+    backgroundColor: '#F3F9F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerTitle: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   scrollContent: {
     padding: 16,
+    paddingBottom: 40,
   },
   cashbackBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(245, 158, 11, 0.12)',
+    backgroundColor: '#E6F8F3',
     padding: 12,
     borderRadius: 14,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: 'rgba(245, 158, 11, 0.3)',
+    borderColor: '#C6EFE1',
   },
   cashbackText: {
-    color: '#FCD34D',
+    color: '#1B4D3E',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
     marginLeft: 8,
     flex: 1,
   },
   errorBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.dangerBg,
+    backgroundColor: '#FEE2E2',
     padding: 12,
     borderRadius: 12,
     marginBottom: 12,
   },
   errorText: {
-    color: '#FDA4AF',
+    color: '#DC2626',
     fontSize: 12,
     marginLeft: 8,
     flex: 1,
   },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
     padding: 18,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
   fieldLabel: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
     marginTop: 10,
     marginBottom: 8,
   },
@@ -291,16 +360,16 @@ const styles = StyleSheet.create({
   },
   operatorCard: {
     width: '31%',
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 8,
+    backgroundColor: '#F8FCFA',
+    borderRadius: 14,
+    padding: 10,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   operatorCardActive: {
-    borderColor: colors.primaryLight,
-    backgroundColor: 'rgba(30, 111, 159, 0.08)',
+    borderColor: '#00D09C',
+    backgroundColor: '#E6F8F3',
   },
   operatorDot: {
     width: 10,
@@ -309,19 +378,19 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   operatorName: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 11,
     fontWeight: '700',
   },
   operatorCode: {
-    color: colors.textMuted,
+    color: '#94A3B8',
     fontSize: 9,
     marginTop: 1,
   },
   toggleRow: {
     flexDirection: 'row',
-    backgroundColor: colors.card,
-    borderRadius: 12,
+    backgroundColor: '#F3F9F6',
+    borderRadius: 14,
     padding: 4,
     marginBottom: 12,
   },
@@ -332,51 +401,107 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   toggleBtnActive: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#1B4D3E',
   },
   toggleText: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 12,
     fontWeight: '600',
   },
   toggleTextActive: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
-  packGrid: {
+  packTabContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginVertical: 8,
+    backgroundColor: '#F3F9F6',
+    borderRadius: 14,
+    padding: 4,
+    marginBottom: 12,
+    gap: 4,
   },
-  packCard: {
-    width: '31%',
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: colors.cardBorder,
+  packTab: {
+    flex: 1,
+    paddingVertical: 8,
     alignItems: 'center',
+    borderRadius: 10,
   },
-  packCardActive: {
-    borderColor: colors.primaryLight,
-    backgroundColor: 'rgba(37, 99, 235, 0.25)',
+  packTabActive: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  packAmount: {
-    color: colors.success,
-    fontSize: 14,
+  packTabText: {
+    color: '#64748B',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  packTabTextActive: {
+    color: '#1B4D3E',
     fontWeight: '800',
   },
-  packLabel: {
-    color: colors.textPrimary,
-    fontSize: 10,
-    fontWeight: '600',
-    marginTop: 2,
-    textAlign: 'center',
+  packList: {
+    gap: 8,
+    marginBottom: 12,
   },
-  packSub: {
-    color: colors.textMuted,
+  packCardItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#F8FCFA',
+    borderRadius: 16,
+    padding: 12,
+    borderWidth: 1.5,
+    borderColor: '#E2EFE9',
+  },
+  packCardItemActive: {
+    borderColor: '#00D09C',
+    backgroundColor: '#E6F8F3',
+  },
+  packInfo: {
+    flex: 1,
+  },
+  packTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  packTitle: {
+    color: '#0F2F24',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  packBadge: {
+    backgroundColor: '#D1FAE5',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  packBadgeText: {
+    color: '#065F46',
     fontSize: 9,
-    textAlign: 'center',
+    fontWeight: '800',
+  },
+  packValidity: {
+    color: '#64748B',
+    fontSize: 11,
+    marginTop: 2,
+  },
+  packPriceContainer: {
+    alignItems: 'flex-end',
+  },
+  packPrice: {
+    color: '#1B4D3E',
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  packSelectLabel: {
+    color: '#00D09C',
+    fontSize: 10,
+    fontWeight: '700',
+    marginTop: 2,
   },
 });

@@ -107,7 +107,7 @@ export const CashOutScreen = ({ navigation }) => {
             style={styles.demoAgentPill}
             onPress={() => setAgentPhone('01799999999')}
           >
-            <Ionicons name="location-outline" size={14} color={colors.textHighlight} />
+            <Ionicons name="location-outline" size={14} color="#1B4D3E" />
             <Text style={styles.demoAgentText}>Use Demo Agent Point (01799999999)</Text>
           </TouchableOpacity>
 
@@ -129,7 +129,7 @@ export const CashOutScreen = ({ navigation }) => {
             </View>
             <View style={styles.calcRow}>
               <Text style={styles.calcLabel}>Agent Service Fee (1.85%)</Text>
-              <Text style={[styles.calcValue, { color: colors.warning }]}>
+              <Text style={[styles.calcValue, { color: '#F59E0B' }]}>
                 +৳ {fee.toFixed(2)}
               </Text>
             </View>
@@ -177,7 +177,7 @@ export const CashOutScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
   },
   header: {
     flexDirection: 'row',
@@ -185,57 +185,62 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    borderBottomColor: '#E2EFE9',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.card,
+    backgroundColor: '#F3F9F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerTitle: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   scrollContent: {
     padding: 16,
   },
   balanceInfo: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
     padding: 16,
     marginBottom: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   balanceLabel: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 13,
   },
   balanceValue: {
-    color: colors.success,
-    fontSize: 17,
-    fontWeight: '800',
+    color: '#1B4D3E',
+    fontSize: 18,
+    fontWeight: '900',
   },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
     padding: 18,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
   demoAgentPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+    backgroundColor: '#E6F8F3',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 10,
@@ -243,18 +248,18 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   demoAgentText: {
-    color: colors.textHighlight,
+    color: '#1B4D3E',
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '700',
     marginLeft: 4,
   },
   calcBox: {
-    backgroundColor: colors.card,
-    borderRadius: 14,
+    backgroundColor: '#F8FCFA',
+    borderRadius: 16,
     padding: 14,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   calcRow: {
     flexDirection: 'row',
@@ -262,40 +267,40 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   calcLabel: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 12,
   },
   calcValue: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 13,
     fontWeight: '600',
   },
   calcTotalRow: {
     borderTopWidth: 1,
-    borderTopColor: colors.divider,
+    borderTopColor: '#E2EFE9',
     marginTop: 6,
     paddingTop: 8,
   },
   calcTotalLabel: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 14,
     fontWeight: '700',
   },
   calcTotalValue: {
-    color: colors.danger,
+    color: '#EF4444',
     fontSize: 16,
     fontWeight: '800',
   },
   errorBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.dangerBg,
+    backgroundColor: '#FEE2E2',
     padding: 12,
     borderRadius: 12,
     marginBottom: 12,
   },
   errorText: {
-    color: '#FDA4AF',
+    color: '#DC2626',
     fontSize: 12,
     marginLeft: 8,
     flex: 1,

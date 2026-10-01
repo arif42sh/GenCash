@@ -71,7 +71,7 @@ export const AddMoneyScreen = ({ navigation }) => {
 
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={styles.zeroFeeBanner}>
-          <Ionicons name="sparkles" size={18} color={colors.success} />
+          <Ionicons name="sparkles" size={18} color="#00D09C" />
           <Text style={styles.zeroFeeText}>
             Zero Charge! Deposit funds into your GenCash wallet completely free.
           </Text>
@@ -95,16 +95,17 @@ export const AddMoneyScreen = ({ navigation }) => {
                   selectedSource.id === source.id && styles.sourceCardActive,
                 ]}
                 onPress={() => setSelectedSource(source)}
+                activeOpacity={0.7}
               >
                 <View style={styles.sourceIconWrapper}>
-                  <Ionicons name={source.icon} size={20} color={colors.primaryLight} />
+                  <Ionicons name={source.icon} size={20} color="#1B4D3E" />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.sourceName}>{source.name}</Text>
                   <Text style={styles.sourceType}>{source.type}</Text>
                 </View>
                 {selectedSource.id === source.id && (
-                  <Ionicons name="checkmark-circle" size={20} color={colors.success} />
+                  <Ionicons name="checkmark-circle" size={20} color="#00D09C" />
                 )}
               </TouchableOpacity>
             ))}
@@ -167,7 +168,7 @@ export const AddMoneyScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
   },
   header: {
     flexDirection: 'row',
@@ -175,22 +176,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    borderBottomColor: '#E2EFE9',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.card,
+    backgroundColor: '#F3F9F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerTitle: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   scrollContent: {
     padding: 16,
@@ -198,45 +199,50 @@ const styles = StyleSheet.create({
   zeroFeeBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    backgroundColor: '#E6F8F3',
     padding: 12,
     borderRadius: 14,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.3)',
+    borderColor: '#C6EFE1',
   },
   zeroFeeText: {
-    color: colors.success,
+    color: '#1B4D3E',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
     marginLeft: 8,
     flex: 1,
   },
   errorBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.dangerBg,
+    backgroundColor: '#FEE2E2',
     padding: 12,
     borderRadius: 12,
     marginBottom: 12,
   },
   errorText: {
-    color: '#FDA4AF',
+    color: '#DC2626',
     fontSize: 12,
     marginLeft: 8,
     flex: 1,
   },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
     padding: 18,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
   fieldLabel: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 10,
   },
   sourceList: {
@@ -246,32 +252,32 @@ const styles = StyleSheet.create({
   sourceCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
+    backgroundColor: '#F8FCFA',
     borderRadius: 14,
     padding: 12,
     borderWidth: 1.5,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   sourceCardActive: {
-    borderColor: colors.primaryLight,
-    backgroundColor: 'rgba(30, 111, 159, 0.08)',
+    borderColor: '#00D09C',
+    backgroundColor: '#E6F8F3',
   },
   sourceIconWrapper: {
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: 'rgba(37, 99, 235, 0.15)',
+    backgroundColor: '#E6F8F3',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
   },
   sourceName: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 13,
     fontWeight: '700',
   },
   sourceType: {
-    color: colors.textMuted,
+    color: '#64748B',
     fontSize: 11,
   },
   quickRow: {
@@ -280,24 +286,24 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   amtChip: {
-    backgroundColor: colors.card,
+    backgroundColor: '#F8FCFA',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   amtChipActive: {
-    borderColor: colors.primaryLight,
-    backgroundColor: 'rgba(37, 99, 235, 0.25)',
+    borderColor: '#00D09C',
+    backgroundColor: '#E6F8F3',
   },
   amtChipText: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 12,
     fontWeight: '600',
   },
   amtChipTextActive: {
-    color: colors.textHighlight,
+    color: '#1B4D3E',
     fontWeight: '800',
   },
 });

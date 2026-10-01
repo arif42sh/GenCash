@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../constants/colors';
 
 export const BalanceCard = ({
   balance = 0,
@@ -11,7 +11,6 @@ export const BalanceCard = ({
   onOpenQR,
 }) => {
   const [isRevealed, setIsRevealed] = useState(true);
-  const [fadeAnim] = useState(new Animated.Value(1));
 
   const handleToggle = () => {
     setIsRevealed((prev) => !prev);
@@ -23,7 +22,12 @@ export const BalanceCard = ({
   });
 
   return (
-    <View style={styles.cardContainer}>
+    <LinearGradient
+      colors={['#164E3D', '#256F57']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.cardContainer}
+    >
       {/* Top Row: Wallet label & QR Code button */}
       <View style={styles.topRow}>
         <View style={styles.labelGroup}>
@@ -36,7 +40,7 @@ export const BalanceCard = ({
           style={styles.qrButton}
           onPress={onOpenQR}
         >
-          <Ionicons name="qr-code-outline" size={22} color="#34D399" />
+          <Ionicons name="qr-code-outline" size={20} color="#34D399" />
         </TouchableOpacity>
       </View>
 
@@ -53,7 +57,7 @@ export const BalanceCard = ({
           <Text style={styles.balanceHiddenText}>••••••••</Text>
         )}
         <Ionicons
-          name={isRevealed ? "eye-outline" : "eye-off-outline"}
+          name={isRevealed ? 'eye-outline' : 'eye-off-outline'}
           size={18}
           color="#A7D8CA"
           style={styles.eyeIcon}
@@ -117,23 +121,24 @@ export const BalanceCard = ({
           <Text style={styles.actionLabel}>History</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: '#1B4D3E',
     borderRadius: 24,
     paddingVertical: 20,
     paddingHorizontal: 18,
     marginHorizontal: 16,
     marginVertical: 10,
-    shadowColor: '#1B4D3E',
+    shadowColor: '#164E3D',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.35,
-    shadowRadius: 12,
+    shadowRadius: 14,
     elevation: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
   },
   topRow: {
     flexDirection: 'row',
@@ -155,7 +160,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    borderTopColor: 'rgba(255, 255, 255, 0.12)',
   },
   actionItem: {
     alignItems: 'center',
@@ -203,12 +208,12 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(0, 0, 0, 0.22)',
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 6,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.12)',
   },
   actionLabel: {
     color: '#D1EFE6',

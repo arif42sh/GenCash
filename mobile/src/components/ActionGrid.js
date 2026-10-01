@@ -34,7 +34,7 @@ const SERVICES = [
     icon: 'shield-checkmark-outline',
     iconColor: '#8B5CF6',
     bgColor: '#F0EDFA',
-    screen: 'AIHub',
+    screen: 'AddMoney',
   },
   {
     id: 'electricity',
@@ -61,13 +61,12 @@ const SERVICES = [
     screen: 'AddMoney',
   },
   {
-    id: 'others',
-    title: 'Others',
-    icon: 'sparkles-outline',
+    id: 'merchant',
+    title: 'Merchant',
+    icon: 'storefront-outline',
     iconColor: '#D97706',
     bgColor: '#FEFBE8',
-    screen: 'AIHub',
-    badge: 'AI',
+    screen: 'MerchantPayment',
   },
 ];
 
@@ -85,11 +84,6 @@ export const ActionGrid = ({ onSelectAction }) => {
           >
             <View style={[styles.iconBox, { backgroundColor: item.bgColor }]}>
               <Ionicons name={item.icon} size={22} color={item.iconColor} />
-              {item.badge && (
-                <View style={styles.tileBadge}>
-                  <Text style={styles.tileBadgeText}>{item.badge}</Text>
-                </View>
-              )}
             </View>
             <Text style={styles.tileTitle} numberOfLines={1}>
               {item.title}
@@ -109,8 +103,8 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     padding: 16,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
-    shadowColor: '#000',
+    borderColor: '#E2EFE9',
+    shadowColor: '#1B4D3E',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.04,
     shadowRadius: 8,
@@ -119,7 +113,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#1E293B',
+    color: '#0F2F24',
     marginBottom: 14,
     marginLeft: 2,
   },
@@ -140,26 +134,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 6,
-    position: 'relative',
   },
   tileTitle: {
     fontSize: 11,
     fontWeight: '600',
     color: '#334155',
     textAlign: 'center',
-  },
-  tileBadge: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: '#00D09C',
-    borderRadius: 6,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-  },
-  tileBadgeText: {
-    color: '#fff',
-    fontSize: 8,
-    fontWeight: '800',
   },
 });

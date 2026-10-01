@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ const FILTERS = [
   { id: 'SEND_MONEY', label: 'Send Money' },
   { id: 'RECHARGE', label: 'Recharge' },
   { id: 'CASH_OUT', label: 'Cash Out' },
+  { id: 'RECEIVED', label: 'Received' },
   { id: 'MERCHANT_PAYMENT', label: 'Payment' },
   { id: 'ADD_MONEY', label: 'Add Money' },
 ];
@@ -54,6 +55,33 @@ export const TransactionsScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
+  // Monthly Analytics Calculation (Money In vs Money Out)
+  const monthlyStats = useMemo(() => {
+    let moneyIn = 0;
+    let moneyOut = 0;
+
+    transactions.forEach((t) => {
+      const amt = parseFloat(t.amount) || 0;
+      if (t.direction === 'CREDIT' || t.transaction_type === 'ADD_MONEY' || t.transaction_type === 'RECEIVED') {
+        moneyIn += amt;
+      } else {
+        moneyOut += amt;
+      }
+    });
+
+    const total = moneyIn + moneyOut;
+    const inPercent = total > 0 ? (moneyIn / total) * 100 : 50;
+    const outPercent = total > 0 ? (moneyOut / total) * 100 : 50;
+
+    return {
+      moneyIn,
+      moneyOut,
+      net: moneyIn - moneyOut,
+      inPercent,
+      outPercent,
+    };
+  }, [transactions]);
+
   const filteredTxns = transactions.filter((t) => {
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase();
@@ -73,49 +101,6 @@ export const TransactionsScreen = ({ navigation }) => {
         <Text style={styles.headerTitle}>Transaction History</Text>
       </View>
 
-      {/* Search Input */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search-outline" size={18} color={colors.textSecondary} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search TxnID, number, or note..."
-          placeholderTextColor={colors.textMuted}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        {searchQuery ? (
-          <TouchableOpacity onPress={() => setSearchQuery('')}>
-            <Ionicons name="close-circle" size={18} color={colors.textMuted} />
-          </TouchableOpacity>
-        ) : null}
-      </View>
-
-      {/* Filter Horizontal Scroll */}
-      <View style={styles.filterScrollWrapper}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersScroll}>
-          {FILTERS.map((f) => (
-            <TouchableOpacity
-              key={f.id}
-              style={[
-                styles.filterPill,
-                selectedFilter === f.id && styles.filterPillActive,
-              ]}
-              onPress={() => setSelectedFilter(f.id)}
-            >
-              <Text
-                style={[
-                  styles.filterText,
-                  selectedFilter === f.id && styles.filterTextActive,
-                ]}
-              >
-                {f.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* Transactions List */}
       <FlatList
         data={filteredTxns}
         keyExtractor={(item) => item.id.toString()}
@@ -130,13 +115,106 @@ export const TransactionsScreen = ({ navigation }) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={colors.primaryLight}
+            tintColor="#1B4D3E"
           />
+        }
+        ListHeaderComponent={
+          <View>
+            {/* Monthly Money In vs Money Out Analytics Widget */}
+            <View style={styles.analyticsCard}>
+              <View style={styles.analyticsHeader}>
+                <View style={styles.analyticsTitleWrap}>
+                  <Ionicons name="bar-chart-outline" size={16} color="#1B4D3E" />
+                  <Text style={styles.analyticsTitle}>Monthly Money Flow</Text>
+                </View>
+                <Text style={styles.monthBadge}>This Month</Text>
+              </View>
+
+              <View style={styles.flowRow}>
+                {/* Money In */}
+                <View style={styles.flowBox}>
+                  <View style={styles.flowLabelRow}>
+                    <Ionicons name="arrow-down-circle" size={16} color="#00D09C" />
+                    <Text style={styles.flowLabel}>Money In</Text>
+                  </View>
+                  <Text style={styles.moneyInAmount}>
+                    +৳{monthlyStats.moneyIn.toLocaleString('en-US', { minimumFractionDigits: 0 })}
+                  </Text>
+                </View>
+
+                <View style={styles.verticalDivider} />
+
+                {/* Money Out */}
+                <View style={styles.flowBox}>
+                  <View style={styles.flowLabelRow}>
+                    <Ionicons name="arrow-up-circle" size={16} color="#EF4444" />
+                    <Text style={styles.flowLabel}>Money Out</Text>
+                  </View>
+                  <Text style={styles.moneyOutAmount}>
+                    -৳{monthlyStats.moneyOut.toLocaleString('en-US', { minimumFractionDigits: 0 })}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Visual Comparison Ratio Bar */}
+              <View style={styles.ratioBarContainer}>
+                <View style={[styles.ratioBarIn, { flex: monthlyStats.inPercent || 1 }]} />
+                <View style={[styles.ratioBarOut, { flex: monthlyStats.outPercent || 1 }]} />
+              </View>
+
+              <View style={styles.ratioLabelRow}>
+                <Text style={styles.ratioLabelText}>{Math.round(monthlyStats.inPercent)}% Inflow</Text>
+                <Text style={styles.ratioLabelText}>{Math.round(monthlyStats.outPercent)}% Outflow</Text>
+              </View>
+            </View>
+
+            {/* Search Input */}
+            <View style={styles.searchContainer}>
+              <Ionicons name="search-outline" size={18} color="#64748B" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search TxnID, number, or note..."
+                placeholderTextColor="#94A3B8"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              {searchQuery ? (
+                <TouchableOpacity onPress={() => setSearchQuery('')}>
+                  <Ionicons name="close-circle" size={18} color="#94A3B8" />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+
+            {/* Filter Horizontal Scroll */}
+            <View style={styles.filterScrollWrapper}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersScroll}>
+                {FILTERS.map((f) => (
+                  <TouchableOpacity
+                    key={f.id}
+                    style={[
+                      styles.filterPill,
+                      selectedFilter === f.id && styles.filterPillActive,
+                    ]}
+                    onPress={() => setSelectedFilter(f.id)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterText,
+                        selectedFilter === f.id && styles.filterTextActive,
+                      ]}
+                    >
+                      {f.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
         }
         ListEmptyComponent={
           !loading ? (
             <View style={styles.emptyContainer}>
-              <Ionicons name="documents-outline" size={48} color={colors.textMuted} />
+              <Ionicons name="documents-outline" size={48} color="#94A3B8" />
               <Text style={styles.emptyTitle}>No Transactions Found</Text>
               <Text style={styles.emptySub}>
                 {searchQuery
@@ -156,7 +234,7 @@ export const TransactionsScreen = ({ navigation }) => {
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Transaction Details</Text>
                 <TouchableOpacity onPress={() => setSelectedTxn(null)} style={styles.closeBtn}>
-                  <Ionicons name="close" size={20} color={colors.textSecondary} />
+                  <Ionicons name="close" size={20} color="#64748B" />
                 </TouchableOpacity>
               </View>
 
@@ -184,7 +262,7 @@ export const TransactionsScreen = ({ navigation }) => {
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>Status</Text>
                   <View style={styles.statusPill}>
-                    <Text style={styles.statusText}>{selectedTxn.status}</Text>
+                    <Text style={styles.statusText}>{selectedTxn.status || 'COMPLETED'}</Text>
                   </View>
                 </View>
 
@@ -224,7 +302,7 @@ export const TransactionsScreen = ({ navigation }) => {
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>Date & Time</Text>
                   <Text style={styles.detailValue}>
-                    {new Date(selectedTxn.transaction_time || selectedTxn.created_at).toLocaleString()}
+                    {new Date(selectedTxn.transaction_time || selectedTxn.created_at || Date.now()).toLocaleString()}
                   </Text>
                 </View>
               </View>
@@ -243,73 +321,168 @@ export const TransactionsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
   },
   header: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 10,
-    backgroundColor: colors.surface,
+    paddingBottom: 12,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    borderBottomColor: '#E2EFE9',
   },
   headerTitle: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 20,
     fontWeight: '800',
+  },
+  listContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 90,
+  },
+  analyticsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 22,
+    padding: 16,
+    marginTop: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E2EFE9',
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  analyticsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  analyticsTitleWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  analyticsTitle: {
+    color: '#0F2F24',
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  monthBadge: {
+    backgroundColor: '#E6F8F3',
+    color: '#1B4D3E',
+    fontSize: 10,
+    fontWeight: '700',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  flowRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  flowBox: {
+    flex: 1,
+  },
+  flowLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 4,
+  },
+  flowLabel: {
+    color: '#64748B',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  moneyInAmount: {
+    color: '#00D09C',
+    fontSize: 18,
+    fontWeight: '900',
+  },
+  moneyOutAmount: {
+    color: '#EF4444',
+    fontSize: 18,
+    fontWeight: '900',
+  },
+  verticalDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: '#E2EFE9',
+    marginHorizontal: 16,
+  },
+  ratioBarContainer: {
+    flexDirection: 'row',
+    height: 8,
+    borderRadius: 4,
+    overflow: 'hidden',
+    backgroundColor: '#E2EFE9',
+    marginBottom: 6,
+  },
+  ratioBarIn: {
+    backgroundColor: '#00D09C',
+  },
+  ratioBarOut: {
+    backgroundColor: '#EF4444',
+  },
+  ratioLabelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  ratioLabelText: {
+    color: '#94A3B8',
+    fontSize: 10,
+    fontWeight: '600',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
-    marginHorizontal: 16,
-    marginTop: 12,
-    marginBottom: 8,
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    marginBottom: 10,
+    borderRadius: 14,
     paddingHorizontal: 12,
     height: 44,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   searchIcon: {
     marginRight: 8,
   },
   searchInput: {
     flex: 1,
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 13,
   },
   filterScrollWrapper: {
-    marginBottom: 8,
+    marginBottom: 12,
   },
   filtersScroll: {
-    paddingHorizontal: 16,
     gap: 8,
   },
   filterPill: {
-    backgroundColor: colors.card,
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   filterPillActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primaryLight,
+    backgroundColor: '#1B4D3E',
+    borderColor: '#1B4D3E',
   },
   filterText: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 12,
     fontWeight: '600',
   },
   filterTextActive: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontWeight: '700',
-  },
-  listContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 24,
   },
   emptyContainer: {
     padding: 40,
@@ -317,13 +490,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyTitle: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 16,
     fontWeight: '700',
     marginTop: 12,
   },
   emptySub: {
-    color: colors.textMuted,
+    color: '#94A3B8',
     fontSize: 12,
     textAlign: 'center',
     marginTop: 6,
@@ -331,13 +504,13 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     padding: 24,
   },
   modalHeader: {
@@ -347,7 +520,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   modalTitle: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 18,
     fontWeight: '800',
   },
@@ -355,14 +528,16 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   modalAmountBanner: {
-    backgroundColor: colors.card,
-    borderRadius: 14,
+    backgroundColor: '#F8FCFA',
+    borderRadius: 16,
     padding: 16,
     alignItems: 'center',
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E2EFE9',
   },
   modalAmountLabel: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 12,
   },
   modalAmount: {
@@ -371,16 +546,18 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   creditText: {
-    color: colors.success,
+    color: '#00D09C',
   },
   debitText: {
-    color: colors.danger,
+    color: '#EF4444',
   },
   modalDetailsCard: {
-    backgroundColor: colors.card,
-    borderRadius: 14,
+    backgroundColor: '#F8FCFA',
+    borderRadius: 16,
     padding: 14,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E2EFE9',
   },
   detailRow: {
     flexDirection: 'row',
@@ -389,38 +566,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   detailLabel: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 13,
   },
   detailValue: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 13,
     fontWeight: '600',
   },
   codeHighlight: {
-    color: colors.textHighlight,
+    color: '#1B4D3E',
     fontFamily: 'monospace',
+    fontWeight: '700',
   },
   statusPill: {
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    backgroundColor: '#E6F8F3',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
   },
   statusText: {
-    color: colors.success,
+    color: '#00D09C',
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   modalCloseBtn: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#1B4D3E',
     height: 48,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalCloseBtnText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '700',
   },

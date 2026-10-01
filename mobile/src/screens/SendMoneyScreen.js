@@ -185,7 +185,7 @@ export const SendMoneyScreen = ({ navigation }) => {
           />
 
           <View style={styles.feeNoteBox}>
-            <Ionicons name="information-circle-outline" size={16} color={colors.textHighlight} />
+            <Ionicons name="information-circle-outline" size={16} color="#00D09C" />
             <Text style={styles.feeNoteText}>
               Standard P2P service fee: ৳5.00 per transaction.
             </Text>
@@ -229,7 +229,7 @@ export const SendMoneyScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
   },
   header: {
     flexDirection: 'row',
@@ -237,55 +237,60 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    borderBottomColor: '#E2EFE9',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.card,
+    backgroundColor: '#F3F9F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerTitle: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   scrollContent: {
     padding: 16,
   },
   balanceInfo: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
     padding: 16,
     marginBottom: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   balanceLabel: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 13,
   },
   balanceValue: {
-    color: colors.success,
-    fontSize: 17,
-    fontWeight: '800',
+    color: '#1B4D3E',
+    fontSize: 18,
+    fontWeight: '900',
   },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
     padding: 18,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
   sectionSubtitle: {
-    color: colors.textMuted,
+    color: '#64748B',
     fontSize: 11,
     fontWeight: '600',
     marginTop: 4,
@@ -298,24 +303,24 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   contactChip: {
-    backgroundColor: colors.card,
+    backgroundColor: '#F8FCFA',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   contactChipActive: {
-    borderColor: colors.primaryLight,
-    backgroundColor: 'rgba(37, 99, 235, 0.2)',
+    borderColor: '#00D09C',
+    backgroundColor: '#E6F8F3',
   },
   contactChipText: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 11,
   },
   contactChipTextActive: {
-    color: colors.textHighlight,
-    fontWeight: '700',
+    color: '#1B4D3E',
+    fontWeight: '800',
   },
   quickAmountRow: {
     flexDirection: 'row',
@@ -323,49 +328,50 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   amountChip: {
-    backgroundColor: colors.card,
+    backgroundColor: '#F8FCFA',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
   amountChipActive: {
-    borderColor: colors.primaryLight,
-    backgroundColor: 'rgba(37, 99, 235, 0.25)',
+    borderColor: '#00D09C',
+    backgroundColor: '#E6F8F3',
   },
   amountChipText: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 12,
     fontWeight: '600',
   },
   amountChipTextActive: {
-    color: colors.textHighlight,
+    color: '#1B4D3E',
     fontWeight: '800',
   },
   feeNoteBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(56, 189, 248, 0.08)',
+    backgroundColor: '#E6F8F3',
     padding: 10,
     borderRadius: 10,
     marginTop: 8,
   },
   feeNoteText: {
-    color: colors.textSecondary,
+    color: '#1B4D3E',
     fontSize: 11,
     marginLeft: 6,
+    fontWeight: '600',
   },
   errorBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.dangerBg,
+    backgroundColor: '#FEE2E2',
     padding: 12,
     borderRadius: 12,
     marginBottom: 12,
   },
   errorText: {
-    color: '#FDA4AF',
+    color: '#DC2626',
     fontSize: 12,
     marginLeft: 8,
     flex: 1,

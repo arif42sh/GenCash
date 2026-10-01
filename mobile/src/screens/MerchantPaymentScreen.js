@@ -18,24 +18,83 @@ import { CustomButton } from '../components/CustomButton';
 import { ConfirmationSheet } from '../components/ConfirmationSheet';
 import { SuccessModal } from '../components/SuccessModal';
 
-const DEMO_MERCHANTS = [
-  { id: 1, name: 'Shwapno Superstore', phone: '01700100001', category: 'Grocery' },
-  { id: 3, name: 'Chillox Burger Hub', phone: '01700100003', category: 'Food' },
-  { id: 4, name: 'Star Tech Ltd', phone: '01700100004', category: 'Tech' },
+const CATEGORIES = ['All', 'Grocery', 'Food & Dining', 'Electronics', 'Fashion'];
+
+const MERCHANTS_DIRECTORY = [
+  {
+    id: 1,
+    name: 'Shwapno Superstore',
+    phone: '01700100001',
+    category: 'Grocery',
+    icon: 'cart-outline',
+    color: '#10B981',
+    branches: '400+ Outlets nationwide',
+  },
+  {
+    id: 2,
+    name: 'Daily Shopping',
+    phone: '01700100002',
+    category: 'Grocery',
+    icon: 'basket-outline',
+    color: '#059669',
+    branches: 'PRAN-RFL Group Outlet',
+  },
+  {
+    id: 3,
+    name: 'Chillox Burger Hub',
+    phone: '01700100003',
+    category: 'Food & Dining',
+    icon: 'fast-food-outline',
+    color: '#F59E0B',
+    branches: 'Dhanmondi, Banani, Uttara',
+  },
+  {
+    id: 4,
+    name: 'Star Tech & Engineering',
+    phone: '01700100004',
+    category: 'Electronics',
+    icon: 'laptop-outline',
+    color: '#3B82F6',
+    branches: 'Official Tech Mega Store',
+  },
+  {
+    id: 5,
+    name: 'Yellow Fashion Hub',
+    phone: '01700100005',
+    category: 'Fashion',
+    icon: 'shirt-outline',
+    color: '#EC4899',
+    branches: 'BEXIMCO Lifestyle Store',
+  },
+  {
+    id: 6,
+    name: 'Ryans Computers',
+    phone: '01700100006',
+    category: 'Electronics',
+    icon: 'hardware-chip-outline',
+    color: '#6366F1',
+    branches: 'IDB Bhaban, Multiplan Center',
+  },
 ];
 
 export const MerchantPaymentScreen = ({ navigation }) => {
   const { wallet, refreshWallet } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [merchantPhone, setMerchantPhone] = useState('01700100001');
-  const [selectedMerchant, setSelectedMerchant] = useState(DEMO_MERCHANTS[0]);
+  const [selectedMerchant, setSelectedMerchant] = useState(MERCHANTS_DIRECTORY[0]);
   const [amount, setAmount] = useState('350');
-  const [note, setNote] = useState('Grocery items');
+  const [note, setNote] = useState('Shopping Bill');
   const [pin, setPin] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successTxn, setSuccessTxn] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const filteredMerchants = MERCHANTS_DIRECTORY.filter((m) => {
+    if (selectedCategory === 'All') return true;
+    return m.category === selectedCategory;
+  });
 
   const handleSelectMerchant = (m) => {
     setSelectedMerchant(m);
@@ -45,7 +104,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 
   const handleProceed = () => {
     if (!merchantPhone.trim()) {
-      setErrorMessage('Please enter merchant number or select a merchant.');
+      setErrorMessage('Please enter merchant number or select a merchant store.');
       return;
     }
     const numAmount = parseFloat(amount);
@@ -99,14 +158,17 @@ export const MerchantPaymentScreen = ({ navigation }) => {
         {/* QR Scan Action Bar */}
         <TouchableOpacity
           style={styles.qrScanBanner}
-          onPress={() => Alert.alert('QR Scanner', 'QR Scanner camera activated. Merchant QR decoded!')}
+          activeOpacity={0.8}
+          onPress={() => Alert.alert('Scan QR', 'Point camera at merchant counter QR code.')}
         >
-          <Ionicons name="qr-code-outline" size={24} color="#EC4899" />
-          <View style={{ flex: 1, marginLeft: 12 }}>
-            <Text style={styles.qrBannerTitle}>Scan Merchant QR Code</Text>
-            <Text style={styles.qrBannerSub}>Tap here to auto-fill merchant details via camera</Text>
+          <View style={styles.qrIconWrap}>
+            <Ionicons name="qr-code-outline" size={24} color="#1B4D3E" />
           </View>
-          <Ionicons name="camera-outline" size={20} color={colors.textSecondary} />
+          <View style={{ flex: 1, marginLeft: 12 }}>
+            <Text style={styles.qrBannerTitle}>Scan Merchant Counter QR</Text>
+            <Text style={styles.qrBannerSub}>Auto-fills merchant name and Till ID instantly</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color="#1B4D3E" />
         </TouchableOpacity>
 
         {errorMessage ? (
@@ -116,33 +178,66 @@ export const MerchantPaymentScreen = ({ navigation }) => {
           </View>
         ) : null}
 
+        {/* Merchant Directory Section */}
         <View style={styles.card}>
-          <Text style={styles.fieldLabel}>Featured Merchant Stores</Text>
-          <View style={styles.merchantsRow}>
-            {DEMO_MERCHANTS.map((m) => (
+          <Text style={styles.sectionTitle}>Merchant Directory</Text>
+          
+          {/* Category Chips */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.catScroll}>
+            {CATEGORIES.map((cat) => (
               <TouchableOpacity
-                key={m.id}
+                key={cat}
                 style={[
-                  styles.merchantChip,
-                  selectedMerchant?.id === m.id && styles.merchantChipActive,
+                  styles.catChip,
+                  selectedCategory === cat && styles.catChipActive,
                 ]}
-                onPress={() => handleSelectMerchant(m)}
+                onPress={() => setSelectedCategory(cat)}
               >
                 <Text
                   style={[
-                    styles.merchantChipName,
-                    selectedMerchant?.id === m.id && styles.merchantChipNameActive,
+                    styles.catChipText,
+                    selectedCategory === cat && styles.catChipTextActive,
                   ]}
                 >
-                  {m.name}
+                  {cat}
                 </Text>
-                <Text style={styles.merchantChipCat}>{m.category}</Text>
               </TouchableOpacity>
             ))}
+          </ScrollView>
+
+          {/* Merchants List */}
+          <View style={styles.merchantGrid}>
+            {filteredMerchants.map((m) => {
+              const isSelected = selectedMerchant?.id === m.id;
+              return (
+                <TouchableOpacity
+                  key={m.id}
+                  style={[
+                    styles.merchantCard,
+                    isSelected && styles.merchantCardActive,
+                  ]}
+                  onPress={() => handleSelectMerchant(m)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.merchantAvatar, { backgroundColor: m.color + '18' }]}>
+                    <Ionicons name={m.icon} size={22} color={m.color} />
+                  </View>
+                  <View style={styles.merchantTextWrap}>
+                    <Text style={styles.merchantName} numberOfLines={1}>{m.name}</Text>
+                    <Text style={styles.merchantSub} numberOfLines={1}>{m.branches}</Text>
+                  </View>
+                  {isSelected && (
+                    <Ionicons name="checkmark-circle" size={20} color="#00D09C" />
+                  )}
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
+          <View style={styles.divider} />
+
           <CustomInput
-            label="Merchant Mobile / Till Number *"
+            label="Merchant Till / Mobile Number *"
             value={merchantPhone}
             onChangeText={(txt) => {
               setMerchantPhone(txt);
@@ -168,7 +263,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
             label="Reference / Invoice Note"
             value={note}
             onChangeText={setNote}
-            placeholder="e.g. Bill #4829"
+            placeholder="e.g. Counter #04"
             icon="receipt-outline"
           />
 
@@ -183,7 +278,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 
       <ConfirmationSheet
         visible={showConfirm}
-        title="Confirm Payment"
+        title="Confirm Merchant Payment"
         recipientLabel="Merchant Store"
         recipientValue={selectedMerchant?.name || merchantPhone}
         amount={amount || 0}
@@ -211,7 +306,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F9F6',
   },
   header: {
     flexDirection: 'row',
@@ -219,102 +314,152 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    borderBottomColor: '#E2EFE9',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.card,
+    backgroundColor: '#F3F9F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerTitle: {
-    color: colors.textPrimary,
+    color: '#0F2F24',
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   scrollContent: {
     padding: 16,
+    paddingBottom: 40,
   },
   qrScanBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(236, 72, 153, 0.12)',
+    backgroundColor: '#E6F8F3',
     padding: 14,
-    borderRadius: 16,
+    borderRadius: 18,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: 'rgba(236, 72, 153, 0.3)',
+    borderColor: '#C6EFE1',
+  },
+  qrIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   qrBannerTitle: {
-    color: '#F472B6',
+    color: '#1B4D3E',
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   qrBannerSub: {
-    color: colors.textSecondary,
+    color: '#64748B',
     fontSize: 11,
     marginTop: 2,
   },
   errorBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.dangerBg,
+    backgroundColor: '#FEE2E2',
     padding: 12,
     borderRadius: 12,
     marginBottom: 12,
   },
   errorText: {
-    color: '#FDA4AF',
+    color: '#DC2626',
     fontSize: 12,
     marginLeft: 8,
     flex: 1,
   },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
     padding: 18,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
+    shadowColor: '#1B4D3E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
-  fieldLabel: {
-    color: colors.textSecondary,
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 8,
+  sectionTitle: {
+    color: '#0F2F24',
+    fontSize: 14,
+    fontWeight: '800',
+    marginBottom: 10,
   },
-  merchantsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  catScroll: {
     gap: 8,
     marginBottom: 12,
   },
-  merchantChip: {
-    backgroundColor: colors.card,
-    paddingHorizontal: 10,
+  catChip: {
+    backgroundColor: '#F3F9F6',
+    paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: '#E2EFE9',
   },
-  merchantChipActive: {
-    borderColor: '#EC4899',
-    backgroundColor: 'rgba(236, 72, 153, 0.2)',
+  catChipActive: {
+    backgroundColor: '#1B4D3E',
+    borderColor: '#1B4D3E',
   },
-  merchantChipName: {
-    color: colors.textPrimary,
-    fontSize: 12,
-    fontWeight: '600',
+  catChipText: {
+    color: '#64748B',
+    fontSize: 11,
+    fontWeight: '700',
   },
-  merchantChipNameActive: {
-    color: '#F472B6',
-    fontWeight: '800',
+  catChipTextActive: {
+    color: '#FFFFFF',
   },
-  merchantChipCat: {
-    color: colors.textMuted,
-    fontSize: 9,
+  merchantGrid: {
+    gap: 8,
+    marginBottom: 12,
+  },
+  merchantCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FCFA',
+    padding: 10,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E2EFE9',
+  },
+  merchantCardActive: {
+    borderColor: '#00D09C',
+    backgroundColor: '#E6F8F3',
+  },
+  merchantAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  merchantTextWrap: {
+    flex: 1,
+  },
+  merchantName: {
+    color: '#0F2F24',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  merchantSub: {
+    color: '#64748B',
+    fontSize: 10,
+    marginTop: 2,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E2EFE9',
+    marginVertical: 12,
   },
 });
