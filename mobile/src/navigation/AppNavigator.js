@@ -16,6 +16,9 @@ import { AddMoneyScreen } from '../screens/AddMoneyScreen';
 import { MerchantPaymentScreen } from '../screens/MerchantPaymentScreen';
 import { TransactionsScreen } from '../screens/TransactionsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
+import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { SettingsScreen } from '../screens/SettingsScreen';
+import { SupportScreen } from '../screens/SupportScreen';
 import { QRScannerModal } from '../components/QRScannerModal';
 
 export const AppNavigator = () => {
@@ -115,6 +118,12 @@ export const AppNavigator = () => {
         return <TransactionsScreen navigation={navigationProp} />;
       case 'Profile':
         return <ProfileScreen navigation={navigationProp} />;
+      case 'Notifications':
+        return <NotificationsScreen navigation={navigationProp} />;
+      case 'Settings':
+        return <SettingsScreen navigation={navigationProp} />;
+      case 'Support':
+        return <SupportScreen navigation={navigationProp} />;
       case 'Main':
       default:
         return (

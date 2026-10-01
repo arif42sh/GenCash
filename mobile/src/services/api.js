@@ -203,4 +203,22 @@ export const api = {
     const res = await apiClient.get(ENDPOINTS.NOTIFICATIONS);
     return res.data;
   },
+
+  async markNotificationRead(id) {
+    try {
+      const res = await apiClient.patch(`${ENDPOINTS.NOTIFICATIONS}/${id}/read`);
+      return res.data;
+    } catch (e) {
+      return null;
+    }
+  },
+
+  async markAllNotificationsRead() {
+    try {
+      const res = await apiClient.patch(`${ENDPOINTS.NOTIFICATIONS}/read-all`);
+      return res.data;
+    } catch (e) {
+      return null;
+    }
+  },
 };

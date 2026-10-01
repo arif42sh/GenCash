@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 import { BalanceCard } from '../components/BalanceCard';
 import { ActionGrid } from '../components/ActionGrid';
@@ -67,6 +68,7 @@ export const HomeScreen = ({ navigation }) => {
     navigation.navigate('MerchantPayment');
   };
 
+  const { t, isBangla } = useLanguage();
   const userName = user?.name ? user.name.split(' ')[0] : 'Tanvir';
 
   return (
@@ -84,15 +86,17 @@ export const HomeScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
           <View style={styles.userInfo}>
-            <Text style={styles.greetingText}>Hello {userName},</Text>
-            <Text style={styles.userNameText}>Welcome Back!</Text>
+            <Text style={styles.greetingText}>{t('hello', 'Hello')} {userName},</Text>
+            <Text style={styles.userNameText}>{t('welcomeBack', 'Welcome Back!')}</Text>
           </View>
         </View>
 
         <View style={styles.headerIcons}>
+          {/* 1. Notification Bell */}
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => Alert.alert('Notifications', `${unreadNotifCount} unread notifications.`)}
+            onPress={() => navigation.navigate('Notifications')}
+            activeOpacity={0.8}
           >
             <Ionicons name="notifications-outline" size={20} color="#1E293B" />
             {unreadNotifCount > 0 && (
@@ -100,6 +104,15 @@ export const HomeScreen = ({ navigation }) => {
                 <Text style={styles.notifBadgeText}>{unreadNotifCount}</Text>
               </View>
             )}
+          </TouchableOpacity>
+
+          {/* 2. Settings Gear */}
+          <TouchableOpacity
+            style={[styles.iconBtn, { marginLeft: 8 }]}
+            onPress={() => navigation.navigate('Settings')}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="settings-outline" size={20} color="#1E293B" />
           </TouchableOpacity>
         </View>
       </View>
@@ -126,9 +139,9 @@ export const HomeScreen = ({ navigation }) => {
         {/* 2. "Send Again" / Recent Contacts Carousel */}
         <View style={styles.quickSendSection}>
           <View style={styles.quickSendHeader}>
-            <Text style={styles.quickSendTitle}>Send Again</Text>
+            <Text style={styles.quickSendTitle}>{t('sendAgain', 'Send Again')}</Text>
             <TouchableOpacity onPress={() => navigation.navigate('SendMoney')}>
-              <Text style={styles.quickSendSeeAll}>New Contact +</Text>
+              <Text style={styles.quickSendSeeAll}>{t('newContact', 'New Contact +')}</Text>
             </TouchableOpacity>
           </View>
 

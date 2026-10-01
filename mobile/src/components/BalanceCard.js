@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useLanguage } from '../context/LanguageContext';
 
 export const BalanceCard = ({
   balance = 0,
@@ -11,15 +12,17 @@ export const BalanceCard = ({
   onOpenQR,
 }) => {
   const [isRevealed, setIsRevealed] = useState(true);
+  const { t, toBengaliNumber, isBangla } = useLanguage();
 
   const handleToggle = () => {
     setIsRevealed((prev) => !prev);
   };
 
-  const formattedBalance = Number(balance || 0).toLocaleString('en-US', {
+  const rawFormatted = Number(balance || 0).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+  const formattedBalance = toBengaliNumber(rawFormatted);
 
   return (
     <LinearGradient
@@ -32,7 +35,7 @@ export const BalanceCard = ({
       <View style={styles.topRow}>
         <View style={styles.labelGroup}>
           <Ionicons name="wallet-outline" size={16} color="#A7D8CA" style={{ marginRight: 6 }} />
-          <Text style={styles.walletLabel}>Your wallet Balance</Text>
+          <Text style={styles.walletLabel}>{t('availableBalance', 'Your wallet Balance')}</Text>
         </View>
 
         <TouchableOpacity
@@ -74,7 +77,7 @@ export const BalanceCard = ({
           <View style={styles.actionIconCircle}>
             <Ionicons name="cash-outline" size={18} color="#FFFFFF" />
           </View>
-          <Text style={styles.actionLabel}>Balance</Text>
+          <Text style={styles.actionLabel}>{isBangla ? 'ব্যালেন্স' : 'Balance'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -85,7 +88,7 @@ export const BalanceCard = ({
           <View style={styles.actionIconCircle}>
             <Ionicons name="card-outline" size={18} color="#FFFFFF" />
           </View>
-          <Text style={styles.actionLabel}>Add Money</Text>
+          <Text style={styles.actionLabel}>{t('addMoney', 'Add Money')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -96,7 +99,7 @@ export const BalanceCard = ({
           <View style={styles.actionIconCircle}>
             <Ionicons name="arrow-up" size={18} color="#FFFFFF" />
           </View>
-          <Text style={styles.actionLabel}>Send</Text>
+          <Text style={styles.actionLabel}>{isBangla ? 'সেন্ড' : 'Send'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -107,7 +110,7 @@ export const BalanceCard = ({
           <View style={styles.actionIconCircle}>
             <Ionicons name="arrow-down" size={18} color="#FFFFFF" />
           </View>
-          <Text style={styles.actionLabel}>Receive</Text>
+          <Text style={styles.actionLabel}>{isBangla ? 'রিসিভ' : 'Receive'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -118,7 +121,7 @@ export const BalanceCard = ({
           <View style={styles.actionIconCircle}>
             <Ionicons name="time-outline" size={18} color="#FFFFFF" />
           </View>
-          <Text style={styles.actionLabel}>History</Text>
+          <Text style={styles.actionLabel}>{isBangla ? 'হিস্টোরি' : 'History'}</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>

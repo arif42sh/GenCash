@@ -12,10 +12,12 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { CustomButton } from '../components/CustomButton';
 
 export const ProfileScreen = ({ navigation }) => {
   const { user, logout } = useAuth();
+  const { language, setLanguage, toggleLanguage, t, isBangla } = useLanguage();
 
   // Active Modals: 'photo' | 'personal' | 'security' | 'notifications' | 'privacy' | 'help' | 'pinChange' | 'qr'
   const [activeModal, setActiveModal] = useState(null);
@@ -168,9 +170,58 @@ export const ProfileScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* 3. Menu Section: Notifications & Privacy */}
-        <Text style={styles.sectionLabel}>Preferences</Text>
+        {/* 3. Menu Section: Notifications, Language & Privacy */}
+        <Text style={styles.sectionLabel}>{isBangla ? 'পছন্দসমূহ ও ভাষা' : 'Preferences'}</Text>
         <View style={styles.menuCard}>
+          {/* Language Switcher */}
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.7}
+            onPress={toggleLanguage}
+          >
+            <View style={[styles.menuIconBox, { backgroundColor: '#E6F8F3' }]}>
+              <Ionicons name="globe-outline" size={20} color="#1B4D3E" />
+            </View>
+            <View style={styles.menuDetails}>
+              <Text style={styles.menuTitle}>{isBangla ? 'ভাষা (Language)' : 'App Language'}</Text>
+              <Text style={styles.menuSubtitle}>
+                {isBangla ? 'বর্তমানে বাংলা চালু (ট্যাপ করে English করুন)' : 'English active (Tap to switch to বাংলা)'}
+              </Text>
+            </View>
+            <View style={{
+              backgroundColor: '#1B4D3E',
+              paddingHorizontal: 10,
+              paddingVertical: 4,
+              borderRadius: 8,
+            }}>
+              <Text style={{ color: '#00D09C', fontSize: 11, fontWeight: '800' }}>
+                {language === 'bn' ? 'বাংলা' : 'ENG'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          {/* Settings */}
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('Settings')}
+          >
+            <View style={[styles.menuIconBox, { backgroundColor: '#F3F9F6' }]}>
+              <Ionicons name="settings-outline" size={20} color="#1B4D3E" />
+            </View>
+            <View style={styles.menuDetails}>
+              <Text style={styles.menuTitle}>{isBangla ? 'সেটিংস' : 'Settings'}</Text>
+              <Text style={styles.menuSubtitle}>
+                {isBangla ? 'নিরাপত্তা, নোটিফিকেশন ও হেল্পলাইন' : 'Preferences, security & customer care'}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
           {/* Notifications */}
           <TouchableOpacity
             style={styles.menuItem}
@@ -181,8 +232,8 @@ export const ProfileScreen = ({ navigation }) => {
               <Ionicons name="notifications-outline" size={20} color="#F59E0B" />
             </View>
             <View style={styles.menuDetails}>
-              <Text style={styles.menuTitle}>Notifications</Text>
-              <Text style={styles.menuSubtitle}>Transaction SMS, push & AI alerts</Text>
+              <Text style={styles.menuTitle}>{isBangla ? 'নোটিফিকেশন অ্যালার্ট' : 'Notifications'}</Text>
+              <Text style={styles.menuSubtitle}>{isBangla ? 'এসএমএস, পুশ ও অ্যালার্ট' : 'Transaction SMS, push & AI alerts'}</Text>
             </View>
             <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
           </TouchableOpacity>
@@ -199,27 +250,27 @@ export const ProfileScreen = ({ navigation }) => {
               <Ionicons name="lock-closed-outline" size={20} color="#8B5CF6" />
             </View>
             <View style={styles.menuDetails}>
-              <Text style={styles.menuTitle}>Privacy</Text>
-              <Text style={styles.menuSubtitle}>Balance masking & data sharing</Text>
+              <Text style={styles.menuTitle}>{isBangla ? 'প্রাইভেসি' : 'Privacy'}</Text>
+              <Text style={styles.menuSubtitle}>{isBangla ? 'ব্যালেন্স হাইড ও ডেটা সুরক্ষা' : 'Balance masking & data sharing'}</Text>
             </View>
             <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
           </TouchableOpacity>
         </View>
 
         {/* 4. Menu Section: Help & Support */}
-        <Text style={styles.sectionLabel}>Support & Info</Text>
+        <Text style={styles.sectionLabel}>{isBangla ? 'সাপোর্ট ও তথ্য' : 'Support & Info'}</Text>
         <View style={styles.menuCard}>
           <TouchableOpacity
             style={styles.menuItem}
             activeOpacity={0.7}
-            onPress={() => setActiveModal('help')}
+            onPress={() => navigation.navigate('Support')}
           >
             <View style={[styles.menuIconBox, { backgroundColor: '#EAF6F5' }]}>
               <Ionicons name="help-buoy-outline" size={20} color="#0D9488" />
             </View>
             <View style={styles.menuDetails}>
-              <Text style={styles.menuTitle}>Help & Support</Text>
-              <Text style={styles.menuSubtitle}>24/7 Helpline 16247, Chat & FAQs</Text>
+              <Text style={styles.menuTitle}>{isBangla ? 'হেল্প ও লাইভ সাপোর্ট' : 'Help & Support'}</Text>
+              <Text style={styles.menuSubtitle}>{isBangla ? '১৬২৪৭ হেল্পলাইন, এফএকিউ ও লাইভ চ্যাট' : '24/7 Helpline 16247, Chat & FAQs'}</Text>
             </View>
             <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
           </TouchableOpacity>

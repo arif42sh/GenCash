@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useLanguage } from '../context/LanguageContext';
 
 const SPECIAL_OFFERS = [
   {
@@ -108,6 +109,7 @@ const BRANDS = [
 export const OffersSection = ({ navigation, onOpenQR }) => {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
+  const { t, isBangla } = useLanguage();
 
   const handleClaim = (offer) => {
     setSelectedOffer(offer);
@@ -142,9 +144,13 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
               <Ionicons name="sparkles" size={12} color="#00D09C" />
               <Text style={styles.rewardPillText}>GENCASH PERKS</Text>
             </View>
-            <Text style={styles.rewardTitle}>Scan & Save at Checkout</Text>
+            <Text style={styles.rewardTitle}>
+              {isBangla ? 'কাউন্টারে স্ক্যান করে ছাড় পান' : 'Scan & Save at Checkout'}
+            </Text>
             <Text style={styles.rewardSub}>
-              Earn up to 25% instant cashback & discounts across 5,000+ retail stores
+              {isBangla
+                ? '৫,০০০+ রিটেইল আউটলেটে ২৫% পর্যন্ত ছাড় ও ক্যাশব্যাক'
+                : 'Earn up to 25% instant cashback & discounts across 5,000+ retail stores'}
             </Text>
           </View>
           <TouchableOpacity
@@ -153,16 +159,16 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
             activeOpacity={0.85}
           >
             <Ionicons name="qr-code" size={28} color="#00D09C" />
-            <Text style={styles.rewardQrBtnText}>Show QR</Text>
+            <Text style={styles.rewardQrBtnText}>{isBangla ? 'কিউআর' : 'Show QR'}</Text>
           </TouchableOpacity>
         </LinearGradient>
       </View>
 
       {/* 2. Special Offers Section Header */}
       <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionTitle}>Special Offers</Text>
+        <Text style={styles.sectionTitle}>{t('specialOffers', 'Special Offers')}</Text>
         <TouchableOpacity onPress={() => Alert.alert('All Offers', 'Explore 50+ available offers & discounts.')}>
-          <Text style={styles.seeAllText}>See All</Text>
+          <Text style={styles.seeAllText}>{t('seeAll', 'See All')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -182,8 +188,12 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
           <View style={styles.percentCircle}>
             <Text style={styles.percentSymbol}>%</Text>
           </View>
-          <Text style={styles.accentCardTitle}>Check available discounts</Text>
-          <Text style={styles.accentCardSub}>Daily exclusive partner deals</Text>
+          <Text style={styles.accentCardTitle}>
+            {isBangla ? 'উপলব্ধ ছাড়সমূহ দেখুন' : 'Check available discounts'}
+          </Text>
+          <Text style={styles.accentCardSub}>
+            {isBangla ? 'প্রতিদিনের এক্সক্লুসিভ ডিল' : 'Daily exclusive partner deals'}
+          </Text>
         </LinearGradient>
 
         {/* Product / Merchant Offer Cards */}
@@ -210,7 +220,7 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
                 onPress={() => handleClaim(offer)}
               >
                 <Ionicons name="add" size={14} color="#FFFFFF" />
-                <Text style={styles.addBtnText}>Claim</Text>
+                <Text style={styles.addBtnText}>{t('claim', 'Claim')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -219,9 +229,9 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
 
       {/* 3. Combos & BOGO Section */}
       <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionTitle}>Combos & BOGO</Text>
+        <Text style={styles.sectionTitle}>{t('combosBogo', 'Combos & BOGO')}</Text>
         <TouchableOpacity onPress={() => Alert.alert('Combos', 'Explore 1+1 and BOGO deals.')}>
-          <Text style={styles.seeAllText}>View Deals</Text>
+          <Text style={styles.seeAllText}>{t('seeAll', 'View Deals')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -265,7 +275,7 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
 
       {/* 4. Partner Brands Section */}
       <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionTitle}>Featured Partner Brands</Text>
+        <Text style={styles.sectionTitle}>{t('featuredBrands', 'Featured Partner Brands')}</Text>
       </View>
 
       <ScrollView

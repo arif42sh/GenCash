@@ -2,10 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
+import { useLanguage } from '../context/LanguageContext';
 
 const SERVICES = [
   {
     id: 'recharge',
+    translationKey: 'recharge',
     title: 'Recharge',
     icon: 'phone-portrait-outline',
     iconColor: '#10B981',
@@ -14,6 +16,7 @@ const SERVICES = [
   },
   {
     id: 'bill_pay',
+    translationKey: 'billPay',
     title: 'Bill Pay',
     icon: 'receipt-outline',
     iconColor: '#F59E0B',
@@ -22,6 +25,7 @@ const SERVICES = [
   },
   {
     id: 'bank_transfer',
+    translationKey: 'bankTransfer',
     title: 'Bank Transfer',
     icon: 'business-outline',
     iconColor: '#F43F5E',
@@ -30,6 +34,7 @@ const SERVICES = [
   },
   {
     id: 'savings',
+    translationKey: 'savings',
     title: 'Savings',
     icon: 'shield-checkmark-outline',
     iconColor: '#8B5CF6',
@@ -38,6 +43,7 @@ const SERVICES = [
   },
   {
     id: 'electricity',
+    translationKey: 'electricity',
     title: 'Electricity',
     icon: 'flash-outline',
     iconColor: '#EF4444',
@@ -46,6 +52,7 @@ const SERVICES = [
   },
   {
     id: 'movie',
+    translationKey: 'movie',
     title: 'Movie',
     icon: 'film-outline',
     iconColor: '#A855F7',
@@ -54,6 +61,7 @@ const SERVICES = [
   },
   {
     id: 'add_money',
+    translationKey: 'addMoney',
     title: 'Add Money',
     icon: 'card-outline',
     iconColor: '#00D09C',
@@ -62,6 +70,7 @@ const SERVICES = [
   },
   {
     id: 'merchant',
+    translationKey: 'merchant',
     title: 'Merchant',
     icon: 'storefront-outline',
     iconColor: '#D97706',
@@ -71,9 +80,11 @@ const SERVICES = [
 ];
 
 export const ActionGrid = ({ onSelectAction }) => {
+  const { t } = useLanguage();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Other Services</Text>
+      <Text style={styles.sectionTitle}>{t('otherServices', 'Other Services')}</Text>
       <View style={styles.grid}>
         {SERVICES.map((item) => (
           <TouchableOpacity
@@ -86,7 +97,7 @@ export const ActionGrid = ({ onSelectAction }) => {
               <Ionicons name={item.icon} size={22} color={item.iconColor} />
             </View>
             <Text style={styles.tileTitle} numberOfLines={1}>
-              {item.title}
+              {t(item.translationKey, item.title)}
             </Text>
           </TouchableOpacity>
         ))}
