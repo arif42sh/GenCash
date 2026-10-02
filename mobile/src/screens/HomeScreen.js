@@ -38,7 +38,7 @@ export const HomeScreen = ({ navigation }) => {
 
       // Load notifications count
       const notifData = await api.getNotifications();
-      const unread = notifData.filter((n) => !n.is_read).length;
+      const unread = Array.isArray(notifData) ? notifData.filter((n) => !n.is_read).length : 0;
       setUnreadNotifCount(unread);
     } catch (e) {
       console.warn('Dashboard data fetch error:', e);
@@ -189,7 +189,7 @@ export const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   topHeader: {
     flexDirection: 'row',
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   userProfileRow: {
     flexDirection: 'row',

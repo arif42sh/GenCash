@@ -292,7 +292,7 @@ export const SettingsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   header: {
     flexDirection: 'row',
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     marginVertical: 10,
   },
   versionFooter: {
@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
   },
   modalCancelBtn: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     paddingVertical: 12,
     borderRadius: 12,
     alignItems: 'center',

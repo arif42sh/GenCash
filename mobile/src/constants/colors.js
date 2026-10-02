@@ -1,18 +1,18 @@
 export const colors = {
-  // Backgrounds & Surfaces (Islamic / Modern Emerald Mint FinTech Theme)
-  background: "#F3F9F6",        // Gentle Pale Mint Off-White
+  // Backgrounds & Surfaces (Modern International FinTech & Clean Emerald Theme)
+  background: "#F6F9F8",        // Ultra-Clean Slate-Mint Off-White (Elevates pure white cards)
   surface: "#FFFFFF",           // Pure White
-  surfaceLight: "#E8F6F0",      // Soft Mint Tint (Pills, Categories, Icon wrappers)
+  surfaceLight: "#EAF5F0",      // Soft Mint Tint (Pills, Categories, Icon wrappers)
   card: "#FFFFFF",              // Card Surface (Pure White)
-  cardHover: "#EDF8F3",
-  cardBorder: "#E2EFE9",        // Crisp Mint-Grey Border
-  
+  cardHover: "#EEF7F2",
+  cardBorder: "#E2ECE7",        // Crisp Clean Mint-Grey Border
+
   // Brand - Deep Forest Emerald & Vivid Mint
   primary: "#064E3B",           // Deep Pine / Forest Emerald
   primaryDark: "#043227",       // Dark Obsidian Pine (Dark Bottom Nav / Header Hero)
   primaryLight: "#00D09C",      // Vivid Mint Green (Buttons, Active Icons, Accents)
   primaryGradient: ["#043227", "#085442"], // Deep Emerald Gradient
-  
+
   // Interactive & Financial Actions
   secondary: "#00D09C",         // Electric Mint Action Green
   success: "#00D09C",           // Clean Financial Green (Money In / Received)
@@ -21,7 +21,7 @@ export const colors = {
   dangerBg: "rgba(244, 63, 94, 0.12)",
   warning: "#EAB308",           // Lime-Yellow / Pending Progress
   warningBg: "rgba(234, 179, 8, 0.14)",
-  
+
   // AI Intelligence Theme
   aiPrimary: "#00D09C",         // Mint Intelligence Accent
   aiGradient: ["#043227", "#00D09C"],
@@ -39,7 +39,7 @@ export const colors = {
   inputBorder: "#D2E6DC",
   inputBorderFocus: "#00D09C",
   divider: "#E4EFE9",
-  
+
   // Operator Brand Colors (Mobile Recharge)
   operators: {
     Grameenphone: "#0078FF",

@@ -90,8 +90,8 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {}
     setToken(null);
     setUser(null);
-    setWallet(null);
-    await storage.clear();
+    await storage.removeItem('@gencash_token');
+    await storage.removeItem('@gencash_user');
   };
 
   const refreshWallet = async () => {

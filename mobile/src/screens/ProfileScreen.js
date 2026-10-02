@@ -208,7 +208,7 @@ export const ProfileScreen = ({ navigation }) => {
             activeOpacity={0.7}
             onPress={() => navigation.navigate('Settings')}
           >
-            <View style={[styles.menuIconBox, { backgroundColor: '#F3F9F6' }]}>
+            <View style={[styles.menuIconBox, { backgroundColor: '#F6F9F8' }]}>
               <Ionicons name="settings-outline" size={20} color="#1B4D3E" />
             </View>
             <View style={styles.menuDetails}>
@@ -683,7 +683,7 @@ export const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   header: {
     flexDirection: 'row',
@@ -692,7 +692,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   headerTitle: {
     color: '#0F172A',

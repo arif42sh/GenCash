@@ -422,7 +422,7 @@ export const NotificationsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   header: {
     flexDirection: 'row',
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 20,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     borderWidth: 1,
     borderColor: '#E2EFE9',
   },
@@ -687,7 +687,7 @@ const styles = StyleSheet.create({
   },
   modalDismissBtn: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     paddingVertical: 13,
     borderRadius: 14,
     justifyContent: 'center',

@@ -890,7 +890,7 @@ export const SupportScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   topHeader: {
     paddingTop: Platform.OS === 'ios' ? 48 : 28,
@@ -1222,7 +1222,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1296,7 +1296,7 @@ const styles = StyleSheet.create({
   feedbackActionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 12,
@@ -1422,7 +1422,7 @@ const styles = StyleSheet.create({
   // Modal Styles
   chatContainer: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   chatModalHeader: {
     paddingTop: Platform.OS === 'ios' ? 48 : 24,
@@ -1589,7 +1589,7 @@ const styles = StyleSheet.create({
   },
   chatInput: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     borderRadius: 22,
     paddingHorizontal: 16,
     height: 44,

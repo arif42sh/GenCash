@@ -431,7 +431,7 @@ export const AddMoneyScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
   },
   header: {
     flexDirection: 'row',
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
   },
   typeToggleRow: {
     flexDirection: 'row',
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     borderRadius: 12,
     padding: 4,
     marginBottom: 14,
@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
   },
   modalCancelBtn: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F6F9F8',
     paddingVertical: 12,
     borderRadius: 12,
     alignItems: 'center',

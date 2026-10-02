@@ -32,7 +32,7 @@ export const ConfirmationSheet = ({
   const [isHolding, setIsHolding] = useState(false);
 
   const startHold = () => {
-    if (!pin) {
+    if (!pin || pin.length < 4) {
       return;
     }
     setIsHolding(true);
