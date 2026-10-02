@@ -1,9 +1,60 @@
-import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Share, Alert } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Share,
+  Alert,
+  Animated,
+  Platform,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../constants/colors';
+import { useLanguage } from '../context/LanguageContext';
+
+const CONFETTI_COLORS = [
+  '#34D399', '#F59E0B', '#EF4444', '#8B5CF6',
+  '#3B82F6', '#10B981', '#EC4899', '#F97316',
+  '#FBBF24', '#06B6D4'
+];
+
+const CONFETTI_ITEMS = Array.from({ length: 24 }).map((_, i) => ({
+  id: i,
+  color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+  left: (i * 14) % 320,
+  size: 6 + (i % 5) * 2,
+  isCircle: i % 3 === 0,
+}));
 
 export const SuccessModal = ({ visible, transaction, onClose }) => {
+  const { isBangla } = useLanguage();
+  const confettiAnims = useRef(CONFETTI_ITEMS.map(() => new Animated.Value(0))).current;
+  const scaleAnim = useRef(new Animated.Value(0.4)).current;
+
+  useEffect(() => {
+    if (visible) {
+      // Scale up checkmark badge
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 5,
+        tension: 80,
+        useNativeDriver: true,
+      }).start();
+
+      // Confetti waterfall animation
+      confettiAnims.forEach((anim) => anim.setValue(0));
+      const animations = confettiAnims.map((anim, i) =>
+        Animated.timing(anim, {
+          toValue: 1,
+          duration: 1600 + (i % 6) * 200,
+          useNativeDriver: true,
+        })
+      );
+      Animated.stagger(40, animations).start();
+    }
+  }, [visible]);
+
   if (!transaction) return null;
 
   const handleShare = async () => {
@@ -18,7 +69,12 @@ export const SuccessModal = ({ visible, transaction, onClose }) => {
   };
 
   const handleSaveReceipt = () => {
-    Alert.alert('Receipt Saved', 'Digital receipt has been saved to your receipts folder.');
+    Alert.alert(
+      isBangla ? 'রসিদ সংরক্ষিত' : 'Receipt Saved',
+      isBangla
+        ? 'ডিজিটাল ট্রানজেকশন রসিদ গ্যালারিতে সংরক্ষিত হয়েছে।'
+        : 'Digital transaction receipt has been saved to your receipts folder.'
+    );
   };
 
   const amountFormatted = Number(transaction.amount || 0).toLocaleString('en-US', {
@@ -29,16 +85,57 @@ export const SuccessModal = ({ visible, transaction, onClose }) => {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
+        {/* Floating Confetti Particles Burst */}
+        <View style={styles.confettiContainer} pointerEvents="none">
+          {CONFETTI_ITEMS.map((item, index) => {
+            const anim = confettiAnims[index];
+            const translateY = anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [-30, 480],
+            });
+            const rotate = anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: ['0deg', `${(index % 2 === 0 ? 1 : -1) * 360}deg`],
+            });
+            const opacity = anim.interpolate({
+              inputRange: [0, 0.2, 0.8, 1],
+              outputRange: [0, 1, 1, 0],
+            });
+
+            return (
+              <Animated.View
+                key={item.id}
+                style={[
+                  styles.confettiParticle,
+                  {
+                    left: item.left,
+                    backgroundColor: item.color,
+                    width: item.size,
+                    height: item.isCircle ? item.size : item.size * 1.6,
+                    borderRadius: item.isCircle ? item.size / 2 : 2,
+                    opacity,
+                    transform: [{ translateY }, { rotate }],
+                  },
+                ]}
+              />
+            );
+          })}
+        </View>
+
         <View style={styles.content}>
-          {/* Success Checkmark with subtle glow */}
-          <View style={styles.iconCircle}>
+          {/* Animated Success Checkmark with subtle glow */}
+          <Animated.View style={[styles.iconCircle, { transform: [{ scale: scaleAnim }] }]}>
             <View style={styles.iconInner}>
               <Ionicons name="checkmark-sharp" size={38} color="#FFFFFF" />
             </View>
-          </View>
+          </Animated.View>
 
-          <Text style={styles.successTitle}>Transaction Successful</Text>
-          <Text style={styles.successSub}>Your payment has been processed instantly</Text>
+          <Text style={styles.successTitle}>
+            {isBangla ? 'লেনদেন সফল হয়েছে!' : 'Transaction Successful'}
+          </Text>
+          <Text style={styles.successSub}>
+            {isBangla ? 'আপনার পেমেন্ট তাৎক্ষণিকভাবে সম্পন্ন হয়েছে' : 'Your payment has been processed instantly'}
+          </Text>
 
           <Text style={styles.amountText}>৳ {amountFormatted}</Text>
 
@@ -55,7 +152,7 @@ export const SuccessModal = ({ visible, transaction, onClose }) => {
             <View style={styles.dashedLine} />
 
             <View style={styles.receiptRow}>
-              <Text style={styles.receiptLabel}>Transaction Type</Text>
+              <Text style={styles.receiptLabel}>{isBangla ? 'লেনদেনের ধরন' : 'Transaction Type'}</Text>
               <Text style={styles.receiptValue}>{transaction.transaction_type || 'Payment'}</Text>
             </View>
 
@@ -66,20 +163,20 @@ export const SuccessModal = ({ visible, transaction, onClose }) => {
 
             {transaction.recipient_phone && (
               <View style={styles.receiptRow}>
-                <Text style={styles.receiptLabel}>Recipient / Mobile</Text>
+                <Text style={styles.receiptLabel}>{isBangla ? 'প্রাপক মোবাইল' : 'Recipient Phone'}</Text>
                 <Text style={styles.receiptValue}>{transaction.recipient_phone}</Text>
               </View>
             )}
 
             {transaction.fee !== undefined && (
               <View style={styles.receiptRow}>
-                <Text style={styles.receiptLabel}>Charge / Fee</Text>
+                <Text style={styles.receiptLabel}>{isBangla ? 'চার্জ / ফি' : 'Service Fee'}</Text>
                 <Text style={styles.receiptValue}>৳ {Number(transaction.fee).toFixed(2)}</Text>
               </View>
             )}
 
             <View style={styles.receiptRow}>
-              <Text style={styles.receiptLabel}>Date & Time</Text>
+              <Text style={styles.receiptLabel}>{isBangla ? 'তারিখ ও সময়' : 'Date & Time'}</Text>
               <Text style={styles.receiptValue}>
                 {new Date(transaction.transaction_time || Date.now()).toLocaleTimeString([], {
                   hour: '2-digit',
@@ -91,21 +188,23 @@ export const SuccessModal = ({ visible, transaction, onClose }) => {
             </View>
           </View>
 
-          {/* Action Buttons */}
+          {/* Action Buttons: Share & Save */}
           <View style={styles.btnRow}>
-            <TouchableOpacity style={styles.secondaryBtn} onPress={handleShare}>
-              <Ionicons name="share-social-outline" size={18} color="#1B4D3E" />
-              <Text style={styles.secondaryBtnText}>Share</Text>
+            <TouchableOpacity style={styles.secondaryBtn} onPress={handleShare} activeOpacity={0.8}>
+              <Ionicons name="share-social-outline" size={18} color="#0F4D3C" style={{ marginRight: 6 }} />
+              <Text style={styles.secondaryBtnText}>{isBangla ? 'শেয়ার' : 'Share'}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.secondaryBtn} onPress={handleSaveReceipt}>
-              <Ionicons name="download-outline" size={18} color="#1B4D3E" />
-              <Text style={styles.secondaryBtnText}>Save</Text>
+            <TouchableOpacity style={styles.secondaryBtn} onPress={handleSaveReceipt} activeOpacity={0.8}>
+              <Ionicons name="download-outline" size={18} color="#0F4D3C" style={{ marginRight: 6 }} />
+              <Text style={styles.secondaryBtnText}>{isBangla ? 'রসিদ সেভ' : 'Save'}</Text>
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.doneBtn} onPress={onClose}>
-            <Text style={styles.doneBtnText}>Back to Home</Text>
+          <TouchableOpacity style={styles.doneBtn} onPress={onClose} activeOpacity={0.85}>
+            <Text style={styles.doneBtnText}>
+              {isBangla ? 'হোম পেজে ফিরে যান' : 'Back to Home'}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -116,10 +215,23 @@ export const SuccessModal = ({ visible, transaction, onClose }) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    backgroundColor: 'rgba(6, 40, 31, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    position: 'relative',
+  },
+  confettiContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 20,
+    right: 20,
+    bottom: 0,
+    zIndex: 10,
+  },
+  confettiParticle: {
+    position: 'absolute',
+    top: 0,
   },
   content: {
     width: '100%',
@@ -128,55 +240,65 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     padding: 24,
     alignItems: 'center',
-    shadowColor: '#1B4D3E',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowColor: '#0E4839',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.22,
+    shadowRadius: 24,
+    elevation: 16,
+    borderWidth: 1,
+    borderColor: '#DFEFE8',
+    zIndex: 20,
   },
   iconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#E6F8F3',
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    backgroundColor: '#D1FAE5',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   iconInner: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     backgroundColor: '#00D09C',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#00D09C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 6,
   },
   successTitle: {
-    color: '#0F2F24',
     fontSize: 20,
     fontWeight: '800',
-    marginBottom: 2,
+    color: '#0F172A',
+    marginBottom: 4,
+    textAlign: 'center',
   },
   successSub: {
-    color: '#64748B',
     fontSize: 12,
-    marginBottom: 12,
+    color: '#64748B',
+    marginBottom: 14,
     textAlign: 'center',
   },
   amountText: {
-    color: '#1B4D3E',
     fontSize: 32,
-    fontWeight: '900',
+    fontWeight: '800',
+    color: '#0F4D3C',
     marginBottom: 18,
+    letterSpacing: 0.5,
   },
   receiptBox: {
     width: '100%',
-    backgroundColor: '#F8FCFA',
+    backgroundColor: '#EDF7F4',
     borderRadius: 18,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   receiptHeader: {
     flexDirection: 'row',
@@ -185,85 +307,88 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   receiptHeaderTitle: {
-    color: '#64748B',
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    color: '#0F4D3C',
   },
   verifiedBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E6F8F3',
-    paddingHorizontal: 6,
+    backgroundColor: 'rgba(0, 208, 156, 0.15)',
+    paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
-    gap: 3,
+    gap: 4,
   },
   verifiedText: {
-    color: '#00D09C',
     fontSize: 9,
     fontWeight: '800',
+    color: '#0F4D3C',
+    letterSpacing: 0.5,
   },
   dashedLine: {
-    borderStyle: 'dashed',
-    borderWidth: 0.8,
+    height: 1,
+    borderWidth: 1,
     borderColor: '#CBD5E1',
-    marginVertical: 6,
+    borderStyle: 'dashed',
+    marginBottom: 12,
   },
   receiptRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 5,
+    paddingVertical: 4,
   },
   receiptLabel: {
-    color: '#64748B',
     fontSize: 12,
+    color: '#64748B',
   },
   receiptValue: {
-    color: '#0F2F24',
     fontSize: 12,
+    color: '#0F172A',
     fontWeight: '600',
   },
   codeText: {
-    color: '#1B4D3E',
-    fontFamily: 'monospace',
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     fontWeight: '700',
+    color: '#0F4D3C',
   },
   btnRow: {
     flexDirection: 'row',
-    width: '100%',
     gap: 10,
-    marginBottom: 10,
+    width: '100%',
+    marginBottom: 12,
   },
   secondaryBtn: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#EDF7F4',
     paddingVertical: 12,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
-    gap: 6,
+    borderColor: '#C7E8DE',
   },
   secondaryBtnText: {
-    color: '#1B4D3E',
-    fontWeight: '700',
+    color: '#0F4D3C',
     fontSize: 13,
+    fontWeight: '700',
   },
   doneBtn: {
     width: '100%',
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#0F4D3C',
     paddingVertical: 14,
-    borderRadius: 14,
+    borderRadius: 16,
     alignItems: 'center',
-    justifyContent: 'center',
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
   },
   doneBtnText: {
     color: '#FFFFFF',
-    fontWeight: '700',
     fontSize: 15,
+    fontWeight: '700',
   },
 });

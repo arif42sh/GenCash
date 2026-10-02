@@ -19,11 +19,23 @@ export const AuthProvider = ({ children }) => {
     try {
       const storedToken = await storage.getItem('@gencash_token');
       const storedUser = await storage.getItem('@gencash_user');
+      const storedAvatar = await storage.getItem('@gencash_avatar_uri');
 
-      if (storedToken && storedUser) {
+      let currentUser = storedUser ? JSON.parse(storedUser) : {
+        id: '1',
+        name: 'Tanvir Ahmed',
+        phone: '+880 1711-111111',
+        email: 'tanvir@gencash.com',
+      };
+
+      if (storedAvatar) {
+        currentUser.avatar = storedAvatar;
+      }
+
+      setUser(currentUser);
+
+      if (storedToken) {
         setToken(storedToken);
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
         // Refresh wallet & profile in background
         await fetchWalletData();
       }
@@ -31,6 +43,35 @@ export const AuthProvider = ({ children }) => {
       console.warn('Failed to restore session:', e);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const updateUser = async (updates) => {
+    try {
+      const updated = {
+        ...(user || {
+          id: '1',
+          name: 'Tanvir Ahmed',
+          phone: '+880 1711-111111',
+          email: 'tanvir@gencash.com',
+        }),
+        ...updates,
+      };
+
+      setUser(updated);
+      await storage.setItem('@gencash_user', JSON.stringify(updated));
+
+      if (updates.avatar !== undefined) {
+        if (updates.avatar) {
+          await storage.setItem('@gencash_avatar_uri', updates.avatar);
+        } else {
+          await storage.removeItem('@gencash_avatar_uri');
+        }
+      }
+
+      return updated;
+    } catch (err) {
+      console.warn('Failed to update user profile in context:', err);
     }
   };
 
@@ -111,6 +152,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         refreshWallet,
         setUser,
+        updateUser,
       }}
     >
       {children}

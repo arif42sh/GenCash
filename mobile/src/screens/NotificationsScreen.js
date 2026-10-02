@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 
 const DEFAULT_NOTIFICATIONS = [
@@ -84,13 +85,14 @@ const DEFAULT_NOTIFICATIONS = [
 ];
 
 const FILTER_TABS = [
-  { id: 'ALL', label: 'All' },
-  { id: 'TRANSACTION', label: 'Transactions' },
-  { id: 'CASHBACK', label: 'Cashback & Deals' },
-  { id: 'SECURITY', label: 'Security' },
+  { id: 'ALL', label: 'All', bn: 'সব' },
+  { id: 'TRANSACTION', label: 'Transactions', bn: 'লেনদেন' },
+  { id: 'CASHBACK', label: 'Cashback & Deals', bn: 'ক্যাশব্যাক' },
+  { id: 'SECURITY', label: 'Security', bn: 'সিকিউরিটি' },
 ];
 
 export const NotificationsScreen = ({ navigation }) => {
+  const { isBangla } = useLanguage();
   const [notifications, setNotifications] = useState(DEFAULT_NOTIFICATIONS);
   const [selectedFilter, setSelectedFilter] = useState('ALL');
   const [refreshing, setRefreshing] = useState(false);
@@ -231,28 +233,29 @@ export const NotificationsScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Top Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
           <Ionicons name="arrow-back" size={22} color="#0F2F24" />
         </TouchableOpacity>
 
         <View style={styles.headerTitleWrap}>
-          <Text style={styles.headerTitle}>Notifications</Text>
-          {unreadCount > 0 && (
+          <Text style={styles.headerTitle}>{isBangla ? 'নোটিফিকেশন' : 'Notifications'}</Text>
+          {unreadCount > 0 ? (
             <View style={styles.headerBadge}>
-              <Text style={styles.headerBadgeText}>{unreadCount} New</Text>
+              <Text style={styles.headerBadgeText}>{String(unreadCount)} {isBangla ? 'নতুন' : 'New'}</Text>
             </View>
-          )}
+          ) : null}
         </View>
 
         <TouchableOpacity
           style={styles.markAllBtn}
           onPress={handleMarkAllRead}
           disabled={unreadCount === 0}
+          activeOpacity={0.7}
         >
           <Ionicons
             name="checkmark-done"
             size={18}
-            color={unreadCount > 0 ? '#1B4D3E' : '#CBD5E1'}
+            color={unreadCount > 0 ? '#0F4D3C' : '#CBD5E1'}
           />
         </TouchableOpacity>
       </View>
@@ -279,7 +282,7 @@ export const NotificationsScreen = ({ navigation }) => {
                   selectedFilter === tab.id && styles.filterTextActive,
                 ]}
               >
-                {tab.label}
+                {isBangla ? tab.bn : tab.label}
               </Text>
             </TouchableOpacity>
           ))}
@@ -300,12 +303,16 @@ export const NotificationsScreen = ({ navigation }) => {
         }
         renderItem={({ item }) => {
           const meta = getCategoryMeta(item.type);
-          const previewText = item.preview || item.message;
+          const previewText = String(item.preview || item.message || '');
+          const titleText = String(item.title || '');
+          const timeText = String(formatShortTime(item.created_at) || '');
+          const isRead = Boolean(item.is_read);
+
           return (
             <TouchableOpacity
               style={[
                 styles.compactItem,
-                !item.is_read && styles.compactItemUnread,
+                !isRead && styles.compactItemUnread,
               ]}
               activeOpacity={0.7}
               onPress={() => handleNotificationPress(item)}
@@ -321,20 +328,20 @@ export const NotificationsScreen = ({ navigation }) => {
                   <Text
                     style={[
                       styles.compactTitle,
-                      !item.is_read && styles.compactTitleUnread,
+                      !isRead && styles.compactTitleUnread,
                     ]}
                     numberOfLines={1}
                   >
-                    {item.title}
+                    {titleText}
                   </Text>
-                  <Text style={styles.compactTime}>{formatShortTime(item.created_at)}</Text>
+                  <Text style={styles.compactTime}>{timeText}</Text>
                 </View>
 
                 <View style={styles.compactBottomRow}>
                   <Text style={styles.compactPreview} numberOfLines={1}>
                     {previewText}
                   </Text>
-                  {!item.is_read && <View style={styles.compactDot} />}
+                  {!isRead ? <View style={styles.compactDot} /> : null}
                 </View>
               </View>
             </TouchableOpacity>
@@ -354,7 +361,7 @@ export const NotificationsScreen = ({ navigation }) => {
       />
 
       {/* Comprehensive Details Modal */}
-      {selectedItem && (
+      {selectedItem ? (
         <Modal
           visible={true}
           transparent
@@ -376,26 +383,20 @@ export const NotificationsScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.modalTitle}>{selectedItem.title}</Text>
+              <Text style={styles.modalTitle}>{String(selectedItem.title || '')}</Text>
               <Text style={styles.modalTime}>
-                {new Date(selectedItem.created_at).toLocaleString([], {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
+                {selectedItem.created_at ? new Date(selectedItem.created_at).toLocaleString() : ''}
               </Text>
 
               <View style={styles.modalBodyCard}>
-                <Text style={styles.modalMessage}>{selectedItem.message}</Text>
+                <Text style={styles.modalMessage}>{String(selectedItem.message || '')}</Text>
               </View>
 
               <View style={styles.modalActionRow}>
                 {selectedItem.actionScreen ? (
                   <TouchableOpacity style={styles.modalActionBtn} onPress={handleAction}>
                     <Text style={styles.modalActionBtnText}>
-                      {selectedItem.actionLabel || 'View Details'}
+                      {String(selectedItem.actionLabel || 'View Details')}
                     </Text>
                     <Ionicons name="arrow-forward" size={15} color="#FFFFFF" style={{ marginLeft: 6 }} />
                   </TouchableOpacity>
@@ -414,7 +415,7 @@ export const NotificationsScreen = ({ navigation }) => {
             </View>
           </View>
         </Modal>
-      )}
+      ) : null}
     </View>
   );
 };
@@ -422,7 +423,7 @@ export const NotificationsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#EDF7F4',
   },
   header: {
     flexDirection: 'row',
@@ -430,17 +431,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2EFE9',
+    backgroundColor: '#EDF7F4',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DFEFE8',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   headerTitleWrap: {
     flexDirection: 'row',
@@ -448,18 +454,18 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   headerTitle: {
-    color: '#0F2F24',
+    color: '#0F4D3C',
     fontSize: 18,
     fontWeight: '800',
   },
   headerBadge: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#0F4D3C',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
   },
   headerBadgeText: {
-    color: '#00D09C',
+    color: '#34D399',
     fontSize: 10,
     fontWeight: '800',
   },
@@ -467,15 +473,20 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DFEFE8',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   filterWrapper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#EDF7F4',
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2EFE9',
   },
   filterScroll: {
     paddingHorizontal: 16,
@@ -485,13 +496,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 20,
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   filterPillActive: {
-    backgroundColor: '#1B4D3E',
-    borderColor: '#1B4D3E',
+    backgroundColor: '#0F4D3C',
+    borderColor: '#0F4D3C',
   },
   filterText: {
     color: '#64748B',
@@ -517,7 +528,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
     shadowColor: '#1B4D3E',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.03,

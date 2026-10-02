@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 16,
-    paddingBottom: 30,
+    paddingBottom: 100,
   },
   architectureBanner: {
     backgroundColor: 'rgba(124, 58, 237, 0.12)',

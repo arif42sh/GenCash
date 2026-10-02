@@ -12,20 +12,22 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 import { TransactionItem } from '../components/TransactionItem';
 
 const FILTERS = [
-  { id: 'ALL', label: 'All' },
-  { id: 'SEND_MONEY', label: 'Send Money' },
-  { id: 'RECHARGE', label: 'Recharge' },
-  { id: 'CASH_OUT', label: 'Cash Out' },
-  { id: 'RECEIVED', label: 'Received' },
-  { id: 'MERCHANT_PAYMENT', label: 'Payment' },
-  { id: 'ADD_MONEY', label: 'Add Money' },
+  { id: 'ALL', label: 'All', bn: 'সব' },
+  { id: 'SEND_MONEY', label: 'Send Money', bn: 'সেন্ড মানি' },
+  { id: 'RECHARGE', label: 'Recharge', bn: 'রিচার্জ' },
+  { id: 'CASH_OUT', label: 'Cash Out', bn: 'ক্যাশ আউট' },
+  { id: 'RECEIVED', label: 'Received', bn: 'প্রাপ্ত মানি' },
+  { id: 'MERCHANT_PAYMENT', label: 'Payment', bn: 'পেমেন্ট' },
+  { id: 'ADD_MONEY', label: 'Add Money', bn: 'টাকা যোগ' },
 ];
 
 export const TransactionsScreen = ({ navigation }) => {
+  const { isBangla } = useLanguage();
   const [selectedFilter, setSelectedFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [transactions, setTransactions] = useState([]);
@@ -98,7 +100,15 @@ export const TransactionsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Transaction History</Text>
+        {navigation?.canGoBack?.() ? (
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+            <Ionicons name="arrow-back" size={20} color="#0F4D3C" />
+          </TouchableOpacity>
+        ) : (
+          <View style={{ width: 10 }} />
+        )}
+        <Text style={styles.headerTitle}>{isBangla ? 'লেনদেন বিবরণী' : 'Transaction History'}</Text>
+        <View style={{ width: 40 }} />
       </View>
 
       <FlatList
@@ -203,7 +213,7 @@ export const TransactionsScreen = ({ navigation }) => {
                         selectedFilter === f.id && styles.filterTextActive,
                       ]}
                     >
-                      {f.label}
+                      {isBangla ? f.bn : f.label}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -321,24 +331,39 @@ export const TransactionsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#EDF7F4',
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
+    paddingVertical: 14,
+    backgroundColor: '#EDF7F4',
+  },
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2EFE9',
+    borderWidth: 1,
+    borderColor: '#DFEFE8',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   headerTitle: {
-    color: '#0F2F24',
-    fontSize: 20,
+    color: '#0F4D3C',
+    fontSize: 18,
     fontWeight: '800',
   },
   listContent: {
     paddingHorizontal: 16,
-    paddingBottom: 90,
+    paddingBottom: 110,
   },
   analyticsCard: {
     backgroundColor: '#FFFFFF',
@@ -347,8 +372,8 @@ const styles = StyleSheet.create({
     marginTop: 14,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
-    shadowColor: '#1B4D3E',
+    borderColor: '#DFEFE8',
+    shadowColor: '#0F4D3C',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
@@ -371,8 +396,8 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   monthBadge: {
-    backgroundColor: '#E6F8F3',
-    color: '#1B4D3E',
+    backgroundColor: '#E8F6F1',
+    color: '#0F4D3C',
     fontSize: 10,
     fontWeight: '700',
     paddingHorizontal: 8,
@@ -400,7 +425,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   moneyInAmount: {
-    color: '#00D09C',
+    color: '#059669',
     fontSize: 18,
     fontWeight: '900',
   },
@@ -412,7 +437,7 @@ const styles = StyleSheet.create({
   verticalDivider: {
     width: 1,
     height: 32,
-    backgroundColor: '#E2EFE9',
+    backgroundColor: '#DFEFE8',
     marginHorizontal: 16,
   },
   ratioBarContainer: {
@@ -420,11 +445,11 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     overflow: 'hidden',
-    backgroundColor: '#E2EFE9',
+    backgroundColor: '#DFEFE8',
     marginBottom: 6,
   },
   ratioBarIn: {
-    backgroundColor: '#00D09C',
+    backgroundColor: '#059669',
   },
   ratioBarOut: {
     backgroundColor: '#EF4444',
@@ -447,7 +472,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 44,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   searchIcon: {
     marginRight: 8,
@@ -469,11 +494,11 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   filterPillActive: {
-    backgroundColor: '#1B4D3E',
-    borderColor: '#1B4D3E',
+    backgroundColor: '#0F4D3C',
+    borderColor: '#0F4D3C',
   },
   filterText: {
     color: '#64748B',

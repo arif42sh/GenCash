@@ -1,17 +1,17 @@
 export const colors = {
-  // Backgrounds & Surfaces (Modern International FinTech & Clean Emerald Theme)
-  background: "#F6F9F8",        // Ultra-Clean Slate-Mint Off-White (Elevates pure white cards)
+  // Backgrounds & Surfaces (Clean Soft-Mint & Emerald FinTech Theme)
+  background: "#EDF7F4",        // Soft mint-tinted background from screenshot
   surface: "#FFFFFF",           // Pure White
-  surfaceLight: "#EAF5F0",      // Soft Mint Tint (Pills, Categories, Icon wrappers)
-  card: "#FFFFFF",              // Card Surface (Pure White)
+  surfaceLight: "#EAF5F0",      // Soft Mint Tint
+  card: "#FFFFFF",              // Card Surface
   cardHover: "#EEF7F2",
-  cardBorder: "#E2ECE7",        // Crisp Clean Mint-Grey Border
+  cardBorder: "#E2ECE7",
 
   // Brand - Deep Forest Emerald & Vivid Mint
-  primary: "#064E3B",           // Deep Pine / Forest Emerald
-  primaryDark: "#043227",       // Dark Obsidian Pine (Dark Bottom Nav / Header Hero)
-  primaryLight: "#00D09C",      // Vivid Mint Green (Buttons, Active Icons, Accents)
-  primaryGradient: ["#043227", "#085442"], // Deep Emerald Gradient
+  primary: "#0F4D3C",           // Deep Forest Emerald (Matches screenshot)
+  primaryDark: "#083D30",       // Obsidian Pine
+  primaryLight: "#34D399",      // Vivid Mint Green
+  primaryGradient: ["#083D30", "#0B4D3D", "#0E5846"], // Deep Emerald Gradient
 
   // Interactive & Financial Actions
   secondary: "#00D09C",         // Electric Mint Action Green

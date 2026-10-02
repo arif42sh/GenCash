@@ -14,168 +14,188 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLanguage } from '../context/LanguageContext';
+import OfferCarousel from './OfferCarousel';
 
 const OFFER_CATEGORIES = [
-  { id: 'all', labelEn: 'All Deals', labelBn: 'সকল অফার', icon: 'grid-outline' },
-  { id: 'Food', labelEn: 'Food & Dining', labelBn: 'খাবার ও ক্যাফে', icon: 'fast-food-outline' },
-  { id: 'Grocery', labelEn: 'Groceries', labelBn: 'সুপারশপ', icon: 'cart-outline' },
-  { id: 'Recharge', labelEn: 'Mobile Recharge', labelBn: 'রিচার্জ প্যাক', icon: 'phone-portrait-outline' },
-  { id: 'Tech', labelEn: 'Electronics', labelBn: 'গ্যাজেট ও টেক', icon: 'laptop-outline' },
-  { id: 'Fashion', labelEn: 'Lifestyle', labelBn: 'ফ্যাশন ও শপিং', icon: 'shirt-outline' },
+  { id: 'all', labelEn: 'All Offers', labelBn: 'সকল অফার', icon: 'grid-outline' },
+  { id: 'Recharge', labelEn: 'Mobile Recharge', labelBn: 'মোবাইল রিচার্জ', icon: 'phone-portrait-outline' },
+  { id: 'AddMoney', labelEn: 'Add Money', labelBn: 'টাকা যোগ বোনাস', icon: 'card-outline' },
+  { id: 'SendMoney', labelEn: 'Send Money', labelBn: 'সেন্ড মানি অফার', icon: 'paper-plane-outline' },
+  { id: 'Payment', labelEn: 'QR Payment', labelBn: 'মার্চেন্ট পেমেন্ট', icon: 'qr-code-outline' },
+  { id: 'BillPay', labelEn: 'Bill Pay', labelBn: 'বিল পে ক্যাশব্যাক', icon: 'receipt-outline' },
+  { id: 'CashOut', labelEn: 'Cash Out', labelBn: 'ক্যাশ আউট রেট', icon: 'cash-outline' },
 ];
 
 const SPECIAL_OFFERS = [
   {
-    id: 'off_1',
-    title: 'Shwapno Superstore',
-    subtitle: 'Min spend ৳1,000 via GenCash QR',
-    discount: '20% CASHBACK',
-    badge: 'GROCERY',
-    code: 'SHWAPNO20',
-    validity: 'Valid till 31 Oct',
-    description: 'Get flat 20% instant cashback on fresh groceries, household items, and pantry staples when paying with GenCash QR.',
-    category: 'Grocery',
-    image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
-    merchant: 'Shwapno Superstore',
-    screen: 'MerchantPayment',
-  },
-  {
-    id: 'off_2',
-    title: 'Chillox Gourmet Burger',
-    subtitle: 'Any Burger + Fries + Drinks',
-    discount: '35% DISCOUNT',
-    badge: 'HOT DEAL',
-    code: 'CHILLOX35',
-    validity: 'Valid till 25 Oct',
-    description: 'Enjoy 35% instant discount on all burger meals across all branches in Dhaka, Chittagong & Sylhet with GenCash Pay.',
-    category: 'Food',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80',
-    merchant: 'Chillox Burger Hub',
-    screen: 'MerchantPayment',
-  },
-  {
-    id: 'off_3',
-    title: 'Grameenphone 30GB Powerpack',
-    subtitle: '30GB + 500 Min for 30 Days',
-    discount: '৳100 CASHBACK',
+    id: 'off_rc_1',
+    title: '১০০ টাকা রিচার্জে ২০ টাকা বোনাস',
+    titleEn: '৳20 Bonus on ৳100 Recharge',
+    subtitle: 'যেকোনো সিমে তাৎক্ষণিক ২০ টাকা ক্যাশব্যাক',
+    subtitleEn: 'Instant ৳20 cashback on any prepaid SIM',
+    discount: '৳২০ বোনাস',
+    discountEn: '৳20 BONUS',
     badge: 'RECHARGE',
-    code: 'GPMEGA100',
-    validity: 'Valid till 30 Oct',
-    description: 'Exclusive ৳100 cashback recharge bonus on Grameenphone 30GB 30-day all-purpose internet powerpack.',
+    code: 'RECHARGE20',
+    validity: '৩১ অক্টোবর পর্যন্ত',
+    validityEn: 'Valid till 31 Oct',
+    description: 'যেকোনো প্রিপেইড নম্বরে ১০০ টাকা বা তার বেশি মোবাইল রিচার্জ করলে সাথে সাথে ২০ টাকা ক্যাশব্যাক বোনাস আপনার ওয়ালেটে জমা হবে।',
+    descriptionEn: 'Recharge ৳100 or more to any prepaid number and get flat ৳20 instant cashback bonus credited to your wallet.',
     category: 'Recharge',
-    image: 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?w=500&auto=format&fit=crop&q=80',
-    merchant: 'Grameenphone',
+    image: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=500&auto=format&fit=crop&q=80',
+    merchant: 'Mobile Recharge (All Operators)',
     screen: 'MobileRecharge',
+    btnTextBn: 'এখনই রিচার্জ করুন',
+    btnTextEn: 'Recharge Now',
   },
   {
-    id: 'off_4',
-    title: 'Star Tech Tech Peripherals',
-    subtitle: 'Mechanical Keyboards, Mice & Audio',
-    discount: '15% OFF',
-    badge: 'ELECTRONICS',
-    code: 'STARTECH15',
-    validity: 'Valid till 15 Nov',
-    description: 'Upgrade your gaming setup or work desk with 15% instant discount on premium computer accessories.',
-    category: 'Tech',
-    image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&auto=format&fit=crop&q=80',
-    merchant: 'Star Tech Ltd',
-    screen: 'MerchantPayment',
+    id: 'off_am_1',
+    title: '১,০০০ টাকা অ্যাড মানিতে ৫০ টাকা ক্যাশব্যাক',
+    titleEn: '৳50 Cashback on ৳1,000 Add Money',
+    subtitle: 'ভিসা/মাস্টারকার্ড ও ব্যাংক ট্রান্সফারে',
+    subtitleEn: 'From Visa, Mastercard or Bank Transfer',
+    discount: '৳৫০ ক্যাশব্যাক',
+    discountEn: '৳50 CASHBACK',
+    badge: 'ADD MONEY',
+    code: 'ADD50CASH',
+    validity: '১৫ নভেম্বর পর্যন্ত',
+    validityEn: 'Valid till 15 Nov',
+    description: 'যেকোনো ব্যাংক বা কার্ড থেকে ন্যূনতম ১,০০০ টাকা ওয়ালেটে যোগ করলেই ৫০ টাকা বোনাস সরাসরি ব্যালেন্সে যুক্ত হবে। সম্পূর্ণ ০% চার্জ।',
+    descriptionEn: 'Deposit ৳1,000 or more from any Bank Account or Visa/Mastercard and receive ৳50 instant cashback. 100% Free.',
+    category: 'AddMoney',
+    image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500&auto=format&fit=crop&q=80',
+    merchant: 'Bank & Card Deposit',
+    screen: 'AddMoney',
+    btnTextBn: 'টাকা যোগ করুন',
+    btnTextEn: 'Add Money Now',
   },
   {
-    id: 'off_5',
-    title: 'Yellow by Beximco',
-    subtitle: 'Autumn Fashion Collection',
-    discount: '25% OFF',
-    badge: 'FASHION',
-    code: 'YELLOW25',
-    validity: 'Valid till 05 Nov',
-    description: 'Get 25% flat discount on selected shirts, panjabis, kurtis and western apparel at Yellow outlets nationwide.',
-    category: 'Fashion',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&auto=format&fit=crop&q=80',
-    merchant: 'Yellow Lifestyle',
-    screen: 'MerchantPayment',
+    id: 'off_sm_1',
+    title: '৫টি প্রিয় নম্বরে ফ্রি সেন্ড মানি',
+    titleEn: 'Free Send Money to 5 Priyo Numbers',
+    subtitle: 'কোনো ফি ছাড়া আনলিমিটেড ফ্রি টাকা পাঠান',
+    subtitleEn: 'Zero transaction charge every month',
+    discount: '০ টাকা ফি (FREE)',
+    discountEn: '৳0 FEE (FREE)',
+    badge: 'SEND MONEY',
+    code: 'PRIYOFREE',
+    validity: 'সারাবছর প্রযোজ্য',
+    validityEn: 'Available Always',
+    description: 'আপনার পরিবারের ৫টি প্রিয় নম্বরে প্রতি মাসে ২৫,০০০ টাকা পর্যন্ত সম্পূর্ণ ফ্রি সেন্ড মানি করুন। কোনো চার্জ কাটা হবে না।',
+    descriptionEn: 'Save 5 favorite family numbers and send money up to ৳25,000 every month with absolutely 0% transfer charge.',
+    category: 'SendMoney',
+    image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=500&auto=format&fit=crop&q=80',
+    merchant: 'P2P Send Money',
+    screen: 'SendMoney',
+    btnTextBn: 'টাকা পাঠান',
+    btnTextEn: 'Send Money',
   },
   {
-    id: 'off_6',
-    title: 'KFC Bangladesh',
-    subtitle: 'Zinger Box + 4pc Hot Wings',
-    discount: '৳180 SAVINGS',
-    badge: 'FOOD',
-    code: 'KFCCRUNCH',
-    validity: 'Valid till 28 Oct',
-    description: 'Order your favorite crispy chicken meal and save ৳180 instantly on in-store GenCash QR payment.',
-    category: 'Food',
-    image: 'https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb?w=500&auto=format&fit=crop&q=80',
-    merchant: 'KFC Bangladesh',
+    id: 'off_qr_1',
+    title: 'কিউআর মার্চেন্ট পেমেন্টে ১৫% ক্যাশব্যাক',
+    titleEn: '15% Instant Cashback on QR Pay',
+    subtitle: 'আউটলেটে কিউআর স্ক্যান করে পেমেন্টে',
+    subtitleEn: 'Scan counter QR at 5,000+ retail stores',
+    discount: '১৫% ছাড়',
+    discountEn: '15% CASHBACK',
+    badge: 'PAYMENT',
+    code: 'QRPAY15',
+    validity: '৩০ অক্টোবর পর্যন্ত',
+    validityEn: 'Valid till 30 Oct',
+    description: 'স্বপ্ন, আড়ং, বাটা সহ দেশের ৫,০০০+ রিটেইল কাউন্টারে GenCash কিউআর স্ক্যান করে পেমেন্ট করলেই সর্বোচ্চ ১০০ টাকা পর্যন্ত তাৎক্ষণিক ক্যাশব্যাক।',
+    descriptionEn: 'Get 15% instant cashback (up to ৳100) when scanning GenCash merchant counter QR codes across 5,000+ partner outlets.',
+    category: 'Payment',
+    image: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?w=500&auto=format&fit=crop&q=80',
+    merchant: 'Merchant QR Pay',
     screen: 'MerchantPayment',
+    btnTextBn: 'কিউআর পেমেন্ট করুন',
+    btnTextEn: 'Make Payment',
   },
   {
-    id: 'off_7',
-    title: 'Daily Shopping Outlets',
-    subtitle: 'Min grocery bill ৳800',
-    discount: '৳120 OFF',
-    badge: 'GROCERY',
-    code: 'DAILY120',
-    validity: 'Valid till 31 Oct',
-    description: 'Save ৳120 on your weekly groceries and kitchen essentials at all Daily Shopping neighbourhood stores.',
-    category: 'Grocery',
-    image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=500&auto=format&fit=crop&q=80',
-    merchant: 'Daily Shopping',
+    id: 'off_bp_1',
+    title: 'বিদ্যুৎ ও গ্যাস বিল পেমেন্টে ৩০ টাকা বোনাস',
+    titleEn: '৳30 Cashback on Utility Bill Pay',
+    subtitle: 'ডেসকো, ডিপিডিসি ও পল্লী বিদ্যুৎ বিলে',
+    subtitleEn: 'Pay DESCO, DPDC, Polli Bidyut with 0% fee',
+    discount: '৳৩০ ক্যাশব্যাক',
+    discountEn: '৳30 CASHBACK',
+    badge: 'BILL PAY',
+    code: 'BILLPAY30',
+    validity: 'প্রতি মাসের ৫ তারিখ পর্যন্ত',
+    validityEn: 'Valid till 5th of Month',
+    description: 'ঘরে বসেই যেকোনো বিদ্যুৎ, পানি বা গ্যাস বিল পরিশোধ করুন সম্পূর্ণ ফ্রিতে এবং পেয়ে যান ৩০ টাকা নিশ্চিত ক্যাশব্যাক।',
+    descriptionEn: 'Pay electricity, water or gas utility bills conveniently from home with 0% service charge and receive flat ৳30 cashback.',
+    category: 'BillPay',
+    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=500&auto=format&fit=crop&q=80',
+    merchant: 'Utility Bill Pay',
     screen: 'MerchantPayment',
+    btnTextBn: 'বিল পে করুন',
+    btnTextEn: 'Pay Bill Now',
   },
   {
-    id: 'off_8',
-    title: 'Daraz Online Shopping',
-    subtitle: 'Mega Electronics & Home Deals',
-    discount: '৳250 VOUCHER',
-    badge: 'ONLINE',
-    code: 'DARAZCASH',
-    validity: 'Valid till 10 Nov',
-    description: 'Extra ৳250 voucher on minimum order of ৳1,800 when paying with GenCash online gateway.',
-    category: 'Tech',
-    image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500&auto=format&fit=crop&q=80',
-    merchant: 'Daraz Bangladesh',
-    screen: 'MerchantPayment',
+    id: 'off_co_1',
+    title: 'প্রিয় এজেন্ট নম্বরে ক্যাশ আউটে বিশেষ ছাড়',
+    titleEn: 'Low Cash Out Fee at Priyo Agent',
+    subtitle: 'হাজারে মাত্র ১৪.৯০ টাকা ক্যাশ আউট রেট',
+    subtitleEn: 'Lowest 1.49% agent withdrawal charge',
+    discount: '১৪.৯০ রেট',
+    discountEn: '৳14.90 / ৳1,000',
+    badge: 'CASH OUT',
+    code: 'PRIYOAGENT',
+    validity: '৩১ ডিসেম্বর পর্যন্ত',
+    validityEn: 'Valid till 31 Dec',
+    description: 'আপনার নিকটস্থ ১টি প্রিয় এজেন্ট নম্বর সেট করুন এবং নিয়মিত ১.৮৫% চার্জের পরিবর্তে মাত্র ১.৪৯% (হাজারে ১৪.৯০ টাকা) রেটে ক্যাশ আউট করুন।',
+    descriptionEn: 'Set your neighborhood favorite agent and enjoy the lowest 1.49% cash out fee (৳14.90 per ৳1,000) instead of regular 1.85%.',
+    category: 'CashOut',
+    image: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=500&auto=format&fit=crop&q=80',
+    merchant: 'Authorized Agent Points',
+    screen: 'CashOut',
+    btnTextBn: 'ক্যাশ আউট করুন',
+    btnTextEn: 'Cash Out Now',
   },
 ];
 
 const COMBOS = [
   {
-    id: 'combo_1',
-    title: 'Taco Kit & Drink Combo',
-    badgeText: '1+1',
-    savings: 'Save ৳250',
-    code: 'TACO1PLUS1',
-    validity: 'Valid this weekend',
-    description: 'Buy 1 Double Taco meal and get another Taco combo totally free when paying via GenCash QR scanner.',
-    image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=500&auto=format&fit=crop&q=80',
-    gradient: ['#1E3A8A', '#3B82F6'],
-    screen: 'MerchantPayment',
+    id: 'combo_rc_1',
+    title: '১০৭ টাকা রিচার্জে ২জিবি + ২০ টাকা ক্যাশব্যাক',
+    titleEn: '৳107 Recharge: 2GB + ৳20 Cashback',
+    badgeText: 'HOT DEAL',
+    savings: 'সেভ ৳৩৫',
+    savingsEn: 'Save ৳35',
+    code: 'MEGA107',
+    validity: '৭ দিন মেয়াদি স্পেশাল প্যাক',
+    description: '১০৭ টাকা রিচার্জ করলেই পেয়ে যাচ্ছেন ২ জিবি ৭ দিন মেয়াদি ইন্টারনেট এবং সাথে সাথে ২০ টাকা ক্যাশব্যাক বোনাস।',
+    image: 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?w=500&auto=format&fit=crop&q=80',
+    gradient: ['#043227', '#064E3B'],
+    screen: 'MobileRecharge',
   },
   {
-    id: 'combo_2',
-    title: 'Crispy Snack & Dip Duo',
-    badgeText: '1+1',
-    savings: 'Save ৳180',
-    code: 'DORITO1PLUS1',
-    validity: 'Valid this week',
-    description: 'Buy 1 Large Party Nacho pack and get Cheesy Jalapeno dip absolutely free on partner outlets.',
-    image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=500&auto=format&fit=crop&q=80',
-    gradient: ['#164E3D', '#00D09C'],
-    screen: 'MerchantPayment',
+    id: 'combo_am_2',
+    title: 'কার্ড টু ওয়ালেটে ৫,০০০ টাকায় ১০০ টাকা বোনাস',
+    titleEn: 'Add ৳5,000 from Card & Get ৳100',
+    badgeText: 'DOUBLE BONUS',
+    savings: 'বোনাস ৳১০০',
+    savingsEn: 'Bonus ৳100',
+    code: 'CARD100',
+    validity: 'মাসে একবার প্রযোজ্য',
+    description: 'ভিসা বা মাস্টারকার্ড থেকে ওয়ালেটে ৫,০০০ টাকা অ্যাড মানি করলেই পেয়ে যাবেন ১০০ টাকা নিশ্চিত রিওয়ার্ড বোনাস।',
+    image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500&auto=format&fit=crop&q=80',
+    gradient: ['#0C4A6E', '#0284C7'],
+    screen: 'AddMoney',
   },
 ];
 
-const BRANDS = [
-  { id: 'b1', name: 'Shwapno', icon: 'cart-outline', color: '#10B981', bg: '#E8F7F0', category: 'Grocery' },
-  { id: 'b2', name: 'Chillox', icon: 'fast-food-outline', color: '#F59E0B', bg: '#FEF5E7', category: 'Food' },
-  { id: 'b3', name: 'Star Tech', icon: 'laptop-outline', color: '#3B82F6', bg: '#EFF6FF', category: 'Tech' },
-  { id: 'b4', name: 'Yellow', icon: 'shirt-outline', color: '#EC4899', bg: '#FDF2F8', category: 'Fashion' },
-  { id: 'b5', name: 'KFC', icon: 'restaurant-outline', color: '#EF4444', bg: '#FEF2F2', category: 'Food' },
-  { id: 'b6', name: 'Daraz', icon: 'bag-handle-outline', color: '#F97316', bg: '#FFF7ED', category: 'Tech' },
+const MFS_PARTNERS = [
+  { id: 'p1', name: 'Grameenphone', icon: 'cellular-outline', color: '#0078FF', bg: '#EFF6FF', category: 'Recharge' },
+  { id: 'p2', name: 'Robi / Airtel', icon: 'phone-portrait-outline', color: '#DC2626', bg: '#FEF2F2', category: 'Recharge' },
+  { id: 'p3', name: 'Banglalink', icon: 'flash-outline', color: '#EA580C', bg: '#FFF7ED', category: 'Recharge' },
+  { id: 'p4', name: 'City Bank', icon: 'business-outline', color: '#059669', bg: '#ECFDF5', category: 'AddMoney' },
+  { id: 'p5', name: 'BRAC Bank', icon: 'card-outline', color: '#2563EB', bg: '#EFF6FF', category: 'AddMoney' },
+  { id: 'p6', name: 'DESCO / DPDC', icon: 'bulb-outline', color: '#D97706', bg: '#FEF3C7', category: 'BillPay' },
 ];
 
-export const OffersSection = ({ navigation, onOpenQR }) => {
+export const OffersSection = ({ navigation, onOpenQR, hideTopBanner = false }) => {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [showAllModal, setShowAllModal] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -199,7 +219,7 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
   };
 
   const handleUseOffer = () => {
-    const targetScreen = selectedOffer?.screen || 'MerchantPayment';
+    const targetScreen = selectedOffer?.screen || 'MobileRecharge';
     setSelectedOffer(null);
     setShowAllModal(false);
     if (navigation?.navigate) {
@@ -225,26 +245,29 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
 
   return (
     <View style={styles.container}>
-      {/* 1. Rewards & Voucher QR Card Header */}
-      <View style={styles.rewardBannerContainer}>
+      {/* 1. MFS Rewards & Perks Top Banner */}
+      {!hideTopBanner && (
+        <View style={styles.rewardBannerContainer}>
         <LinearGradient
-          colors={['#164E3D', '#0F2F24']}
+          colors={['#043227', '#064E3B', '#0B5945']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.rewardBanner}
         >
           <View style={styles.rewardTextWrap}>
             <View style={styles.rewardPill}>
-              <Ionicons name="sparkles" size={11} color="#00D09C" />
-              <Text style={styles.rewardPillText}>GENCASH PERKS</Text>
+              <Ionicons name="gift" size={11} color="#00D09C" />
+              <Text style={styles.rewardPillText}>
+                {isBangla ? 'ক্যাশব্যাক ও রিওয়ার্ড' : 'MFS CASHBACK & DEALS'}
+              </Text>
             </View>
             <Text style={styles.rewardTitle}>
-              {isBangla ? 'কাউন্টারে স্ক্যান করে ছাড় পান' : 'Scan & Save at Checkout'}
+              {isBangla ? 'রিচার্জ ও অ্যাড মানিতে ক্যাশব্যাক' : 'Recharge & Add Money Bonuses'}
             </Text>
             <Text style={styles.rewardSub}>
               {isBangla
-                ? '৫,০০০+ পার্টনার আউটলেটে ৩৫% পর্যন্ত ইনস্ট্যান্ট ছাড় ও ক্যাশব্যাক'
-                : 'Earn up to 35% instant cashback & discounts across 5,000+ retail stores'}
+                ? '১০০ টাকা রিচার্জে ২০ টাকা বোনাস ও ফ্রি সেন্ড মানি অফার সক্রিয়'
+                : 'Get ৳20 recharge bonus, zero fee send money & deposit cashback'}
             </Text>
           </View>
           <TouchableOpacity
@@ -252,162 +275,25 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
             onPress={onOpenQR}
             activeOpacity={0.85}
           >
-            <Ionicons name="qr-code" size={26} color="#00D09C" />
-            <Text style={styles.rewardQrBtnText}>{isBangla ? 'কিউআর' : 'Show QR'}</Text>
+            <Ionicons name="qr-code" size={24} color="#00D09C" />
+            <Text style={styles.rewardQrBtnText}>{isBangla ? 'কিউআর' : 'Scan'}</Text>
           </TouchableOpacity>
         </LinearGradient>
       </View>
+      )}
 
-      {/* 2. Special Offers Section Header */}
+      {/* 2. Nagad-Style Auto-Scrolling Promotions Carousel (Replaces both redundant sections) */}
+      <OfferCarousel
+        navigation={navigation}
+        onOpenAllOffers={() => setShowAllModal(true)}
+      />
+
+
+      {/* 4. Partner Institutions & Telecom Operators */}
       <View style={styles.sectionHeaderRow}>
-        <View style={styles.sectionHeaderLeft}>
-          <Text style={styles.sectionTitle}>{t('specialOffers', 'Special Offers')}</Text>
-          <View style={styles.offerBadgeCount}>
-            <Text style={styles.offerBadgeCountText}>{SPECIAL_OFFERS.length} Deals</Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => setShowAllModal(true)}
-          activeOpacity={0.7}
-          style={styles.seeAllBtn}
-        >
-          <Text style={styles.seeAllText}>{t('seeAll', 'See All')}</Text>
-          <Ionicons name="chevron-forward" size={14} color="#00D09C" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Special Offers Horizontal Carousel */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.offersScroll}
-      >
-        {/* Leading "% Check Available Discounts" Accent Card - CLICKABLE */}
-        <TouchableOpacity
-          activeOpacity={0.88}
-          onPress={() => setShowAllModal(true)}
-          style={styles.accentCardTouchable}
-        >
-          <LinearGradient
-            colors={['#043227', '#064E3B', '#0D5E4A']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.accentDiscountCard}
-          >
-            <View style={styles.percentCircle}>
-              <Text style={styles.percentSymbol}>%</Text>
-            </View>
-            <View>
-              <Text style={styles.accentCardTitle}>
-                {isBangla ? 'উপলব্ধ ছাড়সমূহ দেখুন' : 'Explore All Discounts'}
-              </Text>
-              <Text style={styles.accentCardSub}>
-                {isBangla ? 'দৈনিক এক্সক্লুসিভ ডিল ও ক্যাশব্যাক' : 'Daily exclusive partner deals & vouchers'}
-              </Text>
-            </View>
-            <View style={styles.accentCardArrowRow}>
-              <Text style={styles.accentCardArrowText}>{isBangla ? 'সব দেখুন' : 'View All'}</Text>
-              <Ionicons name="arrow-forward" size={14} color="#00D09C" />
-            </View>
-          </LinearGradient>
-        </TouchableOpacity>
-
-        {/* Product / Merchant Offer Cards - ENTIRE CARD IS CLICKABLE */}
-        {SPECIAL_OFFERS.map((offer) => (
-          <TouchableOpacity
-            key={offer.id}
-            style={styles.offerCard}
-            activeOpacity={0.85}
-            onPress={() => handleClaim(offer)}
-          >
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: offer.image }} style={styles.offerImage} resizeMode="cover" />
-              <View style={styles.discountBadge}>
-                <Text style={styles.discountBadgeText}>{offer.discount}</Text>
-              </View>
-              <View style={styles.categoryBadge}>
-                <Text style={styles.categoryBadgeText}>{offer.category}</Text>
-              </View>
-            </View>
-
-            <View style={styles.offerContent}>
-              <View>
-                <Text style={styles.offerTitle} numberOfLines={1}>
-                  {offer.title}
-                </Text>
-                <Text style={styles.offerSub} numberOfLines={1}>
-                  {offer.subtitle}
-                </Text>
-              </View>
-
-              <View style={styles.offerFooterRow}>
-                <Text style={styles.validityText}>{offer.validity}</Text>
-                <View style={styles.addBtn}>
-                  <Text style={styles.addBtnText}>{t('claim', 'Claim')}</Text>
-                  <Ionicons name="arrow-forward" size={12} color="#FFFFFF" />
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* 3. Combos & BOGO Section */}
-      <View style={styles.sectionHeaderRow}>
-        <View style={styles.sectionHeaderLeft}>
-          <Text style={styles.sectionTitle}>{t('combosBogo', 'Combos & BOGO')}</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => setShowAllModal(true)}
-          activeOpacity={0.7}
-          style={styles.seeAllBtn}
-        >
-          <Text style={styles.seeAllText}>{t('seeAll', 'View Deals')}</Text>
-          <Ionicons name="chevron-forward" size={14} color="#00D09C" />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.combosGrid}>
-        {COMBOS.map((combo) => (
-          <TouchableOpacity
-            key={combo.id}
-            style={styles.comboCard}
-            activeOpacity={0.85}
-            onPress={() => handleClaim(combo)}
-          >
-            <LinearGradient
-              colors={combo.gradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.comboGradient}
-            >
-              <View style={styles.comboHeader}>
-                <Text style={styles.comboTitle} numberOfLines={2}>
-                  {combo.title}
-                </Text>
-                <View style={styles.bogoBadge}>
-                  <Text style={styles.bogoBadgeText}>{combo.badgeText}</Text>
-                </View>
-              </View>
-
-              <View style={styles.comboImageWrap}>
-                <Image source={{ uri: combo.image }} style={styles.comboImage} resizeMode="cover" />
-              </View>
-
-              <View style={styles.comboFooter}>
-                <Text style={styles.comboSavings}>{combo.savings}</Text>
-                <View style={styles.comboActionBtn}>
-                  <Ionicons name="arrow-forward" size={14} color="#FFFFFF" />
-                </View>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* 4. Partner Brands Section */}
-      <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionTitle}>{t('featuredBrands', 'Featured Partner Brands')}</Text>
+        <Text style={styles.sectionTitle}>
+          {isBangla ? 'পার্টনার ব্যাংক ও টেলিকম' : 'Partner Banks & Telecoms'}
+        </Text>
       </View>
 
       <ScrollView
@@ -415,25 +301,25 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.brandsScroll}
       >
-        {BRANDS.map((b) => (
+        {MFS_PARTNERS.map((p) => (
           <TouchableOpacity
-            key={b.id}
+            key={p.id}
             style={styles.brandCard}
             activeOpacity={0.7}
             onPress={() => {
-              setActiveCategory(b.category);
+              setActiveCategory(p.category);
               setShowAllModal(true);
             }}
           >
-            <View style={[styles.brandIconWrap, { backgroundColor: b.bg }]}>
-              <Ionicons name={b.icon} size={20} color={b.color} />
+            <View style={[styles.brandIconWrap, { backgroundColor: p.bg }]}>
+              <Ionicons name={p.icon} size={18} color={p.color} />
             </View>
-            <Text style={styles.brandName} numberOfLines={1}>{b.name}</Text>
+            <Text style={styles.brandName} numberOfLines={1}>{p.name}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* 5. Complete "All Special Offers & Deals" Explorer Modal */}
+      {/* 5. Complete "All MFS Offers" Explorer Modal */}
       <Modal
         visible={showAllModal}
         animationType="slide"
@@ -456,7 +342,7 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
                 <Ionicons name="close" size={20} color="#FFFFFF" />
               </TouchableOpacity>
               <Text style={styles.allOffersHeaderTitle}>
-                {isBangla ? 'সকল স্পেশাল অফার ও ক্যাশব্যাক' : 'All Offers & Discounts'}
+                {isBangla ? 'সকল স্পেশাল অফার ও ক্যাশব্যাক' : 'All MFS Offers & Bonuses'}
               </Text>
               <View style={{ width: 36 }} />
             </View>
@@ -468,8 +354,8 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
                 style={styles.allOffersSearchInput}
                 placeholder={
                   isBangla
-                    ? 'অফার বা ব্র্যান্ড খুঁজুন (যেমন: শপ্ন, বার্গার, রিচার্জ...)'
-                    : 'Search brand or offer (e.g. Shwapno, Burger...)'
+                    ? 'অফার খুঁজুন (যেমন: রিচার্জ, অ্যাড মানি, ক্যাশব্যাক...)'
+                    : 'Search offer (e.g. recharge, bonus, bill pay...)'
                 }
                 placeholderTextColor="#74B49C"
                 value={searchQuery}
@@ -528,13 +414,13 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
             <View style={styles.allOffersCountRow}>
               <Text style={styles.allOffersCountText}>
                 {modalFilteredOffers.length}{' '}
-                {isBangla ? 'টি অফার পাওয়া গেছে' : 'offers available'}
+                {isBangla ? 'টি অফার ও বোনাস সক্রিয়' : 'active campaign offers'}
               </Text>
             </View>
 
             {modalFilteredOffers.length === 0 ? (
               <View style={styles.emptyOffersBox}>
-                <Ionicons name="pricetag-outline" size={42} color="#94A3B8" />
+                <Ionicons name="gift-outline" size={40} color="#94A3B8" />
                 <Text style={styles.emptyOffersTitle}>
                   {isBangla ? 'কোনো অফার পাওয়া যায়নি' : 'No matching offers found'}
                 </Text>
@@ -556,24 +442,30 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
                   <View style={styles.modalOfferCardContent}>
                     <View style={styles.modalOfferCardHeader}>
                       <View style={styles.modalOfferTag}>
-                        <Text style={styles.modalOfferTagText}>{offer.category}</Text>
+                        <Text style={styles.modalOfferTagText}>{offer.badge}</Text>
                       </View>
                       <View style={styles.modalDiscountPill}>
-                        <Text style={styles.modalDiscountPillText}>{offer.discount}</Text>
+                        <Text style={styles.modalDiscountPillText}>
+                          {isBangla ? offer.discount : offer.discountEn}
+                        </Text>
                       </View>
                     </View>
 
                     <Text style={styles.modalOfferCardTitle} numberOfLines={1}>
-                      {offer.title}
+                      {isBangla ? offer.title : offer.titleEn}
                     </Text>
                     <Text style={styles.modalOfferCardSub} numberOfLines={2}>
-                      {offer.subtitle}
+                      {isBangla ? offer.subtitle : offer.subtitleEn}
                     </Text>
 
                     <View style={styles.modalOfferCardFooter}>
-                      <Text style={styles.modalOfferValidity}>{offer.validity}</Text>
+                      <Text style={styles.modalOfferValidity}>
+                        {isBangla ? offer.validity : offer.validityEn}
+                      </Text>
                       <View style={styles.modalClaimActionBtn}>
-                        <Text style={styles.modalClaimActionText}>{t('claim', 'Claim Offer')}</Text>
+                        <Text style={styles.modalClaimActionText}>
+                          {isBangla ? offer.btnTextBn || 'অফার নিন' : offer.btnTextEn || 'Claim'}
+                        </Text>
                         <Ionicons name="arrow-forward" size={13} color="#FFFFFF" />
                       </View>
                     </View>
@@ -585,7 +477,7 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
         </View>
       </Modal>
 
-      {/* 6. Modern Voucher / Offer Detail Bottom Sheet Modal */}
+      {/* 6. Voucher / Offer Detail Bottom Sheet Modal */}
       {selectedOffer && (
         <Modal
           visible={true}
@@ -600,10 +492,12 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
               <View style={styles.modalHeader}>
                 <View style={{ flex: 1, paddingRight: 10 }}>
                   <View style={styles.detailMerchantRow}>
-                    <Ionicons name="checkmark-circle" size={16} color="#00D09C" />
-                    <Text style={styles.detailMerchantText}>{selectedOffer.merchant || 'GenCash Partner'}</Text>
+                    <Ionicons name="shield-checkmark" size={15} color="#00D09C" />
+                    <Text style={styles.detailMerchantText}>{selectedOffer.merchant || 'GenCash Official Campaign'}</Text>
                   </View>
-                  <Text style={styles.modalTitle}>{selectedOffer.title}</Text>
+                  <Text style={styles.modalTitle}>
+                    {isBangla ? selectedOffer.title : (selectedOffer.titleEn || selectedOffer.title)}
+                  </Text>
                 </View>
                 <TouchableOpacity onPress={() => setSelectedOffer(null)} style={styles.closeBtn}>
                   <Ionicons name="close" size={22} color="#64748B" />
@@ -612,19 +506,23 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
 
               <View style={styles.modalImageWrap}>
                 <Image source={{ uri: selectedOffer.image }} style={styles.modalImage} resizeMode="cover" />
-                {selectedOffer.discount && (
+                {(selectedOffer.discount || selectedOffer.discountEn) && (
                   <View style={styles.modalImageDiscountBadge}>
-                    <Text style={styles.modalImageDiscountText}>{selectedOffer.discount}</Text>
+                    <Text style={styles.modalImageDiscountText}>
+                      {isBangla ? selectedOffer.discount : (selectedOffer.discountEn || selectedOffer.discount)}
+                    </Text>
                   </View>
                 )}
               </View>
 
-              <Text style={styles.modalDesc}>{selectedOffer.description}</Text>
+              <Text style={styles.modalDesc}>
+                {isBangla ? selectedOffer.description : (selectedOffer.descriptionEn || selectedOffer.description)}
+              </Text>
 
               {/* Promo Code Box */}
               <View style={styles.codeBox}>
                 <View>
-                  <Text style={styles.codeLabel}>PROMO CODE / ভাউচার কোড</Text>
+                  <Text style={styles.codeLabel}>PROMO CODE / অফার কোড</Text>
                   <Text style={styles.codeValue}>{selectedOffer.code}</Text>
                 </View>
                 <TouchableOpacity style={styles.copyBtn} onPress={handleCopyCode} activeOpacity={0.8}>
@@ -643,7 +541,7 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
               <View style={styles.barcodeBox}>
                 <Text style={styles.barcodeDigits}>||||| | |||| ||| |||||| || ||||</Text>
                 <Text style={styles.barcodeSub}>
-                  {isBangla ? 'কাউন্টারে কোডটি দেখান অথবা নিচে ট্যাপ করুন' : 'Show code at merchant counter or tap below'}
+                  {isBangla ? 'অফারটি ব্যবহার করতে নিচে ট্যাপ করুন' : 'Tap below to apply offer directly'}
                 </Text>
               </View>
 
@@ -655,7 +553,9 @@ export const OffersSection = ({ navigation, onOpenQR }) => {
                   style={styles.modalActionGradient}
                 >
                   <Text style={styles.modalActionBtnText}>
-                    {isBangla ? 'অফারটি এখনই ব্যবহার করুন' : 'Use Offer Now'}
+                    {isBangla
+                      ? (selectedOffer.btnTextBn || 'অফারটি এখনই ব্যবহার করুন')
+                      : (selectedOffer.btnTextEn || 'Use Offer Now')}
                   </Text>
                   <Ionicons name="flash" size={16} color="#00D09C" style={{ marginLeft: 6 }} />
                 </LinearGradient>
@@ -682,7 +582,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     borderRadius: 22,
-    shadowColor: '#164E3D',
+    shadowColor: '#043227',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 10,
@@ -695,7 +595,7 @@ const styles = StyleSheet.create({
   rewardPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 208, 156, 0.15)',
+    backgroundColor: 'rgba(0, 208, 156, 0.2)',
     alignSelf: 'flex-start',
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -721,10 +621,10 @@ const styles = StyleSheet.create({
     lineHeight: 15,
   },
   rewardQrBtn: {
-    width: 66,
-    height: 66,
+    width: 62,
+    height: 62,
     borderRadius: 18,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
@@ -790,8 +690,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   accentDiscountCard: {
-    width: 145,
-    height: 215,
+    width: 155,
+    height: 222,
     borderRadius: 20,
     padding: 16,
     justifyContent: 'space-between',
@@ -802,17 +702,12 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   percentCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     backgroundColor: 'rgba(0, 208, 156, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  percentSymbol: {
-    color: '#00D09C',
-    fontSize: 22,
-    fontWeight: '900',
   },
   accentCardTitle: {
     color: '#FFFFFF',
@@ -838,13 +733,13 @@ const styles = StyleSheet.create({
   },
 
   offerCard: {
-    width: 160,
-    height: 215,
+    width: 180,
+    height: 222,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFECE6',
     shadowColor: '#064E3B',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.05,
@@ -866,13 +761,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 6,
     right: 6,
-    backgroundColor: '#064E3B',
+    backgroundColor: '#0F4D3C',
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 8,
   },
   discountBadgeText: {
-    color: '#00D09C',
+    color: '#34D399',
     fontSize: 9,
     fontWeight: '900',
   },
@@ -880,15 +775,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 6,
     left: 6,
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+    backgroundColor: 'rgba(4, 50, 39, 0.75)',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 6,
   },
   categoryBadgeText: {
     color: '#FFFFFF',
-    fontSize: 9,
-    fontWeight: '700',
+    fontSize: 8,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   offerContent: {
     padding: 10,
@@ -897,13 +793,13 @@ const styles = StyleSheet.create({
   },
   offerTitle: {
     color: '#0B251E',
-    fontSize: 12,
-    fontWeight: '800',
-    lineHeight: 16,
+    fontSize: 12.5,
+    fontWeight: '700',
+    lineHeight: 17,
   },
   offerSub: {
     color: '#64748B',
-    fontSize: 10,
+    fontSize: 10.5,
     marginTop: 2,
   },
   offerFooterRow: {
@@ -920,11 +816,11 @@ const styles = StyleSheet.create({
   addBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#064E3B',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    gap: 4,
+    backgroundColor: '#0F4D3C',
+    paddingHorizontal: 10,
+    paddingVertical: 4.5,
+    borderRadius: 10,
+    gap: 2,
   },
   addBtnText: {
     color: '#FFFFFF',
@@ -962,7 +858,7 @@ const styles = StyleSheet.create({
   },
   comboTitle: {
     color: '#FFFFFF',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '800',
     flex: 1,
     marginRight: 6,
@@ -975,7 +871,7 @@ const styles = StyleSheet.create({
   },
   bogoBadgeText: {
     color: '#FFFFFF',
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '900',
   },
   comboImageWrap: {
@@ -1023,7 +919,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#E2ECE7',
     gap: 8,
   },
   brandIconWrap: {
@@ -1131,7 +1027,7 @@ const styles = StyleSheet.create({
     padding: 30,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#E2ECE7',
     marginTop: 20,
   },
   emptyOffersTitle: {
@@ -1151,7 +1047,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#E2ECE7',
     overflow: 'hidden',
     shadowColor: '#064E3B',
     shadowOffset: { width: 0, height: 2 },
@@ -1159,7 +1055,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 2,
     flexDirection: 'row',
-    height: 120,
+    height: 125,
   },
   modalOfferCardImage: {
     width: 115,
@@ -1199,9 +1095,10 @@ const styles = StyleSheet.create({
   },
   modalOfferCardTitle: {
     color: '#0B251E',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '800',
     marginTop: 2,
+    lineHeight: 16,
   },
   modalOfferCardSub: {
     color: '#64748B',
@@ -1274,15 +1171,16 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     color: '#0B251E',
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '800',
+    lineHeight: 22,
   },
   closeBtn: {
     padding: 4,
   },
   modalImageWrap: {
     width: '100%',
-    height: 145,
+    height: 140,
     borderRadius: 16,
     overflow: 'hidden',
     position: 'relative',

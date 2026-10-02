@@ -7,23 +7,26 @@ import {
   RefreshControl,
   TouchableOpacity,
   Alert,
+  StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
+import AppHeader from '../components/AppHeader';
 import { BalanceCard } from '../components/BalanceCard';
 import { ActionGrid } from '../components/ActionGrid';
 import { OffersSection } from '../components/OffersSection';
 import { QRScannerModal } from '../components/QRScannerModal';
+import { UserReceiveQRModal } from '../components/UserReceiveQRModal';
 
 const RECENT_CONTACTS = [
-  { id: '1', name: 'Sadia Rahman', phone: '01822222222', initials: 'SR', color: '#10B981', bg: '#E8F7F0' },
-  { id: '2', name: 'Rafiqul Islam', phone: '01933333333', initials: 'RI', color: '#3B82F6', bg: '#EFF6FF' },
-  { id: '3', name: 'Chillox Burger', phone: '01788888888', initials: 'CB', color: '#F59E0B', bg: '#FEF5E7' },
-  { id: '4', name: 'Star Tech', phone: '01755555555', initials: 'ST', color: '#8B5CF6', bg: '#F0EDFA' },
-  { id: '5', name: 'Agent Point', phone: '01799999999', initials: 'AP', color: '#064E3B', bg: '#E8F6F0' },
+  { id: '1', name: 'Sadia', fullName: 'Sadia Rahman', phone: '01822222222', initials: 'SS', color: '#7C3AED', bg: '#EDE9FE' },
+  { id: '2', name: 'Rafiqul', fullName: 'Rafiqul Islam', phone: '01933333333', initials: 'RA', color: '#0D9488', bg: '#CCFBF1' },
+  { id: '3', name: 'Chillox', fullName: 'Chillox Burger', phone: '01788888888', initials: 'CH', color: '#4338CA', bg: '#E0E7FF' },
+  { id: '4', name: 'Star Tech', fullName: 'Star Tech Ltd', phone: '01755555555', initials: 'ST', color: '#8B5CF6', bg: '#F3E8FF' },
+  { id: '5', name: 'Agent Point', fullName: 'Authorized Agent', phone: '01799999999', initials: 'AP', color: '#064E3B', bg: '#D1FAE5' },
 ];
 
 export const HomeScreen = ({ navigation }) => {
@@ -31,6 +34,7 @@ export const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [showQRScanner, setShowQRScanner] = useState(false);
+  const [showUserQR, setShowUserQR] = useState(false);
 
   const loadDashboardData = useCallback(async () => {
     try {
@@ -72,53 +76,18 @@ export const HomeScreen = ({ navigation }) => {
   const userName = user?.name ? user.name.split(' ')[0] : 'Tanvir';
 
   return (
-    <View style={styles.container}>
-      {/* Top Bar Header */}
-      <View style={styles.topHeader}>
-        <View style={styles.userProfileRow}>
-          <TouchableOpacity
-            style={styles.avatarCircle}
-            onPress={() => navigation.navigate('Profile')}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.avatarText}>
-              {userName.charAt(0).toUpperCase()}
-            </Text>
-          </TouchableOpacity>
-          <View style={styles.userInfo}>
-            <Text style={styles.greetingText}>{t('hello', 'Hello')} {userName},</Text>
-            <Text style={styles.userNameText}>{t('welcomeBack', 'Welcome Back!')}</Text>
-          </View>
-        </View>
-
-        <View style={styles.headerIcons}>
-          {/* 1. Notification Bell */}
-          <TouchableOpacity
-            style={styles.iconBtn}
-            onPress={() => navigation.navigate('Notifications')}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="notifications-outline" size={20} color="#1E293B" />
-            {unreadNotifCount > 0 && (
-              <View style={styles.notifBadge}>
-                <Text style={styles.notifBadgeText}>{unreadNotifCount}</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-
-          {/* 2. Settings Gear */}
-          <TouchableOpacity
-            style={[styles.iconBtn, { marginLeft: 8 }]}
-            onPress={() => navigation.navigate('Settings')}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="settings-outline" size={20} color="#1E293B" />
-          </TouchableOpacity>
-        </View>
-      </View>
+    <View style={styles.screenContainer}>
+      {/* Translucent status bar so background art reaches the top edge */}
+      <StatusBar
+        backgroundColor="transparent"
+        barStyle="dark-content"
+        translucent={true}
+      />
 
       <ScrollView
+        bounces={false}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -127,25 +96,37 @@ export const HomeScreen = ({ navigation }) => {
           />
         }
       >
-        {/* 1. Wallet Balance Card with LinearGradient */}
+        {/* Top Header: Pattern & utilities scroll naturally inside ScrollView */}
+        <AppHeader
+          userName={userName}
+          userAvatar={user?.avatar || null}
+          unreadNotifCount={unreadNotifCount}
+          onOpenProfile={() => navigation.navigate('Profile')}
+          onOpenNotif={() => navigation.navigate('Notifications')}
+          onOpenSettings={() => navigation.navigate('Settings')}
+          t={t}
+        />
+
+        {/* 1. Wallet Balance Card with Dark Pine Gradient */}
         <BalanceCard
           balance={wallet?.balance || 0}
           currency={wallet?.currency || 'BDT'}
           onRefresh={onRefresh}
           onAction={handleActionSelect}
-          onOpenQR={() => setShowQRScanner(true)}
+          onOpenQR={() => setShowUserQR(true)}
         />
 
-        {/* 2. "Send Again" / Recent Contacts Carousel */}
+        {/* 2. "Send Again" Vertical Contact Chips */}
         <View style={styles.quickSendSection}>
           <View style={styles.quickSendHeader}>
             <Text style={styles.quickSendTitle}>{t('sendAgain', 'Send Again')}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('SendMoney')}>
-              <Text style={styles.quickSendSeeAll}>{t('newContact', 'New Contact +')}</Text>
-            </TouchableOpacity>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.contactsScroll}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.contactsScroll}
+          >
             {RECENT_CONTACTS.map((c) => (
               <TouchableOpacity
                 key={c.id}
@@ -156,24 +137,48 @@ export const HomeScreen = ({ navigation }) => {
                 <View style={[styles.contactAvatar, { backgroundColor: c.bg }]}>
                   <Text style={[styles.contactInitials, { color: c.color }]}>{c.initials}</Text>
                 </View>
-                <Text style={styles.contactName} numberOfLines={1}>
-                  {c.name.split(' ')[0]}
-                </Text>
+                <Text style={styles.contactName} numberOfLines={1}>{c.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
-        {/* 3. Other Services (8 Pastel Icon Grid) */}
+        {/* 3. Other Services (7 Professional Mint Icons Grid) */}
         <ActionGrid onSelectAction={handleActionSelect} />
 
-        {/* 4. Professional Visual Offers, Combos & Partner Brands */}
+        {/* 4. Dedicated AI Financial Insight Teaser Card (SRS / Hackathon Requirement) */}
+        <TouchableOpacity
+          activeOpacity={0.88}
+          style={styles.aiInsightCard}
+          onPress={() => navigation.navigate('AIHub')}
+        >
+          <View style={styles.aiInsightHeader}>
+            <View style={styles.aiBadgePill}>
+              <Ionicons name="sparkles" size={13} color="#064E3B" style={{ marginRight: 4 }} />
+              <Text style={styles.aiBadgeText}>✦ AI Financial Insight</Text>
+            </View>
+            <View style={styles.aiConfidencePill}>
+              <Text style={styles.aiConfidenceText}>89% Confidence</Text>
+            </View>
+          </View>
+
+          <Text style={styles.aiInsightTitle}>Spending Anomaly Detected</Text>
+          <Text style={styles.aiInsightSub}>
+            Your food & dining expenses are 18% higher than usual this week.
+          </Text>
+
+          <View style={styles.aiInsightFooter}>
+            <Text style={styles.aiInsightActionText}>Review Budget Insights</Text>
+            <Ionicons name="arrow-forward" size={14} color="#064E3B" />
+          </View>
+        </TouchableOpacity>
+
+        {/* 5. Additional Offers & Deals */}
         <OffersSection
           navigation={navigation}
           onOpenQR={() => setShowQRScanner(true)}
+          hideTopBanner={true}
         />
-
-        <View style={{ height: 90 }} />
       </ScrollView>
 
       {/* QR Scanner Modal */}
@@ -182,123 +187,44 @@ export const HomeScreen = ({ navigation }) => {
         onClose={() => setShowQRScanner(false)}
         onScan={handleQRScanned}
       />
+
+      {/* Personal User Receive QR Code Modal */}
+      <UserReceiveQRModal
+        visible={showUserQR}
+        onClose={() => setShowUserQR(false)}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  screenContainer: {
     flex: 1,
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#EDF7F4',
   },
-  topHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
-    backgroundColor: '#F6F9F8',
+  scrollContent: {
+    paddingBottom: 135,
   },
-  userProfileRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatarCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#E8F7F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-    borderWidth: 1.5,
-    borderColor: '#00D09C',
-  },
-  avatarText: {
-    color: '#064E3B',
-    fontSize: 18,
-    fontWeight: '800',
-  },
-  userInfo: {
-    justifyContent: 'center',
-  },
-  greetingText: {
-    color: '#64748B',
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  userNameText: {
-    color: '#0F172A',
-    fontSize: 16,
-    fontWeight: '800',
-    letterSpacing: 0.2,
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E2EFE9',
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  notifBadge: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    backgroundColor: '#F43F5E',
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 3,
-  },
-  notifBadgeText: {
-    color: '#fff',
-    fontSize: 9,
-    fontWeight: '800',
-  },
-
   // Send Again Carousel
   quickSendSection: {
     marginHorizontal: 16,
-    marginVertical: 4,
-  },
-  quickSendHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    marginTop: 18,
     marginBottom: 8,
   },
-  quickSendTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1E293B',
+  quickSendHeader: {
+    marginBottom: 12,
   },
-  quickSendSeeAll: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#00D09C',
+  quickSendTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#0F172A',
   },
   contactsScroll: {
-    paddingVertical: 4,
+    paddingVertical: 2,
+    gap: 14,
   },
   contactItem: {
     alignItems: 'center',
-    marginRight: 16,
     width: 58,
   },
   contactAvatar: {
@@ -307,23 +233,93 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 4,
-    borderWidth: 1.5,
+    marginBottom: 5,
+    borderWidth: 2,
     borderColor: '#FFFFFF',
-    shadowColor: '#000',
+    shadowColor: '#0E4839',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
   },
   contactInitials: {
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '700',
   },
   contactName: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#334155',
+    color: '#1E293B',
     textAlign: 'center',
+  },
+
+  // AI Financial Insight Card
+  aiInsightCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: '#C7EAE0',
+    marginHorizontal: 16,
+    marginTop: 10,
+    marginBottom: 16,
+    padding: 16,
+    shadowColor: '#0E4839',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  aiInsightHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  aiBadgePill: {
+    backgroundColor: '#D1FAE5',
+    paddingHorizontal: 10,
+    paddingVertical: 4.5,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  aiBadgeText: {
+    color: '#064E3B',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  aiConfidencePill: {
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  aiConfidenceText: {
+    color: '#92400E',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  aiInsightTitle: {
+    fontSize: 15.5,
+    fontWeight: '800',
+    color: '#0F172A',
+    marginBottom: 4,
+  },
+  aiInsightSub: {
+    fontSize: 12.5,
+    color: '#475569',
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  aiInsightFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    alignSelf: 'flex-start',
+  },
+  aiInsightActionText: {
+    color: '#064E3B',
+    fontSize: 12.5,
+    fontWeight: '700',
   },
 });

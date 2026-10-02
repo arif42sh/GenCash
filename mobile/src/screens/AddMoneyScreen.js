@@ -19,6 +19,7 @@ import { api } from '../services/api';
 import { storage } from '../services/storage';
 import { CustomInput } from '../components/CustomInput';
 import { CustomButton } from '../components/CustomButton';
+import { ConfirmationSheet } from '../components/ConfirmationSheet';
 import { SuccessModal } from '../components/SuccessModal';
 
 const DEFAULT_SOURCES = [
@@ -38,9 +39,11 @@ export const AddMoneyScreen = ({ navigation }) => {
   const [selectedSource, setSelectedSource] = useState(DEFAULT_SOURCES[0]);
   const [amount, setAmount] = useState('2000');
   const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successTxn, setSuccessTxn] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const [pin, setPin] = useState('');
 
   // Add Card/Bank Modal
   const [showAddModal, setShowAddModal] = useState(false);
@@ -125,17 +128,22 @@ export const AddMoneyScreen = ({ navigation }) => {
     );
   };
 
-  const handleAddMoney = async () => {
+  const handleProceed = () => {
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
       setErrorMessage(isBangla ? 'সঠিক টাকার অংক লিখুন।' : 'Please enter a valid amount.');
       return;
     }
-
     setErrorMessage('');
+    setShowConfirm(true);
+  };
+
+  const handleAddMoney = async () => {
+    const numAmount = parseFloat(amount);
     setLoading(true);
     try {
       const res = await api.addMoney(numAmount, selectedSource?.name || 'Linked Bank');
+      setShowConfirm(false);
       setSuccessTxn(res);
       setShowSuccess(true);
       await refreshWallet();
@@ -153,7 +161,7 @@ export const AddMoneyScreen = ({ navigation }) => {
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+          <Ionicons name="arrow-back" size={20} color="#0F4D3C" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{isBangla ? 'টাকা যোগ (Add Money)' : 'Add Money'}</Text>
         <View style={{ width: 40 }} />
@@ -272,10 +280,10 @@ export const AddMoneyScreen = ({ navigation }) => {
           </View>
 
           <CustomButton
-            title={isBangla ? `৳${amount || 0} ওয়ালেটে যোগ করুন` : `Add ৳${amount || 0} to Wallet`}
-            onPress={handleAddMoney}
+            title={isBangla ? `৳${amount || 0} যোগ করতে এগিয়ে যান` : `Proceed to Add ৳${amount || 0}`}
+            onPress={handleProceed}
             isLoading={loading}
-            iconRight="arrow-down-circle"
+            iconRight="arrow-forward"
             style={{ marginTop: 16 }}
           />
         </View>
@@ -416,6 +424,21 @@ export const AddMoneyScreen = ({ navigation }) => {
         </View>
       </Modal>
 
+      <ConfirmationSheet
+        visible={showConfirm}
+        title={isBangla ? 'টাকা যোগ নিশ্চিত করুন' : 'Confirm Add Money'}
+        recipientLabel={isBangla ? 'উৎস / ব্যাংক' : 'Funding Source'}
+        recipientValue={selectedSource?.name || 'Linked Account'}
+        amount={amount || 0}
+        fee={0}
+        note={isBangla ? 'ওয়ালেটে ফান্ড ডিপোজিট' : 'GenCash Wallet Deposit'}
+        pin={pin}
+        setPin={setPin}
+        isLoading={loading}
+        onConfirm={handleAddMoney}
+        onCancel={() => setShowConfirm(false)}
+      />
+
       <SuccessModal
         visible={showSuccess}
         transaction={successTxn}
@@ -431,7 +454,7 @@ export const AddMoneyScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#EDF7F4',
   },
   header: {
     flexDirection: 'row',
@@ -439,20 +462,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2EFE9',
+    backgroundColor: '#EDF7F4',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DFEFE8',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   headerTitle: {
-    color: '#0F2F24',
+    color: '#0F4D3C',
     fontSize: 18,
     fontWeight: '800',
   },
@@ -463,15 +491,15 @@ const styles = StyleSheet.create({
   zeroFeeBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E6F8F3',
+    backgroundColor: '#E1F3EC',
     padding: 12,
     borderRadius: 14,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#C6EFE1',
+    borderColor: '#BFE7D9',
   },
   zeroFeeText: {
-    color: '#1B4D3E',
+    color: '#0F4D3C',
     fontSize: 12,
     fontWeight: '700',
     marginLeft: 8,
@@ -496,8 +524,8 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 18,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
-    shadowColor: '#1B4D3E',
+    borderColor: '#DFEFE8',
+    shadowColor: '#0F4D3C',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
@@ -520,7 +548,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   addNewBtnText: {
-    color: '#00D09C',
+    color: '#059669',
     fontSize: 12,
     fontWeight: '700',
   },
@@ -536,11 +564,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderWidth: 1.5,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   sourceCardActive: {
-    borderColor: '#00D09C',
-    backgroundColor: '#E6F8F3',
+    borderColor: '#059669',
+    backgroundColor: '#E8F6F1',
   },
   sourceTouchArea: {
     flex: 1,
@@ -551,13 +579,13 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#E6F8F3',
+    backgroundColor: '#E8F6F1',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
   },
   sourceIconWrapperActive: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#0F4D3C',
   },
   sourceName: {
     color: '#0F2F24',
@@ -582,11 +610,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   amtChipActive: {
-    borderColor: '#00D09C',
-    backgroundColor: '#E6F8F3',
+    borderColor: '#059669',
+    backgroundColor: '#E8F6F1',
   },
   amtChipText: {
     color: '#64748B',
@@ -594,7 +622,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   amtChipTextActive: {
-    color: '#1B4D3E',
+    color: '#0F4D3C',
     fontWeight: '800',
   },
 
@@ -612,7 +640,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
     padding: 22,
-    shadowColor: '#1B4D3E',
+    shadowColor: '#0F4D3C',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.15,
     shadowRadius: 20,
@@ -625,13 +653,13 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   modalTitle: {
-    color: '#0F2F24',
+    color: '#0F4D3C',
     fontSize: 16,
     fontWeight: '800',
   },
   typeToggleRow: {
     flexDirection: 'row',
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#EDF7F4',
     borderRadius: 12,
     padding: 4,
     marginBottom: 14,
@@ -645,7 +673,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   typeToggleBtnActive: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#0F4D3C',
   },
   typeToggleText: {
     color: '#64748B',
@@ -666,7 +694,7 @@ const styles = StyleSheet.create({
   modalInput: {
     backgroundColor: '#F8FCFA',
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 42,
@@ -681,7 +709,7 @@ const styles = StyleSheet.create({
   },
   modalCancelBtn: {
     flex: 1,
-    backgroundColor: '#F6F9F8',
+    backgroundColor: '#EDF7F4',
     paddingVertical: 12,
     borderRadius: 12,
     alignItems: 'center',
@@ -693,7 +721,7 @@ const styles = StyleSheet.create({
   },
   modalSaveBtn: {
     flex: 1,
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#0F4D3C',
     paddingVertical: 12,
     borderRadius: 12,
     alignItems: 'center',

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../constants/colors';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../context/LanguageContext';
 
 const SERVICES = [
@@ -9,72 +8,56 @@ const SERVICES = [
     id: 'recharge',
     translationKey: 'recharge',
     title: 'Recharge',
-    icon: 'phone-portrait-outline',
-    iconColor: '#10B981',
-    bgColor: '#E8F7F0',
+    type: 'ionicon',
+    icon: 'flash-outline',
     screen: 'MobileRecharge',
   },
   {
     id: 'bill_pay',
     translationKey: 'billPay',
     title: 'Bill Pay',
-    icon: 'receipt-outline',
-    iconColor: '#F59E0B',
-    bgColor: '#FEF5E7',
+    type: 'material',
+    icon: 'receipt-text-outline',
     screen: 'MerchantPayment',
   },
   {
     id: 'bank_transfer',
     translationKey: 'bankTransfer',
     title: 'Bank Transfer',
-    icon: 'business-outline',
-    iconColor: '#F43F5E',
-    bgColor: '#FCEEF0',
+    type: 'material',
+    icon: 'bank-outline',
     screen: 'SendMoney',
   },
   {
     id: 'savings',
     translationKey: 'savings',
     title: 'Savings',
-    icon: 'shield-checkmark-outline',
-    iconColor: '#8B5CF6',
-    bgColor: '#F0EDFA',
+    type: 'material',
+    icon: 'piggy-bank-outline',
     screen: 'AddMoney',
   },
   {
     id: 'electricity',
     translationKey: 'electricity',
     title: 'Electricity',
-    icon: 'flash-outline',
-    iconColor: '#EF4444',
-    bgColor: '#FDEEEE',
+    type: 'ionicon',
+    icon: 'bulb-outline',
     screen: 'MerchantPayment',
   },
   {
     id: 'movie',
     translationKey: 'movie',
     title: 'Movie',
-    icon: 'film-outline',
-    iconColor: '#A855F7',
-    bgColor: '#F4EEFA',
+    type: 'material',
+    icon: 'movie-open-outline',
     screen: 'MerchantPayment',
-  },
-  {
-    id: 'add_money',
-    translationKey: 'addMoney',
-    title: 'Add Money',
-    icon: 'card-outline',
-    iconColor: '#00D09C',
-    bgColor: '#EAF6F5',
-    screen: 'AddMoney',
   },
   {
     id: 'merchant',
     translationKey: 'merchant',
     title: 'Merchant',
+    type: 'material',
     icon: 'storefront-outline',
-    iconColor: '#D97706',
-    bgColor: '#FEFBE8',
     screen: 'MerchantPayment',
   },
 ];
@@ -89,12 +72,16 @@ export const ActionGrid = ({ onSelectAction }) => {
         {SERVICES.map((item) => (
           <TouchableOpacity
             key={item.id}
-            activeOpacity={0.7}
+            activeOpacity={0.75}
             style={styles.tileItem}
-            onPress={() => onSelectAction(item.screen)}
+            onPress={() => onSelectAction && onSelectAction(item.screen)}
           >
-            <View style={[styles.iconBox, { backgroundColor: item.bgColor }]}>
-              <Ionicons name={item.icon} size={22} color={item.iconColor} />
+            <View style={styles.iconBox}>
+              {item.type === 'material' ? (
+                <MaterialCommunityIcons name={item.icon} size={24} color="#0F4D3C" />
+              ) : (
+                <Ionicons name={item.icon} size={24} color="#0F4D3C" />
+              )}
             </View>
             <Text style={styles.tileTitle} numberOfLines={1}>
               {t(item.translationKey, item.title)}
@@ -108,48 +95,47 @@ export const ActionGrid = ({ onSelectAction }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 22,
     marginHorizontal: 16,
-    marginVertical: 8,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E2EFE9',
-    shadowColor: '#1B4D3E',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
+    marginTop: 18,
+    marginBottom: 8,
   },
   sectionTitle: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '700',
-    color: '#0F2F24',
-    marginBottom: 14,
+    color: '#0F172A',
+    marginBottom: 12,
     marginLeft: 2,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   tileItem: {
-    width: '23%',
+    width: '25%',
     alignItems: 'center',
     marginBottom: 14,
   },
   iconBox: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
+    width: 54,
+    height: 54,
+    borderRadius: 18,
+    backgroundColor: '#E8F3EE',
+    borderWidth: 1,
+    borderColor: '#D4EAE0',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 5,
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
   },
   tileTitle: {
-    fontSize: 11,
+    fontSize: 11.5,
     fontWeight: '600',
-    color: '#334155',
+    color: '#0F2F24',
     textAlign: 'center',
   },
 });

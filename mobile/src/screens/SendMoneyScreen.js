@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 import { CustomInput } from '../components/CustomInput';
 import { CustomButton } from '../components/CustomButton';
@@ -21,13 +22,14 @@ import { SuccessModal } from '../components/SuccessModal';
 const QUICK_AMOUNTS = [100, 500, 1000, 2000, 5000];
 
 const RECENT_CONTACTS = [
-  { name: 'Sadia Rahman', phone: '01822222222' },
-  { name: 'Rafiqul Islam', phone: '01933333333' },
-  { name: 'Demo Cash Agent', phone: '01799999999' },
+  { name: 'Sadia', phone: '01822222222', initials: 'SS', color: '#7C3AED', bg: '#EDE9FE' },
+  { name: 'Rafiqul', phone: '01933333333', initials: 'RA', color: '#0D9488', bg: '#CCFBF1' },
+  { name: 'Chillox', phone: '01788888888', initials: 'CH', color: '#4338CA', bg: '#E0E7FF' },
 ];
 
 export const SendMoneyScreen = ({ navigation }) => {
   const { wallet, refreshWallet } = useAuth();
+  const { isBangla } = useLanguage();
   const [receiverPhone, setReceiverPhone] = useState('');
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
@@ -40,17 +42,21 @@ export const SendMoneyScreen = ({ navigation }) => {
 
   const handleProceed = () => {
     if (!receiverPhone.trim()) {
-      setErrorMessage('Please enter the recipient mobile number.');
+      setErrorMessage(isBangla ? 'অনুগ্রহ করে প্রাপকের মোবাইল নম্বর লিখুন।' : 'Please enter the recipient mobile number.');
       return;
     }
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
-      setErrorMessage('Please enter a valid transfer amount.');
+      setErrorMessage(isBangla ? 'সঠিক টাকার পরিমাণ দিন।' : 'Please enter a valid transfer amount.');
       return;
     }
     const totalRequired = numAmount + 5.0; // ৳5 fee
     if (wallet && totalRequired > parseFloat(wallet.balance)) {
-      setErrorMessage(`Insufficient balance. Required: ৳${totalRequired.toFixed(2)}, Available: ৳${wallet.balance}`);
+      setErrorMessage(
+        isBangla
+          ? `অপর্যাপ্ত ব্যালেন্স। প্রয়োজন: ৳${totalRequired.toFixed(2)}, আছে: ৳${wallet.balance}`
+          : `Insufficient balance. Required: ৳${totalRequired.toFixed(2)}, Available: ৳${wallet.balance}`
+      );
       return;
     }
 
@@ -68,7 +74,7 @@ export const SendMoneyScreen = ({ navigation }) => {
       setShowSuccess(true);
       await refreshWallet();
     } catch (err) {
-      Alert.alert('Transfer Failed', err.message);
+      Alert.alert(isBangla ? 'লেনদেন ব্যর্থ হয়েছে' : 'Transfer Failed', err.message);
     } finally {
       setLoading(false);
     }
@@ -84,24 +90,30 @@ export const SendMoneyScreen = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+      {/* Top Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.8}>
+          <Ionicons name="arrow-back" size={20} color="#0F172A" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Send Money</Text>
+        <Text style={styles.headerTitle}>{isBangla ? 'সেন্ড মানি' : 'Send Money'}</Text>
         <View style={{ width: 40 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         {/* Balance Callout */}
         <View style={styles.balanceInfo}>
-          <Text style={styles.balanceLabel}>Available Balance</Text>
-          <Text style={styles.balanceValue}>৳ {Number(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</Text>
+          <View>
+            <Text style={styles.balanceLabel}>{isBangla ? 'সর্বমোট ব্যালেন্স' : 'Available Wallet Balance'}</Text>
+            <Text style={styles.balanceValue}>৳ {Number(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</Text>
+          </View>
+          <View style={styles.balanceIconWrap}>
+            <Ionicons name="wallet-outline" size={20} color="#0F4D3C" />
+          </View>
         </View>
 
         {errorMessage ? (
           <View style={styles.errorBanner}>
-            <Ionicons name="alert-circle-outline" size={18} color={colors.danger} />
+            <Ionicons name="alert-circle" size={18} color="#EF4444" />
             <Text style={styles.errorText}>{errorMessage}</Text>
           </View>
         ) : null}
@@ -109,7 +121,7 @@ export const SendMoneyScreen = ({ navigation }) => {
         {/* Input Card */}
         <View style={styles.card}>
           <CustomInput
-            label="Recipient Mobile Number *"
+            label={isBangla ? 'প্রাপক মোবাইল নম্বর *' : 'Recipient Mobile Number *'}
             value={receiverPhone}
             onChangeText={setReceiverPhone}
             placeholder="01XXXXXXXXX"
@@ -119,7 +131,9 @@ export const SendMoneyScreen = ({ navigation }) => {
           />
 
           {/* Quick Contacts */}
-          <Text style={styles.sectionSubtitle}>Recent / Saved Contacts</Text>
+          <Text style={styles.sectionSubtitle}>
+            {isBangla ? 'রিসেন্ট / সেভ করা নম্বর' : 'Recent Contacts'}
+          </Text>
           <View style={styles.contactsRow}>
             {RECENT_CONTACTS.map((contact, idx) => (
               <TouchableOpacity
@@ -128,22 +142,26 @@ export const SendMoneyScreen = ({ navigation }) => {
                   styles.contactChip,
                   receiverPhone === contact.phone && styles.contactChipActive,
                 ]}
+                activeOpacity={0.8}
                 onPress={() => setReceiverPhone(contact.phone)}
               >
+                <View style={[styles.chipAvatar, { backgroundColor: contact.bg }]}>
+                  <Text style={[styles.chipInitials, { color: contact.color }]}>{contact.initials}</Text>
+                </View>
                 <Text
                   style={[
                     styles.contactChipText,
                     receiverPhone === contact.phone && styles.contactChipTextActive,
                   ]}
                 >
-                  {contact.name.split(' ')[0]} ({contact.phone.slice(-4)})
+                  {contact.name}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
 
           <CustomInput
-            label="Amount (BDT) *"
+            label={isBangla ? 'টাকার পরিমাণ (BDT) *' : 'Transfer Amount (BDT) *'}
             value={amount}
             onChangeText={setAmount}
             placeholder="0.00"
@@ -161,6 +179,7 @@ export const SendMoneyScreen = ({ navigation }) => {
                   styles.amountChip,
                   amount === amt.toString() && styles.amountChipActive,
                 ]}
+                activeOpacity={0.8}
                 onPress={() => setAmount(amt.toString())}
               >
                 <Text
@@ -176,35 +195,39 @@ export const SendMoneyScreen = ({ navigation }) => {
           </View>
 
           <CustomInput
-            label="Reference / Note (Optional)"
+            label={isBangla ? 'রেফারেন্স / নোট (ঐচ্ছিক)' : 'Reference Note (Optional)'}
             value={note}
             onChangeText={setNote}
-            placeholder="What is this for?"
+            placeholder={isBangla ? 'কী উদ্দেশ্যে পাঠাচ্ছেন?' : 'What is this for?'}
             icon="chatbubble-outline"
             maxLength={50}
           />
 
           <View style={styles.feeNoteBox}>
-            <Ionicons name="information-circle-outline" size={16} color="#00D09C" />
+            <Ionicons name="information-circle-outline" size={16} color="#0F4D3C" />
             <Text style={styles.feeNoteText}>
-              Standard P2P service fee: ৳5.00 per transaction.
+              {isBangla ? 'স্ট্যান্ডার্ড P2P চার্জ: মাত্র ৳৫.০০ প্রতি লেনদেনে।' : 'Standard P2P charge: ৳5.00 flat per transfer.'}
             </Text>
           </View>
 
-          <CustomButton
-            title="Proceed to Confirm"
+          <TouchableOpacity
+            style={styles.proceedBtn}
             onPress={handleProceed}
-            iconRight="arrow-forward"
-            style={{ marginTop: 14 }}
-          />
+            activeOpacity={0.85}
+          >
+            <Text style={styles.proceedBtnText}>
+              {isBangla ? 'পরবর্তী ধাপে যান' : 'Proceed to Confirm'}
+            </Text>
+            <Ionicons name="arrow-forward" size={18} color="#FFFFFF" style={{ marginLeft: 8 }} />
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
-      {/* Confirmation Modal */}
+      {/* bKash-style Hold to Confirm Sheet Modal */}
       <ConfirmationSheet
         visible={showConfirm}
-        title="Confirm Send Money"
-        recipientLabel="Recipient Mobile"
+        title={isBangla ? 'সেন্ড মানি নিশ্চিতকরণ' : 'Confirm Send Money'}
+        recipientLabel={isBangla ? 'প্রাপক মোবাইল' : 'Recipient Phone'}
         recipientValue={receiverPhone}
         amount={amount || 0}
         fee={5.0}
@@ -216,7 +239,7 @@ export const SendMoneyScreen = ({ navigation }) => {
         onCancel={() => setShowConfirm(false)}
       />
 
-      {/* Success Modal */}
+      {/* Success Modal with Confetti */}
       <SuccessModal
         visible={showSuccess}
         transaction={successTxn}
@@ -229,97 +252,135 @@ export const SendMoneyScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#EDF7F4',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2EFE9',
+    paddingTop: 16,
+    paddingBottom: 12,
+    backgroundColor: '#EDF7F4',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#DFEFE8',
+    shadowColor: '#0E4839',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   headerTitle: {
-    color: '#0F2F24',
+    color: '#0F172A',
     fontSize: 18,
     fontWeight: '800',
   },
   scrollContent: {
     padding: 16,
+    paddingBottom: 30,
   },
   balanceInfo: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 16,
     marginBottom: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
+    shadowColor: '#0E4839',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
   },
   balanceLabel: {
     color: '#64748B',
-    fontSize: 13,
+    fontSize: 12,
+    fontWeight: '500',
+    marginBottom: 2,
   },
   balanceValue: {
-    color: '#1B4D3E',
-    fontSize: 18,
-    fontWeight: '900',
+    color: '#0F4D3C',
+    fontSize: 22,
+    fontWeight: '800',
+  },
+  balanceIconWrap: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: '#D6F4ED',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 18,
+    borderRadius: 26,
+    padding: 20,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
-    shadowColor: '#1B4D3E',
+    borderColor: '#DFEFE8',
+    shadowColor: '#0E4839',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 3,
   },
   sectionSubtitle: {
-    color: '#64748B',
-    fontSize: 11,
+    color: '#475569',
+    fontSize: 12,
     fontWeight: '600',
     marginTop: 4,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   contactsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 12,
+    marginBottom: 14,
   },
   contactChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#F8FCFA',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
+    paddingVertical: 5,
+    paddingLeft: 6,
+    paddingRight: 12,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   contactChipActive: {
     borderColor: '#00D09C',
-    backgroundColor: '#E6F8F3',
+    backgroundColor: '#EDF7F4',
+  },
+  chipAvatar: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 6,
+  },
+  chipInitials: {
+    fontSize: 10,
+    fontWeight: '800',
   },
   contactChipText: {
-    color: '#64748B',
-    fontSize: 11,
+    color: '#334155',
+    fontSize: 12,
+    fontWeight: '600',
   },
   contactChipTextActive: {
-    color: '#1B4D3E',
+    color: '#0F4D3C',
     fontWeight: '800',
   },
   quickAmountRow: {
@@ -329,51 +390,77 @@ const styles = StyleSheet.create({
   },
   amountChip: {
     backgroundColor: '#F8FCFA',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   amountChipActive: {
-    borderColor: '#00D09C',
-    backgroundColor: '#E6F8F3',
+    borderColor: '#0F4D3C',
+    backgroundColor: '#EDF7F4',
   },
   amountChipText: {
-    color: '#64748B',
+    color: '#475569',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   amountChipTextActive: {
-    color: '#1B4D3E',
+    color: '#0F4D3C',
     fontWeight: '800',
   },
   feeNoteBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E6F8F3',
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 8,
+    backgroundColor: '#EDF7F4',
+    padding: 12,
+    borderRadius: 14,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#C7E8DE',
   },
   feeNoteText: {
-    color: '#1B4D3E',
-    fontSize: 11,
+    color: '#0F4D3C',
+    fontSize: 11.5,
     marginLeft: 6,
     fontWeight: '600',
+    flex: 1,
   },
   errorBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FEE2E2',
     padding: 12,
-    borderRadius: 12,
+    borderRadius: 14,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#FECACA',
   },
   errorText: {
     color: '#DC2626',
     fontSize: 12,
     marginLeft: 8,
     flex: 1,
+    fontWeight: '600',
+  },
+  proceedBtn: {
+    width: '100%',
+    backgroundColor: '#0F4D3C',
+    paddingVertical: 15,
+    borderRadius: 18,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  proceedBtnText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
   },
 });

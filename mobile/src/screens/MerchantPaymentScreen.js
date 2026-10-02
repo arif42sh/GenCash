@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 import { CustomInput } from '../components/CustomInput';
 import { CustomButton } from '../components/CustomButton';
@@ -27,7 +28,7 @@ const MERCHANTS_DIRECTORY = [
     phone: '01700100001',
     category: 'Grocery',
     icon: 'cart-outline',
-    color: '#10B981',
+    color: '#059669',
     branches: '400+ Outlets nationwide',
   },
   {
@@ -36,7 +37,7 @@ const MERCHANTS_DIRECTORY = [
     phone: '01700100002',
     category: 'Grocery',
     icon: 'basket-outline',
-    color: '#059669',
+    color: '#0D9488',
     branches: 'PRAN-RFL Group Outlet',
   },
   {
@@ -79,6 +80,7 @@ const MERCHANTS_DIRECTORY = [
 
 export const MerchantPaymentScreen = ({ navigation }) => {
   const { wallet, refreshWallet } = useAuth();
+  const { isBangla } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [merchantPhone, setMerchantPhone] = useState('01700100001');
   const [selectedMerchant, setSelectedMerchant] = useState(MERCHANTS_DIRECTORY[0]);
@@ -99,21 +101,25 @@ export const MerchantPaymentScreen = ({ navigation }) => {
   const handleSelectMerchant = (m) => {
     setSelectedMerchant(m);
     setMerchantPhone(m.phone);
-    setNote(`Shopping at ${m.name}`);
+    setNote(isBangla ? `${m.name}-এ কেনাকাটা` : `Shopping at ${m.name}`);
   };
 
   const handleProceed = () => {
     if (!merchantPhone.trim()) {
-      setErrorMessage('Please enter merchant number or select a merchant store.');
+      setErrorMessage(isBangla ? 'মার্চেন্ট নম্বর বা শপ নির্বাচন করুন।' : 'Please enter merchant number or select a merchant store.');
       return;
     }
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
-      setErrorMessage('Please enter a valid payment amount.');
+      setErrorMessage(isBangla ? 'সঠিক পেমেন্ট পরিমাণ লিখুন।' : 'Please enter a valid payment amount.');
       return;
     }
     if (wallet && numAmount > parseFloat(wallet.balance)) {
-      setErrorMessage(`Insufficient balance. Required: ৳${numAmount.toFixed(2)}, Available: ৳${wallet.balance}`);
+      setErrorMessage(
+        isBangla
+          ? `অপর্যাপ্ত ব্যালেন্স। প্রয়োজন: ৳${numAmount.toFixed(2)}, আছে: ৳${wallet.balance}`
+          : `Insufficient balance. Required: ৳${numAmount.toFixed(2)}, Available: ৳${wallet.balance}`
+      );
       return;
     }
 
@@ -135,7 +141,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
       setShowSuccess(true);
       await refreshWallet();
     } catch (err) {
-      Alert.alert('Payment Failed', err.message);
+      Alert.alert(isBangla ? 'পেমেন্ট ব্যর্থ' : 'Payment Failed', err.message);
     } finally {
       setLoading(false);
     }
@@ -148,9 +154,9 @@ export const MerchantPaymentScreen = ({ navigation }) => {
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+          <Ionicons name="arrow-back" size={20} color="#0F4D3C" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Merchant Payment</Text>
+        <Text style={styles.headerTitle}>{isBangla ? 'মার্চেন্ট পেমেন্ট' : 'Merchant Payment'}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -159,16 +165,16 @@ export const MerchantPaymentScreen = ({ navigation }) => {
         <TouchableOpacity
           style={styles.qrScanBanner}
           activeOpacity={0.8}
-          onPress={() => Alert.alert('Scan QR', 'Point camera at merchant counter QR code.')}
+          onPress={() => Alert.alert(isBangla ? 'QR স্ক্যান' : 'Scan QR', isBangla ? 'কাউন্টার QR কোডের দিকে ক্যামেরা তাক করুন।' : 'Point camera at merchant counter QR code.')}
         >
           <View style={styles.qrIconWrap}>
-            <Ionicons name="qr-code-outline" size={24} color="#1B4D3E" />
+            <Ionicons name="qr-code-outline" size={24} color="#0F4D3C" />
           </View>
           <View style={{ flex: 1, marginLeft: 12 }}>
-            <Text style={styles.qrBannerTitle}>Scan Merchant Counter QR</Text>
-            <Text style={styles.qrBannerSub}>Auto-fills merchant name and Till ID instantly</Text>
+            <Text style={styles.qrBannerTitle}>{isBangla ? 'মার্চেন্ট কাউন্টার QR স্ক্যান করুন' : 'Scan Merchant Counter QR'}</Text>
+            <Text style={styles.qrBannerSub}>{isBangla ? 'স্বয়ংক্রিয়ভাবে মার্চেন্ট নম্বর ও তথ্য বসবে' : 'Auto-fills merchant name and Till ID instantly'}</Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color="#1B4D3E" />
+          <Ionicons name="chevron-forward" size={18} color="#0F4D3C" />
         </TouchableOpacity>
 
         {errorMessage ? (
@@ -180,7 +186,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 
         {/* Merchant Directory Section */}
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Merchant Directory</Text>
+          <Text style={styles.sectionTitle}>{isBangla ? 'জনপ্রিয় মার্চেন্ট আউটলেট' : 'Merchant Directory'}</Text>
           
           {/* Category Chips */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.catScroll}>
@@ -219,15 +225,15 @@ export const MerchantPaymentScreen = ({ navigation }) => {
                   onPress={() => handleSelectMerchant(m)}
                   activeOpacity={0.7}
                 >
-                  <View style={[styles.merchantAvatar, { backgroundColor: m.color + '18' }]}>
-                    <Ionicons name={m.icon} size={22} color={m.color} />
+                  <View style={[styles.merchantAvatar, { backgroundColor: `${m.color}18` }]}>
+                    <Ionicons name={m.icon} size={20} color={m.color} />
                   </View>
                   <View style={styles.merchantTextWrap}>
-                    <Text style={styles.merchantName} numberOfLines={1}>{m.name}</Text>
-                    <Text style={styles.merchantSub} numberOfLines={1}>{m.branches}</Text>
+                    <Text style={styles.merchantName}>{m.name}</Text>
+                    <Text style={styles.merchantSub}>{m.branches}</Text>
                   </View>
                   {isSelected && (
-                    <Ionicons name="checkmark-circle" size={20} color="#00D09C" />
+                    <Ionicons name="checkmark-circle" size={22} color="#059669" />
                   )}
                 </TouchableOpacity>
               );
@@ -236,8 +242,9 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 
           <View style={styles.divider} />
 
+          {/* Payment Input Section */}
           <CustomInput
-            label="Merchant Till / Mobile Number *"
+            label={isBangla ? 'মার্চেন্ট / কাউন্টার নম্বর *' : 'Merchant / Till Number *'}
             value={merchantPhone}
             onChangeText={(txt) => {
               setMerchantPhone(txt);
@@ -250,7 +257,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
           />
 
           <CustomInput
-            label="Payment Amount (BDT) *"
+            label={isBangla ? 'বিল পরিশোধ পরিমাণ (টাকা) *' : 'Bill Payment Amount (BDT) *'}
             value={amount}
             onChangeText={setAmount}
             placeholder="0.00"
@@ -260,15 +267,15 @@ export const MerchantPaymentScreen = ({ navigation }) => {
           />
 
           <CustomInput
-            label="Reference / Invoice Note"
+            label={isBangla ? 'রেফারেন্স / নোট (ঐচ্ছিক)' : 'Reference / Note (Optional)'}
             value={note}
             onChangeText={setNote}
-            placeholder="e.g. Counter #04"
-            icon="receipt-outline"
+            placeholder={isBangla ? 'উদা: মার্চেন্ট কেনাকাটা' : 'e.g. Grocery payment'}
+            icon="document-text-outline"
           />
 
           <CustomButton
-            title={`Pay ৳${amount || 0} to Merchant`}
+            title={isBangla ? `৳${amount || 0} পরিশোধ করতে এগিয়ে যান` : `Proceed to Pay ৳${amount || 0}`}
             onPress={handleProceed}
             iconRight="arrow-forward"
             style={{ marginTop: 14 }}
@@ -278,8 +285,8 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 
       <ConfirmationSheet
         visible={showConfirm}
-        title="Confirm Merchant Payment"
-        recipientLabel="Merchant Store"
+        title={isBangla ? 'মার্চেন্ট পেমেন্ট নিশ্চিত করুন' : 'Confirm Merchant Payment'}
+        recipientLabel={isBangla ? 'মার্চেন্ট আউটলেট' : 'Merchant Store'}
         recipientValue={selectedMerchant?.name || merchantPhone}
         amount={amount || 0}
         fee={0}
@@ -306,7 +313,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#EDF7F4',
   },
   header: {
     flexDirection: 'row',
@@ -314,20 +321,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2EFE9',
+    backgroundColor: '#EDF7F4',
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DFEFE8',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   headerTitle: {
-    color: '#0F2F24',
+    color: '#0F4D3C',
     fontSize: 18,
     fontWeight: '800',
   },
@@ -338,7 +350,7 @@ const styles = StyleSheet.create({
   qrScanBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E6F8F3',
+    backgroundColor: '#E8F6F1',
     padding: 14,
     borderRadius: 18,
     marginBottom: 14,
@@ -352,9 +364,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
   },
   qrBannerTitle: {
-    color: '#1B4D3E',
+    color: '#0F4D3C',
     fontSize: 13,
     fontWeight: '800',
   },
@@ -382,15 +399,15 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 18,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
-    shadowColor: '#1B4D3E',
+    borderColor: '#DFEFE8',
+    shadowColor: '#0F4D3C',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 3,
   },
   sectionTitle: {
-    color: '#0F2F24',
+    color: '#0F4D3C',
     fontSize: 14,
     fontWeight: '800',
     marginBottom: 10,
@@ -400,16 +417,16 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   catChip: {
-    backgroundColor: '#F3F9F6',
+    backgroundColor: '#F8FCFA',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   catChipActive: {
-    backgroundColor: '#1B4D3E',
-    borderColor: '#1B4D3E',
+    backgroundColor: '#0F4D3C',
+    borderColor: '#0F4D3C',
   },
   catChipText: {
     color: '#64748B',
@@ -430,11 +447,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#E2EFE9',
+    borderColor: '#DFEFE8',
   },
   merchantCardActive: {
-    borderColor: '#00D09C',
-    backgroundColor: '#E6F8F3',
+    borderColor: '#059669',
+    backgroundColor: '#E8F6F1',
   },
   merchantAvatar: {
     width: 40,
@@ -459,7 +476,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#E2EFE9',
+    backgroundColor: '#DFEFE8',
     marginVertical: 12,
   },
 });

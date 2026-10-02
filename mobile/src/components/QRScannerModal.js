@@ -10,7 +10,7 @@ const SAMPLE_MERCHANTS = [
   { id: 5, name: 'Apex Footwear', phone: '01700100005', code: 'MCH-05-APEX' },
 ];
 
-export const QRScannerModal = ({ visible, onClose, onScanSuccess }) => {
+export const QRScannerModal = ({ visible, onClose, onScanSuccess, onScan }) => {
   const [scanAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -38,8 +38,13 @@ export const QRScannerModal = ({ visible, onClose, onScanSuccess }) => {
   });
 
   const handleSelectSimulatedMerchant = (m) => {
-    onScanSuccess(m);
-    onClose();
+    const callback = onScanSuccess || onScan;
+    if (typeof callback === 'function') {
+      callback(m);
+    }
+    if (typeof onClose === 'function') {
+      onClose();
+    }
   };
 
   return (
