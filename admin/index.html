@@ -86,8 +86,14 @@
     }
 
     .mono-num {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Public Sans', sans-serif;
       font-variant-numeric: tabular-nums;
+      letter-spacing: -0.2px;
+    }
+
+    .font-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
     }
 
     .bn {
@@ -652,92 +658,247 @@
       border: 1px solid rgba(124, 58, 237, 0.25);
     }
 
-    /* Persona Badges */
+    /* Persona Badges - Sleek Neutral Corporate (Stripe / Linear style) */
     .persona-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px 8px;
+      gap: 4px;
+      padding: 2.5px 7px;
       border-radius: 6px;
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
+      font-size: 11px;
+      font-weight: 500;
+      background: #F1F5F9;
+      color: #334155;
+      border: 1px solid #E2E8F0;
+      letter-spacing: 0.2px;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+    [data-pc-theme="dark"] .persona-badge {
+      background: #1E293B;
+      color: #CBD5E1;
+      border-color: #334155;
     }
 
-    .persona-urban {
-      background: rgba(70, 128, 255, 0.14);
-      color: #2F63D6;
-      border: 1px solid rgba(70, 128, 255, 0.3);
+    /* KYC Status Pills - Stripe / Vercel Enterprise Style */
+    .kyc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2.5px 8px;
+      border-radius: 9999px;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+    .kyc-verified {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+    }
+    .kyc-pending {
+      background: #FFFBEB;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+    .kyc-rejected {
+      background: #FEF2F2;
+      color: #B91C1C;
+      border: 1px solid #FECACA;
+    }
+    [data-pc-theme="dark"] .kyc-verified {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    [data-pc-theme="dark"] .kyc-pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: #FBBF24;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    [data-pc-theme="dark"] .kyc-rejected {
+      background: rgba(239, 68, 68, 0.15);
+      color: #F87171;
+      border-color: rgba(239, 68, 68, 0.3);
     }
 
-    .persona-family {
-      background: rgba(124, 58, 237, 0.14);
-      color: #7C3AED;
-      border: 1px solid rgba(124, 58, 237, 0.3);
+    /* Status Indicator with Dot */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-active {
+      color: #059669;
+    }
+    .status-active .status-dot {
+      background: #10B981;
+    }
+    .status-inactive {
+      color: #DC2626;
+    }
+    .status-inactive .status-dot {
+      background: #EF4444;
+    }
+    [data-pc-theme="dark"] .status-active {
+      color: #34D399;
+    }
+    [data-pc-theme="dark"] .status-inactive {
+      color: #F87171;
     }
 
-    .persona-student {
-      background: rgba(0, 166, 166, 0.14);
-      color: #00A6A6;
-      border: 1px solid rgba(0, 166, 166, 0.3);
-    }
-
-    .persona-agent {
-      background: rgba(229, 138, 0, 0.14);
-      color: #B46900;
-      border: 1px solid rgba(229, 138, 0, 0.3);
-    }
-
-    /* Tables */
+    /* Compact Table Density - 48px to 52px Row Height */
     .table-hover tbody tr:hover {
       background-color: rgba(70, 128, 255, 0.04);
     }
 
     .table thead th {
-      background: rgba(0, 0, 0, 0.02);
-      color: var(--pc-text-muted);
-      font-weight: 700;
+      background: #F8FAFC;
+      color: #64748B;
+      font-weight: 600;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 1px solid var(--pc-card-border);
-      padding: 11px 16px;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 8px 12px;
+      vertical-align: middle;
+    }
+
+    [data-pc-theme="dark"] .table thead th {
+      background: #1E293B;
+      color: #94A3B8;
+      border-bottom-color: #334155;
     }
 
     .table tbody td {
-      padding: 13px 16px;
+      padding: 8.5px 12px;
       font-size: 12.5px;
       border-bottom: 1px solid var(--pc-card-border);
       vertical-align: middle;
       color: var(--pc-text);
+      line-height: 1.35;
     }
 
-    /* Channel Mini Cards */
+    /* Channel Mini Cards - Stripe / Linear Responsive Flow */
     .channel-box {
       background: var(--pc-subtle-bg);
       border: 1px solid var(--pc-card-border);
       border-radius: 10px;
-      padding: 14px 16px;
+      padding: 12px 13px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      overflow: hidden;
+      min-width: 0;
+      width: 100%;
       transition: all 0.15s ease;
     }
 
     .channel-box:hover {
       border-color: var(--pc-primary);
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .channel-icon {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
       flex-shrink: 0;
+    }
+
+    .channel-content {
+      min-width: 0;
+      overflow: hidden;
+      flex-grow: 1;
+    }
+
+    .channel-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--pc-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .channel-val {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--pc-text);
+      letter-spacing: -0.2px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .channel-sub {
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* User Metric Counter Cards (Top 4) */
+    .user-metric-card {
+      background: var(--pc-card-bg);
+      border: 1px solid var(--pc-card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin: 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      transition: all 0.15s ease;
+    }
+    .user-metric-card:hover {
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+    }
+    .user-metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--pc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 3px;
+    }
+    .user-metric-count {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--pc-text);
+      font-family: var(--pc-font);
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+    .user-metric-pill {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 1.5px 7px;
+      border-radius: 9999px;
+    }
+    .user-metric-sub {
+      font-size: 11px;
+      color: var(--pc-text-muted);
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Slide-over Drawer */
@@ -1249,73 +1410,83 @@
                 <span class="badge-flat primary">Live Flow</span>
               </div>
               <div class="card-body">
-                <div class="row g-3">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-2.5 g-xl-3">
                   <!-- Channel 1: P2P Send Money -->
-                  <div class="col-md-4 col-lg-2">
-                    <div class="channel-box">
+                  <div class="col">
+                    <div class="channel-box" title="P2P Send Money Throughput">
                       <div class="channel-icon" style="background:rgba(70,128,255,0.12); color:#4680FF;">
                         <i class="ti ti-send"></i>
                       </div>
-                      <div>
-                        <div style="font-size:11px; color:var(--pc-text-muted);">P2P Send Money</div>
-                        <div class="mono-num fw-bold" id="volSendMoney">৳ 0.00</div>
-                        <span style="font-size:10px; color:var(--pc-success);">৳0 / Flat ৳5</span>
+                      <div class="channel-content">
+                        <div class="channel-title">P2P Send Money</div>
+                        <div class="channel-val" id="volSendMoney" title="৳ 0.00">
+                          <span style="font-size:12px; font-weight:500; color:var(--pc-text-muted); margin-right:1px;">৳</span>0.00
+                        </div>
+                        <span class="channel-sub" style="color:var(--pc-success);">৳0 / Flat ৳5</span>
                       </div>
                     </div>
                   </div>
 
                   <!-- Channel 2: Mobile Recharge -->
-                  <div class="col-md-4 col-lg-2">
-                    <div class="channel-box">
+                  <div class="col">
+                    <div class="channel-box" title="Mobile Recharge Throughput">
                       <div class="channel-icon" style="background:rgba(44,168,127,0.12); color:#2CA87F;">
                         <i class="ti ti-device-mobile"></i>
                       </div>
-                      <div>
-                        <div style="font-size:11px; color:var(--pc-text-muted);">Mobile Recharge</div>
-                        <div class="mono-num fw-bold" id="volRecharge">৳ 0.00</div>
-                        <span style="font-size:10px; color:var(--pc-text-muted);">5 Telco Operators</span>
+                      <div class="channel-content">
+                        <div class="channel-title">Mobile Recharge</div>
+                        <div class="channel-val" id="volRecharge" title="৳ 0.00">
+                          <span style="font-size:12px; font-weight:500; color:var(--pc-text-muted); margin-right:1px;">৳</span>0.00
+                        </div>
+                        <span class="channel-sub" style="color:var(--pc-text-muted);">5 Telco Operators</span>
                       </div>
                     </div>
                   </div>
 
                   <!-- Channel 3: MFS Cash Out -->
-                  <div class="col-md-4 col-lg-3">
-                    <div class="channel-box">
+                  <div class="col">
+                    <div class="channel-box" title="MFS Cash-Out (1.85%) Throughput">
                       <div class="channel-icon" style="background:rgba(220,38,38,0.12); color:#DC2626;">
                         <i class="ti ti-building-bank"></i>
                       </div>
-                      <div>
-                        <div style="font-size:11px; color:var(--pc-text-muted);">MFS Cash-Out (1.85%)</div>
-                        <div class="mono-num fw-bold" id="volCashOut">৳ 0.00</div>
-                        <span style="font-size:10px; color:var(--pc-danger);">Agent 1.48% | Platform 0.37%</span>
+                      <div class="channel-content">
+                        <div class="channel-title">MFS Cash-Out (1.85%)</div>
+                        <div class="channel-val" id="volCashOut" title="৳ 0.00">
+                          <span style="font-size:12px; font-weight:500; color:var(--pc-text-muted); margin-right:1px;">৳</span>0.00
+                        </div>
+                        <span class="channel-sub" style="color:var(--pc-danger);">Agent 1.48% | Plat 0.37%</span>
                       </div>
                     </div>
                   </div>
 
                   <!-- Channel 4: Merchant QR Pay -->
-                  <div class="col-md-6 col-lg-2">
-                    <div class="channel-box">
+                  <div class="col">
+                    <div class="channel-box" title="Merchant QR Payments Throughput">
                       <div class="channel-icon" style="background:rgba(0,166,166,0.12); color:#00A6A6;">
                         <i class="ti ti-qrcode"></i>
                       </div>
-                      <div>
-                        <div style="font-size:11px; color:var(--pc-text-muted);">Merchant QR</div>
-                        <div class="mono-num fw-bold" id="volMerchant">৳ 0.00</div>
-                        <span style="font-size:10px; color:var(--pc-info);">NPSB QR Outlets</span>
+                      <div class="channel-content">
+                        <div class="channel-title">Merchant QR</div>
+                        <div class="channel-val" id="volMerchant" title="৳ 0.00">
+                          <span style="font-size:12px; font-weight:500; color:var(--pc-text-muted); margin-right:1px;">৳</span>0.00
+                        </div>
+                        <span class="channel-sub" style="color:var(--pc-info);">NPSB QR Outlets</span>
                       </div>
                     </div>
                   </div>
 
                   <!-- Channel 5: Add Money Gateway -->
-                  <div class="col-md-6 col-lg-3">
-                    <div class="channel-box">
+                  <div class="col">
+                    <div class="channel-box" title="Bank & Card Add Money Gateway Throughput">
                       <div class="channel-icon" style="background:rgba(229,138,0,0.12); color:#E58A00;">
                         <i class="ti ti-credit-card"></i>
                       </div>
-                      <div>
-                        <div style="font-size:11px; color:var(--pc-text-muted);">Bank / Card Add Money</div>
-                        <div class="mono-num fw-bold" id="volAddMoney">৳ 0.00</div>
-                        <span style="font-size:10px; color:var(--pc-warning);">Visa/Master/NPSB</span>
+                      <div class="channel-content">
+                        <div class="channel-title">Bank / Card Add Money</div>
+                        <div class="channel-val" id="volAddMoney" title="৳ 0.00">
+                          <span style="font-size:12px; font-weight:500; color:var(--pc-text-muted); margin-right:1px;">৳</span>0.00
+                        </div>
+                        <span class="channel-sub" style="color:var(--pc-warning);">Visa/Master/NPSB</span>
                       </div>
                     </div>
                   </div>
@@ -1401,41 +1572,46 @@
       <!-- ================= 2. USERS & PERSONAS VIEW ================= -->
       <div id="tab-users" class="tab-section">
         <!-- Real MFS User & KYC Metric Cards -->
+        <!-- Real MFS User & KYC Metric Cards (Enterprise Stripe/Linear style) -->
         <div class="row g-3 mb-3">
           <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-success); cursor: pointer;" onclick="setUserKycFilter('VERIFIED')">
-              <div class="d-flex align-items-center justify-content-between mb-1">
-                <span class="badge bg-success-subtle text-success px-2 py-1 fw-semibold"><i class="ti ti-shield-check"></i> Verified KYC Users</span>
-                <span class="mono-num fw-bold text-success fs-5" id="userKpiVerified">98,450</span>
+            <div class="user-metric-card" style="border-left: 3px solid #10B981; cursor: pointer;" onclick="setUserKycFilter('VERIFIED')">
+              <div class="user-metric-label">Verified KYC Users</div>
+              <div class="d-flex align-items-baseline justify-content-between">
+                <div class="user-metric-count text-success" id="userKpiVerified">98,450</div>
+                <span class="user-metric-pill" style="background:#ECFDF5; color:#047857;"><i class="ti ti-shield-check"></i> 98.5%</span>
               </div>
-              <div style="font-size:11.5px; color:var(--pc-text-muted);">Biometric NID Verified Accounts (98.5%)</div>
+              <div class="user-metric-sub">Biometric NID Verified Accounts</div>
             </div>
           </div>
           <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-warning); cursor: pointer;" onclick="setUserKycFilter('PENDING')">
-              <div class="d-flex align-items-center justify-content-between mb-1">
-                <span class="badge bg-warning-subtle text-warning px-2 py-1 fw-semibold"><i class="ti ti-clock-pause"></i> Pending KYC Review</span>
-                <span class="mono-num fw-bold text-warning fs-5" id="userKpiPending">1,550</span>
+            <div class="user-metric-card" style="border-left: 3px solid #F59E0B; cursor: pointer;" onclick="setUserKycFilter('PENDING')">
+              <div class="user-metric-label">Pending KYC Review</div>
+              <div class="d-flex align-items-baseline justify-content-between">
+                <div class="user-metric-count text-warning" id="userKpiPending">1,550</div>
+                <span class="user-metric-pill" style="background:#FFFBEB; color:#B45309;"><i class="ti ti-clock-pause"></i> Review</span>
               </div>
-              <div style="font-size:11.5px; color:var(--pc-text-muted);">Awaiting Manual Compliance Approval</div>
+              <div class="user-metric-sub">Awaiting Manual Compliance Approval</div>
             </div>
           </div>
           <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-primary);">
-              <div class="d-flex align-items-center justify-content-between mb-1">
-                <span class="badge bg-primary-subtle text-primary px-2 py-1 fw-semibold"><i class="ti ti-building-bank"></i> Active Cash-Out Agents</span>
-                <span class="mono-num fw-bold text-primary fs-5" id="userKpiAgents">50</span>
+            <div class="user-metric-card" style="border-left: 3px solid #3B82F6;">
+              <div class="user-metric-label">Active Cash-Out Agents</div>
+              <div class="d-flex align-items-baseline justify-content-between">
+                <div class="user-metric-count text-primary" id="userKpiAgents">50</div>
+                <span class="user-metric-pill" style="background:#EFF6FF; color:#1D4ED8;"><i class="ti ti-building-bank"></i> Float</span>
               </div>
-              <div style="font-size:11.5px; color:var(--pc-text-muted);">Agent Float Liquidity Service Points</div>
+              <div class="user-metric-sub">Agent Liquidity Service Points</div>
             </div>
           </div>
           <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-danger);">
-              <div class="d-flex align-items-center justify-content-between mb-1">
-                <span class="badge bg-danger-subtle text-danger px-2 py-1 fw-semibold"><i class="ti ti-alert-triangle"></i> Dormant / At-Risk Users</span>
-                <span class="mono-num fw-bold text-danger fs-5" id="userKpiDormant">30,190</span>
+            <div class="user-metric-card" style="border-left: 3px solid #EF4444;">
+              <div class="user-metric-label">Dormant / At-Risk Users</div>
+              <div class="d-flex align-items-baseline justify-content-between">
+                <div class="user-metric-count text-danger" id="userKpiDormant">30,190</div>
+                <span class="user-metric-pill" style="background:#FEF2F2; color:#B91C1C;"><i class="ti ti-alert-triangle"></i> 30.2%</span>
               </div>
-              <div style="font-size:11.5px; color:var(--pc-text-muted);">Win-Back &amp; Retention Target Segment (30.2%)</div>
+              <div class="user-metric-sub">Win-Back &amp; Retention Target Segment</div>
             </div>
           </div>
         </div>
@@ -3373,14 +3549,36 @@
           const agentCommDisplay = document.getElementById('agentCommissionDisplay');
           if (agentCommDisplay) agentCommDisplay.textContent = `৳ ${(data.agent_commission || 0).toFixed(2)}`;
 
-          // Channel Volumes
+          // Channel Volumes (Smart Compact Currency Formatter with Full Amount Tooltips)
           if (data.channel_volumes) {
             const cv = data.channel_volumes;
-            document.getElementById('volSendMoney').textContent = `৳ ${(cv.send_money || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-            document.getElementById('volRecharge').textContent = `৳ ${(cv.recharge || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-            document.getElementById('volCashOut').textContent = `৳ ${(cv.cash_out || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-            document.getElementById('volMerchant').textContent = `৳ ${(cv.merchant_payment || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-            document.getElementById('volAddMoney').textContent = `৳ ${(cv.add_money || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            const setVol = (elId, amt) => {
+              const el = document.getElementById(elId);
+              if (!el) return;
+              const n = Number(amt || 0);
+              const fullFormatted = '৳ ' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              let compact = '';
+              if (n >= 1e7) {
+                compact = (n / 1e7).toFixed(2) + ' Cr';
+              } else if (n >= 1e6) {
+                compact = (n / 1e6).toFixed(2) + 'M';
+              } else if (n >= 1e5) {
+                compact = (n / 1e5).toFixed(2) + ' L';
+              } else if (n >= 1e3) {
+                compact = (n / 1e3).toFixed(1) + 'k';
+              } else {
+                compact = n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              }
+              el.innerHTML = `<span style="font-size:12px; font-weight:500; color:var(--pc-text-muted); margin-right:1px;">৳</span><span style="font-weight:600;">${compact}</span>`;
+              el.setAttribute('title', `Exact Volume: ${fullFormatted}`);
+              el.closest('.channel-box')?.setAttribute('title', `Exact Volume: ${fullFormatted}`);
+            };
+
+            setVol('volSendMoney', cv.send_money);
+            setVol('volRecharge', cv.recharge);
+            setVol('volCashOut', cv.cash_out);
+            setVol('volMerchant', cv.merchant_payment);
+            setVol('volAddMoney', cv.add_money);
           }
         }
       } catch (e) { }
@@ -3406,13 +3604,13 @@
             tr.style.cursor = 'pointer';
             tr.onclick = () => openDrawerWithTxn(t);
             tr.innerHTML = `
-              <td><span class="mono-num fw-bold text-primary">${t.transaction_code}</span></td>
+              <td><span class="fw-semibold text-primary" style="font-size:11.5px;">${t.transaction_code}</span></td>
               <td><span class="badge-flat primary">${t.type}</span></td>
-              <td>${t.sender_phone || 'External / Cash In'}</td>
-              <td>${t.receiver_phone || 'Merchant Point'}</td>
-              <td><strong class="mono-num">৳ ${Number(t.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></td>
-              <td class="mono-num text-muted">৳ ${Number(t.fee).toFixed(2)}</td>
-              <td><span class="badge-flat success">COMPLETED</span></td>
+              <td style="font-size:12px;">${t.sender_phone || 'External / Cash In'}</td>
+              <td style="font-size:12px;">${t.receiver_phone || 'Merchant Point'}</td>
+              <td><span style="font-weight:600; color:var(--pc-text);">৳ ${Number(t.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></td>
+              <td style="font-size:12px; color:var(--pc-text-muted);">৳ ${Number(t.fee).toFixed(2)}</td>
+              <td><span class="status-indicator status-active"><span class="status-dot"></span> Completed</span></td>
             `;
             tbody.appendChild(tr);
           });
@@ -3545,33 +3743,38 @@
         tr.onclick = () => openCustomerDrawer(u.id);
         const isActive = u.status === 'ACTIVE';
 
-        // Persona styling
-        let personaBadge = `<span class="persona-badge persona-urban">URBAN_PRO</span>`;
-        if (u.persona === 'FAMILY_HEAD') personaBadge = `<span class="persona-badge persona-family">FAMILY_HEAD</span>`;
-        else if (u.persona === 'STUDENT_YOUTH') personaBadge = `<span class="persona-badge persona-student">STUDENT_YOUTH</span>`;
-        else if (u.persona === 'AGENT_POINT') personaBadge = `<span class="persona-badge persona-agent">AGENT_POINT</span>`;
+        // Persona styling - Subtle neutral slate corporate badge (Stripe / Linear)
+        let personaBadge = `<span class="persona-badge">URBAN_PRO</span>`;
+        if (u.persona === 'FAMILY_HEAD') personaBadge = `<span class="persona-badge">FAMILY_HEAD</span>`;
+        else if (u.persona === 'STUDENT_YOUTH') personaBadge = `<span class="persona-badge">STUDENT_YOUTH</span>`;
+        else if (u.persona === 'AGENT_POINT') personaBadge = `<span class="persona-badge">AGENT_POINT</span>`;
 
-        // KYC Status badge
-        let kycBadge = `<span class="badge-flat success" title="Election Commission Verified"><i class="ti ti-discount-check-filled"></i> Verified</span>`;
+        // KYC Status badge - Solid pill
+        let kycBadge = `<span class="kyc-pill kyc-verified" title="Election Commission Verified"><i class="ti ti-discount-check-filled"></i> Verified</span>`;
         if (u.kyc_status === 'PENDING') {
-          kycBadge = `<span class="badge-flat warning" title="Pending Verification Review"><i class="ti ti-clock"></i> Pending</span>`;
+          kycBadge = `<span class="kyc-pill kyc-pending" title="Pending Verification Review"><i class="ti ti-clock"></i> Pending</span>`;
         } else if (u.kyc_status === 'REJECTED') {
-          kycBadge = `<span class="badge-flat danger" title="${u.kyc_rejection_reason || 'Rejected'}"><i class="ti ti-alert-triangle"></i> Rejected</span>`;
+          kycBadge = `<span class="kyc-pill kyc-rejected" title="${u.kyc_rejection_reason || 'Rejected'}"><i class="ti ti-alert-triangle"></i> Rejected</span>`;
         }
+
+        // Account Status - Clean dot indicator
+        const statusHtml = isActive
+          ? `<span class="status-indicator status-active"><span class="status-dot"></span> Active</span>`
+          : `<span class="status-indicator status-inactive"><span class="status-dot"></span> Inactive</span>`;
 
         // User Avatar
         const avatarSrc = u.profile_image || u.avatar;
         const avatarHtml = avatarSrc
           ? `<img src="${avatarSrc.startsWith('http') || avatarSrc.startsWith('data:') ? avatarSrc : `${API_BASE}${avatarSrc}`}" 
                  alt="${u.name}" 
-                 style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid #00D09C; box-shadow:0 1px 4px rgba(0,0,0,0.1);" 
-                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'admin-avatar\\' style=\\'width:36px; height:36px; font-size:13px; border-radius:50%; background:#0F4D3C; color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:bold;\\'>${(u.name || 'U').charAt(0).toUpperCase()}</div>';" />`
-          : `<div class="admin-avatar" style="width:36px; height:36px; font-size:13px; border-radius:50%; background:#0F4D3C; color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:bold;">${(u.name || 'U').charAt(0).toUpperCase()}</div>`;
+                 style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #CBD5E1;" 
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'admin-avatar\\' style=\\'width:32px; height:32px; font-size:12px; border-radius:50%; background:#0F4D3C; color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:600;\\'>${(u.name || 'U').charAt(0).toUpperCase()}</div>';" />`
+          : `<div class="admin-avatar" style="width:32px; height:32px; font-size:12px; border-radius:50%; background:#0F4D3C; color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:600;">${(u.name || 'U').charAt(0).toUpperCase()}</div>`;
 
         tr.innerHTML = `
           <td>
-            <strong class="mono-num text-muted">#${u.id}</strong><br>
-            <span class="badge bg-light text-muted border mt-1" style="font-size:10px; font-weight:normal;" title="Joined: ${u.created_at_fmt || 'N/A'}">
+            <span style="font-size:11.5px; font-weight:600; color:var(--pc-text-muted);">#${u.id}</span><br>
+            <span style="font-size:10px; color:#94A3B8;" title="Joined: ${u.created_at_fmt || 'N/A'}">
               <i class="ti ti-calendar"></i> ${u.created_at_date || u.created_at_fmt || 'N/A'}
             </span>
           </td>
@@ -3579,32 +3782,32 @@
             <div class="d-flex align-items-center gap-2">
               ${avatarHtml}
               <div>
-                <strong>${u.name}</strong><br>
-                <span style="font-size:11px; color:var(--pc-text-muted);">${u.email || 'No email attached'}</span>
+                <strong style="font-size:13px; font-weight:600; color:var(--pc-text);">${u.name}</strong><br>
+                <span style="font-size:11px; color:#64748B;">${u.email || 'No email attached'}</span>
               </div>
             </div>
           </td>
           <td>
-            <span class="mono-num">${u.phone}</span><br>
-            <span style="font-size:11px; color:var(--pc-text-muted);"><i class="ti ti-id"></i> ${u.nid_number || 'N/A'}</span>
+            <span style="font-size:12px; font-weight:500; color:var(--pc-text);">${u.phone}</span><br>
+            <span style="font-size:11px; color:#94A3B8;"><i class="ti ti-id"></i> ${u.nid_number || 'N/A'}</span>
           </td>
           <td>${kycBadge}</td>
           <td>${personaBadge}</td>
-          <td><span class="mono-num fw-bold text-dark">${u.txns_count || 0} Txns</span></td>
-          <td><strong class="mono-num text-success">৳ ${Number(u.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></td>
-          <td><span class="badge-flat ${isActive ? 'success' : 'danger'}">${u.status}</span></td>
+          <td><span style="font-size:12px; font-weight:600; color:var(--pc-text);">${u.txns_count || 0} Txns</span></td>
+          <td><span style="font-size:13px; font-weight:600; color:#059669;">৳ ${Number(u.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></td>
+          <td>${statusHtml}</td>
           <td class="text-end" onclick="event.stopPropagation()">
             <div class="btn-group btn-group-sm">
-              <button class="btn btn-outline-primary" onclick="openCustomerDrawer(${u.id})" title="Customer 360° Dossier">
+              <button class="btn btn-outline-primary btn-sm py-1 px-2" onclick="openCustomerDrawer(${u.id})" title="Customer 360° Dossier">
                 <i class="ti ti-user-circle"></i> 360°
               </button>
-              <button class="btn btn-outline-secondary" onclick="openKycModal(${u.id})" title="Review KYC Documents">
+              <button class="btn btn-outline-secondary btn-sm py-1 px-2" onclick="openKycModal(${u.id})" title="Review KYC Documents">
                 <i class="ti ti-badge-check"></i> KYC
               </button>
-              <button class="btn btn-outline-secondary" onclick="openCreditModal(${u.id}, '${(u.name || '').replace(/'/g, "\\'")}')" title="Adjust Wallet Balance">
+              <button class="btn btn-outline-secondary btn-sm py-1 px-2" onclick="openCreditModal(${u.id}, '${(u.name || '').replace(/'/g, "\\'")}')" title="Adjust Wallet Balance">
                 + Credit
               </button>
-              <button class="btn ${isActive ? 'btn-outline-danger' : 'btn-outline-success'}" onclick="toggleUserStatus(${u.id})" title="${isActive ? 'Freeze Account' : 'Activate Account'}">
+              <button class="btn ${isActive ? 'btn-outline-danger' : 'btn-outline-success'} btn-sm py-1 px-2" onclick="toggleUserStatus(${u.id})" title="${isActive ? 'Freeze Account' : 'Activate Account'}">
                 ${isActive ? 'Freeze' : 'Activate'}
               </button>
             </div>
