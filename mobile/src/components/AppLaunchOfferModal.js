@@ -7,21 +7,25 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLanguage } from '../context/LanguageContext';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-// High-resolution real lifestyle images tailored by category
-const CATEGORY_IMAGES = {
-  MERCHANT_PAY: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80',
-  RECHARGE: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80',
-  ADD_MONEY: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=800&auto=format&fit=crop&q=80',
-  BILL_PAY: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80',
-  SEND_MONEY: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80',
+// High-resolution commercial campaign visuals
+const CAMPAIGN_IMAGES = {
+  MERCHANT_PAY:
+    'https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&auto=format&fit=crop&q=80', // Juicy gourmet burger feast
+  RECHARGE:
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80', // Cheerful person with phone
+  ADD_MONEY:
+    'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&auto=format&fit=crop&q=80', // Modern digital banking
+  BILL_PAY:
+    'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80', // Utility bill payments
+  SEND_MONEY:
+    'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80',
 };
 
 export const AppLaunchOfferModal = ({
@@ -35,24 +39,28 @@ export const AppLaunchOfferModal = ({
 
   if (!offer) return null;
 
-  const category = (offer.category || 'RECHARGE').toUpperCase();
-  const heroImage = offer.image || CATEGORY_IMAGES[category] || CATEGORY_IMAGES.RECHARGE;
+  const category = (offer.category || 'MERCHANT_PAY').toUpperCase();
+  const heroImage =
+    offer.image || CAMPAIGN_IMAGES[category] || CAMPAIGN_IMAGES.MERCHANT_PAY;
 
+  // Clean, commercial advertisement copy
   const headline = isBangla
-    ? (offer.headline || offer.title || 'বিশেষ ক্যাশব্যাক অফার')
-    : (offer.headlineEn || offer.titleEn || offer.title || 'Special Cashback Offer');
+    ? (offer.headline || offer.title || 'চিলক্স বার্গারে আকর্ষণীয় ছাড়!')
+    : (offer.headlineEn || offer.titleEn || offer.title || 'Special Offer at Chillox Burger!');
 
   const sub = isBangla
-    ? (offer.sub || offer.description || 'আপনার অ্যাকাউন্টের জন্য নির্ধারিত প্রিমিয়াম রিওয়ার্ড।')
-    : (offer.subEn || offer.descriptionEn || 'Exclusive reward selected for your account.');
+    ? (offer.sub || 'জেনক্যাশ দিয়ে পেমেন্ট করলেই উপভোগ করুন আকর্ষণীয় ইনস্ট্যান্ট ক্যাশব্যাক।')
+    : (offer.subEn || 'Pay with GenCash QR code and enjoy instant cashback on your bill.');
 
-  const btnText = isBangla
-    ? (offer.btnText || 'অফারটি উপভোগ করুন')
-    : (offer.btnTextEn || 'Grab Offer Now');
+  const discountBadge = offer.discount || (isBangla ? '১৫% ক্যাশব্যাক' : '15% Cashback');
+  const campaignTag = offer.badge || (isBangla ? 'লাভের অফার' : 'Special Offer');
+  const validityText = offer.validity || (isBangla ? 'সীমিত সময়ের জন্য • শর্ত প্রযোজ্য' : 'Limited time promo • T&C apply');
 
-  const reason = isBangla
-    ? (offer.reason_bn || offer.aiReasonBn || 'বিগত ৩০ দিনের ব্যবহারের ভিত্তিতে এটি আপনার জন্য সেরা অফার।')
-    : (offer.reason_en || offer.aiReasonEn || 'Selected based on your 30-day activity pattern.');
+  const btnText = offer.btnText
+    ? offer.btnText
+    : isBangla
+    ? 'অফারটি উপভোগ করুন'
+    : 'Grab Offer Now';
 
   return (
     <Modal
@@ -62,87 +70,90 @@ export const AppLaunchOfferModal = ({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
+        {/* Backdrop dismiss touch */}
+        <TouchableOpacity
+          style={StyleSheet.absoluteFill}
+          activeOpacity={1}
+          onPress={onClose}
+        />
+
+        {/* Campaign Banner Card Container */}
         <View style={styles.cardContainer}>
-          {/* 1. Hero Image with Gradient Overlay */}
+          {/* 1. Floating Clean Circular Close Button */}
+          <TouchableOpacity
+            style={styles.floatingCloseBtn}
+            onPress={onClose}
+            activeOpacity={0.8}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
+            <Ionicons name="close" size={18} color="#0F2F24" />
+          </TouchableOpacity>
+
+          {/* 2. Top Promotional Banner Image */}
           <View style={styles.imageWrapper}>
             <Image
               source={{ uri: heroImage }}
               style={styles.heroImage}
               resizeMode="cover"
             />
+            {/* Smooth Cinematic Gradient Overlay */}
             <LinearGradient
-              colors={['rgba(0,0,0,0.5)', 'transparent', 'rgba(0,0,0,0.7)']}
-              locations={[0, 0.4, 1]}
+              colors={['rgba(0,0,0,0.4)', 'transparent', 'rgba(15, 77, 60, 0.85)']}
+              locations={[0, 0.45, 1]}
               style={StyleSheet.absoluteFill}
             />
 
-            {/* Top Tag */}
-            <View style={styles.topBadge}>
-              <Ionicons name="flame" size={13} color="#FFFFFF" style={{ marginRight: 4 }} />
-              <Text style={styles.topBadgeText}>
-                {isBangla ? 'বিশেষ অফার' : 'Exclusive Deal'}
-              </Text>
+            {/* Top-Left: "লাভের ঘণ্টা / অফার" Campaign Ribbon */}
+            <View style={styles.campaignRibbon}>
+              <Ionicons name="alarm" size={13} color="#FFFFFF" style={{ marginRight: 4 }} />
+              <Text style={styles.campaignRibbonText}>{campaignTag}</Text>
             </View>
 
-            {/* Close Button X */}
-            <TouchableOpacity
-              style={styles.closeBtn}
-              onPress={onClose}
-              activeOpacity={0.8}
-              hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
-            >
-              <Ionicons name="close" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-
-            {/* Value Callout on Image Bottom */}
-            <View style={styles.imageBottomTextWrap}>
-              <Text style={styles.highlightBadgeText} numberOfLines={1}>
-                {isBangla ? 'সীমিত সময়ের সুযোগ' : 'Limited Time Privilege'}
-              </Text>
+            {/* Bottom-Left: Punchy Discount Badge on Banner */}
+            <View style={styles.bannerBottomRow}>
+              <View style={styles.discountBadge}>
+                <Ionicons name="gift" size={13} color="#F59E0B" style={{ marginRight: 5 }} />
+                <Text style={styles.discountBadgeText}>{discountBadge}</Text>
+              </View>
             </View>
           </View>
 
-          {/* 2. Content Body */}
+          {/* 3. Simple & Elegant Commercial Content Body */}
           <View style={styles.body}>
+            {/* Offer Headline */}
             <Text style={styles.headline} numberOfLines={2}>
               {headline}
             </Text>
 
+            {/* Human & Inviting Promotional Subtitle */}
             <Text style={styles.subtitle} numberOfLines={2}>
               {sub}
             </Text>
 
-            {/* Why This Offer Box */}
-            <View style={styles.reasonBox}>
-              <View style={styles.reasonHeader}>
-                <Ionicons name="shield-checkmark" size={14} color="#0F4D3C" style={{ marginRight: 5 }} />
-                <Text style={styles.reasonTitle}>
-                  {isBangla ? 'আপনার জন্য কেন উপযুক্ত?' : 'Why this offer?'}
-                </Text>
-              </View>
-              <Text style={styles.reasonText} numberOfLines={2}>
-                {reason}
-              </Text>
+            {/* Campaign Validity / Terms Note */}
+            <View style={styles.validityRow}>
+              <Ionicons name="time-outline" size={13} color="#64748B" style={{ marginRight: 4 }} />
+              <Text style={styles.validityText}>{validityText}</Text>
             </View>
 
-            {/* Action Buttons */}
+            {/* Primary Action Button */}
             <TouchableOpacity
               style={styles.actionBtn}
               activeOpacity={0.88}
               onPress={() => onAccept && onAccept(offer)}
             >
               <LinearGradient
-                colors={['#0F4D3C', '#137158']}
+                colors={['#0F4D3C', '#009B72']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.actionGradient}
               >
                 <Text style={styles.actionBtnText}>{btnText}</Text>
-                <Ionicons name="arrow-forward" size={17} color="#FFFFFF" style={{ marginLeft: 8 }} />
+                <Ionicons name="arrow-forward" size={16} color="#FFFFFF" style={{ marginLeft: 8 }} />
               </LinearGradient>
             </TouchableOpacity>
 
-            {/* Secondary footer links */}
+            {/* Secondary Link: View All Offers */}
             <View style={styles.footerRow}>
               <TouchableOpacity
                 onPress={() => {
@@ -173,19 +184,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
   },
   cardContainer: {
-    width: Math.min(width * 0.88, 360),
+    width: Math.min(width * 0.88, 350),
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.35,
-    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.3,
+    shadowRadius: 22,
     elevation: 20,
+    position: 'relative',
+  },
+  floatingCloseBtn: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
   },
   imageWrapper: {
     width: '100%',
-    height: 190,
+    height: 185,
     position: 'relative',
     backgroundColor: '#0F4D3C',
   },
@@ -193,87 +222,82 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  topBadge: {
+  campaignRibbon: {
     position: 'absolute',
     top: 14,
     left: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(239, 68, 68, 0.92)',
+    backgroundColor: '#DC2626',
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 4.5,
     borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  topBadgeText: {
+  campaignRibbonText: {
     color: '#FFFFFF',
     fontSize: 11.5,
-    fontWeight: '700',
+    fontWeight: '800',
+    letterSpacing: 0.2,
   },
-  closeBtn: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.25)',
-  },
-  imageBottomTextWrap: {
+  bannerBottomRow: {
     position: 'absolute',
     bottom: 12,
     left: 14,
     right: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  highlightBadgeText: {
-    color: '#A7F3D0',
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.3,
+  discountBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(15, 77, 60, 0.94)',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(245, 158, 11, 0.4)',
+  },
+  discountBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0.2,
   },
   body: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 18,
     paddingBottom: 18,
   },
   headline: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '800',
-    color: '#0F172A',
-    lineHeight: 24,
-    marginBottom: 4,
+    color: '#0F2F24',
+    lineHeight: 23,
+    marginBottom: 6,
+    letterSpacing: -0.3,
   },
   subtitle: {
-    fontSize: 13,
-    color: '#64748B',
+    fontSize: 12.5,
+    color: '#475569',
     lineHeight: 18,
     marginBottom: 12,
   },
-  reasonBox: {
-    backgroundColor: '#F0FDF4',
-    borderWidth: 1,
-    borderColor: '#DCFCE7',
-    borderRadius: 14,
-    padding: 10,
-    marginBottom: 16,
-  },
-  reasonHeader: {
+  validityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 3,
+    marginBottom: 16,
+    paddingVertical: 4,
   },
-  reasonTitle: {
-    fontSize: 11.5,
-    fontWeight: '700',
-    color: '#0F4D3C',
-  },
-  reasonText: {
+  validityText: {
     fontSize: 11,
-    color: '#166534',
-    lineHeight: 15,
+    color: '#64748B',
+    fontWeight: '500',
   },
   actionBtn: {
     width: '100%',

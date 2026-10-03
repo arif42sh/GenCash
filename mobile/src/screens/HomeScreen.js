@@ -72,16 +72,37 @@ export const HomeScreen = ({ navigation }) => {
         const nboRes = await api.getNextBestOffers();
         const top = nboRes?.top_recommended_offer;
         if (top && isMounted) {
+          const discountStr = top.discount_value
+            ? (isBangla ? `৳${top.discount_value} ক্যাশব্যাক` : `৳${top.discount_value} Cashback`)
+            : (isBangla ? '১৫% ক্যাশব্যাক' : '15% Cashback');
+
+          const campaignBadge = isBangla ? 'লাভের অফার' : 'Special Deal';
+
+          const commercialSub =
+            top.category === 'MERCHANT_PAY'
+              ? (isBangla
+                  ? 'জেনক্যাশ দিয়ে মার্চেন্ট পেমেন্ট করলেই উপভোগ করুন আকর্ষণীয় ইনস্ট্যান্ট ক্যাশব্যাক।'
+                  : 'Pay with GenCash QR at partner food & shopping hubs to get instant cashback.')
+              : top.category === 'RECHARGE'
+              ? (isBangla
+                  ? 'যেকোনো মোবাইল অপারেটরে রিচার্জ করুন সহজেই এবং পান ক্যাশব্যাক বোনাস।'
+                  : 'Recharge any mobile number easily and enjoy instant bonus cashback.')
+              : (isBangla
+                  ? 'জেনক্যাশ দিয়ে পেমেন্ট করলেই মিলবে আকর্ষণীয় রিওয়ার্ড ও ক্যাশব্যাক।'
+                  : 'Transact with GenCash to unlock special wallet rewards and savings.');
+
           const formatted = {
             id: top.offer_id,
             category: top.category,
             title: top.title,
             titleEn: top.title,
             headline: top.title,
-            sub: isBangla ? top.reason_bn : top.reason_en,
-            reason_bn: top.reason_bn,
-            reason_en: top.reason_en,
-            discount: `৳${top.discount_value || 50} ক্যাশব্যাক`,
+            sub: commercialSub,
+            discount: discountStr,
+            badge: campaignBadge,
+            validity: isBangla
+              ? 'সীমিত সময়ের জন্য • শর্ত প্রযোজ্য'
+              : 'Limited time campaign • T&C apply',
             targetScreen:
               top.category === 'RECHARGE'
                 ? 'MobileRecharge'
@@ -98,16 +119,10 @@ export const HomeScreen = ({ navigation }) => {
                 : {},
             btnText:
               top.category === 'RECHARGE'
-                ? 'রিচার্জ করুন'
+                ? (isBangla ? 'রিচার্জ করুন' : 'Recharge Now')
                 : top.category === 'MERCHANT_PAY'
-                ? 'পেমেন্ট করুন'
-                : 'অফারটি উপভোগ করুন',
-            btnTextEn:
-              top.category === 'RECHARGE'
-                ? 'Recharge Now'
-                : top.category === 'MERCHANT_PAY'
-                ? 'Pay Now'
-                : 'Grab Offer',
+                ? (isBangla ? 'পেমেন্ট করুন' : 'Pay Now')
+                : (isBangla ? 'অফারটি উপভোগ করুন' : 'Grab Offer'),
           };
           setLaunchOffer(formatted);
           sessionLaunchPopupDismissed = true;
