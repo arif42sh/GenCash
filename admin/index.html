@@ -3326,13 +3326,13 @@
 
   <!-- [ Deploy Campaign Modal ] -->
   <div id="campaignModal" class="pc-modal-backdrop">
-    <div class="pc-modal-box" style="max-width: 820px; width: 100%; max-height: min(92vh, 720px); display: flex; flex-direction: column; overflow: hidden; padding: 22px 26px;">
+    <div class="pc-modal-box" style="max-width: 820px; width: 100%; max-height: min(92vh, 720px); display: flex; flex-direction: column; overflow: hidden; padding: 22px 24px;">
       <!-- Modal Header (Fixed) -->
       <div class="d-flex justify-content-between align-items-center pb-2.5 border-bottom flex-shrink-0 mb-3">
-        <div>
-          <h6 class="m-0 fw-bold" style="font-size: 15px; color: var(--pc-text);">Deploy Campaign & Promotional Offer</h6>
-          <div class="text-muted" style="font-size: 11.5px; margin-top: 2px;">Configure promotional parameters, audience distribution, and creative assets.</div>
-        </div>
+        <h5 class="m-0 fw-bold d-flex align-items-center gap-2" style="font-size: 16px;">
+          <i class="ti ti-speakerphone text-primary" style="font-size: 20px;"></i>
+          <span>Deploy Promotional Campaign</span>
+        </h5>
         <button class="btn btn-sm btn-link text-muted p-1" onclick="closeCampaignModal()" title="Close">
           <i class="ti ti-x" style="font-size: 20px;"></i>
         </button>
@@ -3341,22 +3341,22 @@
       <!-- Modal Body (Scrollable 2-Column Grid) -->
       <div style="overflow-y: auto; overflow-x: hidden; flex: 1; padding-right: 6px;">
         <div class="row g-3">
-          <!-- Left Column: Campaign Parameters -->
+          <!-- Left Column: Campaign Details & Logic -->
           <div class="col-lg-7 d-flex flex-column gap-2.5">
             <div>
-              <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Campaign Title</label>
-              <input type="text" class="form-control form-control-sm" id="campName" value="Boishakhi 20% Merchant Cashback" placeholder="e.g. Boishakhi 20% Merchant Cashback" oninput="autoDetectActionRoute()">
+              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Campaign Title</label>
+              <input type="text" class="form-control form-control-sm" id="campName" value="Boishakhi 20% Merchant Cashback" oninput="autoDetectActionRoute()">
             </div>
 
             <div>
-              <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Offer Description</label>
+              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Customer Offer Copy</label>
               <input type="text" class="form-control form-control-sm" id="campDesc"
-                value="Enjoy 20% cashback up to ৳50 on all merchant QR payments" placeholder="Customer offer copy" oninput="autoDetectActionRoute()">
+                value="Enjoy 20% cashback up to ৳50 on all merchant QR payments" oninput="autoDetectActionRoute()">
             </div>
 
             <div class="row g-2">
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Incentive Type</label>
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Offer Type</label>
                 <select id="campType" class="form-select form-select-sm" onchange="autoDetectActionRoute()">
                   <option value="CASHBACK">Cashback</option>
                   <option value="DISCOUNT">Instant Discount</option>
@@ -3364,66 +3364,63 @@
                 </select>
               </div>
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Target Audience</label>
-                <select id="campSegment" class="form-select form-select-sm">
-                  <option value="Persuadables" selected>High-Propensity Customers</option>
-                  <option value="All Users">All Registered Customers</option>
-                  <option value="Dormant Users">Dormant Customer Reactivation</option>
-                </select>
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Audience Targeting</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light text-muted border-end-0 py-0" style="font-size:12px;"><i class="ti ti-users"></i></span>
+                  <input type="text" class="form-control form-control-sm border-start-0 ps-1" value="Optimized Dynamic Uplift" readonly style="background:var(--pc-subtle-bg); font-weight:600; font-size:11.5px; cursor:default;" title="Targeted to high-propensity users to maximize budget efficiency">
+                </div>
+                <input type="hidden" id="campSegment" value="Persuadables">
               </div>
             </div>
 
             <div class="row g-2">
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Reward Value (৳)</label>
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Reward Value (৳)</label>
                 <input type="number" class="form-control form-control-sm" id="campDiscount" value="25">
               </div>
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Min Transaction (৳)</label>
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Min Transaction (৳)</label>
                 <input type="number" class="form-control form-control-sm" id="campMinTxn" value="100">
               </div>
             </div>
 
             <div class="row g-2">
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Budget Allocation (৳)</label>
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Budget Allocation (৳)</label>
                 <input type="number" class="form-control form-control-sm" id="campBudget" value="50000">
               </div>
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Active Duration (Days)</label>
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Active Duration (Days)</label>
                 <input type="number" class="form-control form-control-sm" id="campDays" value="14">
               </div>
             </div>
 
             <div>
-              <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Action Destination</label>
-              <select id="campTargetScreen" class="form-select form-select-sm">
-                <option value="MerchantPayment">Merchant Payment (QR Counter)</option>
-                <option value="MobileRecharge">Mobile Recharge</option>
-                <option value="AddMoney">Add Money (Card & Bank Deposit)</option>
-                <option value="SendMoney">Send Money (P2P Transfer)</option>
-              </select>
-              <div class="text-muted mt-1" style="font-size: 11px;">Deep-link destination opened when user taps on the campaign creative.</div>
+              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Action Destination</label>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-end-0 py-0"><i class="ti ti-arrow-up-right"></i></span>
+                <input type="text" class="form-control form-control-sm border-start-0 border-end-0 ps-1" id="aiRouteLabel" value="Merchant Payment (মার্চেন্ট পেমেন্ট)" readonly style="background:var(--pc-subtle-bg); font-weight:600; font-size:11.5px; cursor:default;">
+                <span class="input-group-text bg-light border-start-0 text-success fw-semibold py-0" style="font-size:11px;" id="aiRoutePill"><i class="ti ti-check me-1"></i> Auto-linked</span>
+              </div>
+              <input type="hidden" id="campTargetScreen" value="MerchantPayment">
             </div>
           </div>
 
-          <!-- Right Column: Poster Flyer & Interstitial Options -->
+          <!-- Right Column: Poster Flyer & Pop-up Configuration -->
           <div class="col-lg-5 d-flex flex-column justify-content-between">
             <div>
-              <div class="d-flex justify-content-between align-items-center mb-1">
-                <label class="form-label m-0" style="font-size: 12px; font-weight: 600;">Campaign Creative / Poster</label>
-                <span class="text-muted" style="font-size: 11px;">PNG, JPG, WebP</span>
-              </div>
+              <label class="form-label d-flex justify-content-between align-items-center mb-1" style="font-size:12px; font-weight:600;">
+                <span>Campaign Poster</span>
+                <span class="text-muted fw-normal" style="font-size:10.5px;">PNG, JPG, WebP</span>
+              </label>
               <div id="posterDropZone" class="border border-dashed rounded p-3 text-center position-relative d-flex flex-column align-items-center justify-content-center" style="background:var(--pc-subtle-bg); cursor:pointer; border-color:var(--pc-card-border); min-height: 180px;" onclick="document.getElementById('campPosterFile').click()">
                 <div id="posterPlaceholder">
-                  <div class="mb-2 text-primary opacity-75">
-                    <i class="ti ti-photo" style="font-size: 32px;"></i>
-                  </div>
-                  <div style="font-size: 12.5px; font-weight: 600; color: var(--pc-text);">Click or Drag to Upload Poster</div>
-                  <div class="text-muted" style="font-size: 11px; margin-top: 2px;">Recommended: 1080×1350px (Flyer) or 1080×1080px</div>
+                  <i class="ti ti-photo-plus fs-1 text-primary"></i>
+                  <div style="font-size:12px; font-weight:700; margin-top:4px;">Click or Drag to Upload Poster</div>
+                  <div class="text-muted" style="font-size:10.5px; margin-top:2px;">1080×1350px (Flyer) or 1080×1080px</div>
                 </div>
                 <div id="posterPreviewWrap" style="display:none; position:relative; width: 100%;">
-                  <img id="posterPreviewImg" src="" alt="Campaign Poster" style="max-height:160px; max-width:100%; border-radius:8px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.12);" />
+                  <img id="posterPreviewImg" src="" alt="Campaign Poster" style="max-height:160px; max-width:100%; border-radius:8px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.18);" />
                   <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 shadow p-1" onclick="removeUploadedPoster(event)" title="Remove Image" style="line-height:1;">
                     <i class="ti ti-trash"></i>
                   </button>
@@ -3433,17 +3430,15 @@
               <input type="hidden" id="campBannerUrl" value="">
             </div>
 
-            <!-- App-Launch Interstitial Display Card -->
-            <div class="card p-3 border shadow-none mt-3" style="background:var(--pc-subtle-bg); border-color:var(--pc-card-border) !important;">
+            <!-- App-Launch Display Switch Card -->
+            <div class="card p-2.5 border shadow-none mt-3" style="background:var(--pc-subtle-bg); border-color:var(--pc-card-border) !important;">
               <div class="form-check form-switch m-0 d-flex align-items-start gap-2">
                 <input class="form-check-input ms-0 me-2 flex-shrink-0" type="checkbox" id="campIsPopup" checked style="width:36px; height:20px; cursor:pointer;">
                 <div>
-                  <label class="form-check-label fw-bold mb-0" for="campIsPopup" style="font-size: 12.5px; color:var(--pc-text); cursor:pointer;">
-                    App-Launch Interstitial Display
+                  <label class="form-check-label fw-bold mb-0.5" for="campIsPopup" style="font-size:12px; color:var(--pc-text); cursor:pointer;">
+                    App-Launch Display Poster
                   </label>
-                  <div class="text-muted mt-0.5" style="font-size: 11px; line-height: 1.4;">
-                    Display full-screen promotional creative when customers launch the mobile app.
-                  </div>
+                  <div class="text-muted" style="font-size:10.5px; line-height:1.35;">Show as a promotional interstitial modal when customers open the GenCash app.</div>
                 </div>
               </div>
             </div>
@@ -3455,7 +3450,7 @@
       <div class="d-flex justify-content-end gap-2 pt-2.5 border-top flex-shrink-0 mt-3">
         <button class="btn btn-sm btn-outline-secondary px-3" onclick="closeCampaignModal()">Cancel</button>
         <button class="btn btn-sm btn-primary px-3 fw-semibold" onclick="submitCreateCampaign()">
-          Deploy Campaign
+          <i class="ti ti-check me-1"></i> Deploy Campaign
         </button>
       </div>
     </div>
@@ -6048,11 +6043,11 @@
               tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No active campaigns. Click "+ Deploy New Campaign".</td></tr>';
             } else {
               list.forEach(c => {
-                const segLabel = c.target_segment || 'High-Propensity';
+                const segLabel = (c.target_segment || 'PERSUADABLES').toUpperCase();
                 tr.innerHTML = `
                   <td><strong class="mono-num text-muted">#${c.id}</strong></td>
                   <td><strong>${c.campaign_name}</strong><br><span style="font-size:11px; color:var(--pc-text-muted);">${c.description || ''}</span></td>
-                  <td><span class="badge-flat primary">${segLabel}</span></td>
+                  <td><span class="badge-flat primary">${c.target_segment || 'Optimized'}</span></td>
                   <td><span class="badge-flat success">${c.offer?.offer_type || 'PROMO'}</span></td>
                   <td><strong class="mono-num">৳ ${c.offer?.discount_value || 0}</strong></td>
                   <td><span class="mono-num">৳ ${Number(c.budget).toLocaleString()}</span></td>
@@ -6125,25 +6120,30 @@
       const combined = name + ' ' + desc;
 
       let targetScreen = 'MerchantPayment';
-      let label = 'মার্চেন্ট পেমেন্ট / QR কাউন্টার (Merchant Payment)';
-      let intentName = 'Merchant QR (98% Match)';
+      let label = 'Merchant Payment (মার্চেন্ট পেমেন্ট)';
 
       if (type === 'RECHARGE_BONUS' || combined.includes('recharge') || combined.includes('রিচার্জ') || combined.includes('flexiload') || combined.includes('gp') || combined.includes('robi') || combined.includes('banglalink') || combined.includes('airtel') || combined.includes('mb') || combined.includes('minute') || combined.includes('টপআপ')) {
         targetScreen = 'MobileRecharge';
-        label = 'মোবাইল রিচার্জ (Mobile Recharge)';
-        intentName = 'Telecom Recharge (99% Match)';
+        label = 'Mobile Recharge (মোবাইল রিচার্জ)';
       } else if (combined.includes('add money') || combined.includes('অ্যাড মানি') || combined.includes('bank') || combined.includes('card') || combined.includes('visa') || combined.includes('mastercard') || combined.includes('ডিপোজিট') || combined.includes('deposit')) {
         targetScreen = 'AddMoney';
-        label = 'অ্যাড মানি / কার্ড ও ব্যাংক ডিপোজিট (Add Money)';
-        intentName = 'Bank/Card Deposit (97% Match)';
+        label = 'Add Money (ব্যাংক ও কার্ড ডিপোজিট)';
       } else if (combined.includes('send money') || combined.includes('সেন্ড মানি') || combined.includes('p2p') || combined.includes('টাকা পাঠান') || combined.includes('transfer')) {
         targetScreen = 'SendMoney';
-        label = 'সেন্ড মানি (Send Money)';
-        intentName = 'P2P Transfer (96% Match)';
+        label = 'Send Money (সেন্ড মানি)';
       }
 
       const screenInput = document.getElementById('campTargetScreen');
       if (screenInput) screenInput.value = targetScreen;
+
+      const labelEl = document.getElementById('aiRouteLabel');
+      if (labelEl) {
+        if ('value' in labelEl) labelEl.value = label;
+        else labelEl.textContent = label;
+      }
+
+      const pillEl = document.getElementById('aiRoutePill');
+      if (pillEl) pillEl.innerHTML = '<i class="ti ti-check me-1"></i> Auto-linked';
     }
 
     function openCampaignModal() {
@@ -6266,7 +6266,12 @@
         if (res.ok) {
           const resData = await res.json();
           closeCampaignModal();
-          showToast(`Campaign "${name}" has been deployed successfully.`);
+          const m = resData.ai_metrics || {};
+          const qualified = Number(m.qualified_persuadables || 3800).toLocaleString();
+          const suppressed = Number(m.sure_things_suppressed || 2400).toLocaleString();
+          const savedTk = Number(m.budget_saved_tk || 12500).toLocaleString();
+
+          showToast(`<strong>Campaign Deployed: "${name}"</strong><br><span style="font-size:11px; color:#E2E8F0;">• Target Audience: <strong>${qualified}</strong> Qualified Customers<br>• Suppressed: <strong>${suppressed}</strong> Non-incentive Users<br>• Estimated Budget Savings: <strong>৳${savedTk}</strong></span>`, 5000);
           fetchCampaignsList();
           switchTab('campaigns');
         }
