@@ -2760,15 +2760,14 @@
           <!-- Parameter Box -->
           <div class="col-xl-4 col-md-12">
             <div class="card standard-card">
-              <div class="card-header">
-                <h5>Campaign Parameters</h5>
-                <span class="badge-flat primary">Propensity AI</span>
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="m-0" style="font-size:14px; font-weight:700;">Campaign Parameters</h5>
+                <span class="badge-flat primary" style="font-size:10px; font-weight:600; letter-spacing:0.3px;">Causal Uplift</span>
               </div>
               <div class="card-body">
                 <div class="mb-3">
                   <div class="d-flex justify-content-between mb-1">
-                    <label class="form-label mb-0" style="font-size:12.5px; font-weight:600;">Audience Target
-                      Size</label>
+                    <label class="form-label mb-0" style="font-size:12.5px; font-weight:600;">Audience Target Size</label>
                     <span class="mono-num fw-bold text-primary" id="valAudience">50,000 Users</span>
                   </div>
                   <input type="range" class="form-range" id="sliderAudience" min="5000" max="250000" step="5000"
@@ -2786,8 +2785,7 @@
 
                 <div class="mb-3">
                   <div class="d-flex justify-content-between mb-1">
-                    <label class="form-label mb-0" style="font-size:12.5px; font-weight:600;">Reward / Discount
-                      (৳)</label>
+                    <label class="form-label mb-0" style="font-size:12.5px; font-weight:600;">Reward / Discount (৳)</label>
                     <span class="mono-num fw-bold text-primary" id="valDiscount">৳ 79</span>
                   </div>
                   <input type="range" class="form-range" id="sliderDiscount" min="10" max="250" step="5" value="79"
@@ -2804,13 +2802,12 @@
                   </select>
                 </div>
 
-                <div class="p-3 bg-light rounded mb-3" style="font-size:12px; border-left:3px solid var(--pc-primary);">
-                  <strong>💡 AI Uplift Rule:</strong> Offers targeting <em>Persuadable</em> users yield +3.4x higher
-                  conversion vs random broadcast blasting.
+                <div class="p-3 bg-light rounded mb-3" style="font-size:12px; border-left:3px solid var(--pc-primary); line-height:1.45;">
+                  <strong>Causal Uplift Logic:</strong> Prioritizing high-propensity <em>Persuadable</em> cohorts maximizes incremental lift and protects non-responders from fatigue.
                 </div>
 
                 <button class="btn btn-primary w-100" onclick="openLaunchCampaignModalFromSim()">
-                  <i class="ti ti-rocket"></i> Deploy Simulated Campaign
+                  <i class="ti ti-send me-1"></i> Deploy Targeted Campaign
                 </button>
               </div>
             </div>
@@ -2826,7 +2823,7 @@
                     <div class="flat-icon-wrap primary"><i class="ti ti-check"></i></div>
                     <div class="cell-data">
                       <h5 class="mono-num" id="simConversions">--</h5>
-                      <span id="simConvRate" title="AI targeted high-propensity users">Rate: --</span>
+                      <span id="simConvRate" style="font-size:10.5px; white-space:normal; line-height:1.2;" title="Incremental conversion rate across targeted cohort">Cohort Conv</span>
                     </div>
                   </div>
                 </div>
@@ -2838,7 +2835,7 @@
                     <div class="flat-icon-wrap success"><i class="ti ti-currency-taka"></i></div>
                     <div class="cell-data">
                       <h5 class="mono-num" id="simRevenue">৳ --</h5>
-                      <span>Gross Revenue</span>
+                      <span style="font-size:11px;">Gross Revenue</span>
                     </div>
                   </div>
                 </div>
@@ -2850,7 +2847,7 @@
                     <div class="flat-icon-wrap primary"><i class="ti ti-percentage"></i></div>
                     <div class="cell-data">
                       <h5 class="mono-num" id="simRoi">--%</h5>
-                      <span>Net ROI Margin</span>
+                      <span style="font-size:11px;">Net ROI Margin</span>
                     </div>
                   </div>
                 </div>
@@ -2862,7 +2859,7 @@
                     <div class="flat-icon-wrap warning"><i class="ti ti-shield-heart"></i></div>
                     <div class="cell-data">
                       <h5 class="mono-num" id="simFatigue">--</h5>
-                      <span>Fatigue Saved</span>
+                      <span style="font-size:11px;">Fatigue Suppressed</span>
                     </div>
                   </div>
                 </div>
@@ -2874,7 +2871,7 @@
               <div class="col-md-6 d-flex">
                 <div class="card standard-card w-100 mb-0 d-flex flex-column justify-content-between">
                   <div class="card-header d-flex justify-content-between align-items-center py-2 px-3">
-                    <h5 class="m-0" style="font-size:13.5px;">Audience Uplift Segmentation</h5>
+                    <h5 class="m-0" style="font-size:13.5px; font-weight:700;">Audience Uplift Segmentation</h5>
                     <span class="badge-flat primary" style="font-size:10px; padding:2px 6px;">4 Cohorts</span>
                   </div>
                   <div class="card-body p-3 d-flex flex-column justify-content-between">
@@ -2883,8 +2880,9 @@
                     </div>
                     <div class="d-flex justify-content-around align-items-center mt-2 pt-2 border-top text-center" style="font-size:11px;">
                       <div>
-                        <span class="text-muted">Persuadables:</span>
-                        <strong class="text-success ms-1" id="cohortPersuadableCount">19,000 Users</strong>
+                        <span class="text-muted">Targeted Reach:</span>
+                        <strong class="text-success ms-1" id="cohortPersuadableCount">4,329</strong>
+                        <span class="text-muted" style="font-size:10px;">of <span id="cohortPersuadableTotal">19,000</span></span>
                       </div>
                       <div>
                         <span class="text-muted">Protected (Fatigue):</span>
@@ -2898,7 +2896,7 @@
               <div class="col-md-6 d-flex">
                 <div class="card standard-card w-100 mb-0 d-flex flex-column justify-content-between">
                   <div class="card-header d-flex justify-content-between align-items-center py-2 px-3">
-                    <h5 class="m-0" style="font-size:13.5px;">AI Targeted vs Broadcast Blast</h5>
+                    <h5 class="m-0" style="font-size:13.5px; font-weight:700;">Targeted Uplift vs Broadcast Blast</h5>
                     <span class="badge-flat success" style="font-size:10px; padding:2px 6px;">Efficiency %</span>
                   </div>
                   <div class="card-body p-3 d-flex flex-column justify-content-between">
@@ -2910,10 +2908,10 @@
                         <span class="text-muted">Cost / Conv:</span>
                         <strong class="text-secondary ms-1">৳ <span id="effMassCost">93</span></strong> vs 
                         <strong class="text-primary ms-1">৳ <span id="effAiCost">80</span></strong>
-                        <span class="badge bg-light-success text-success ms-1" id="effCostBadge">30% Cheaper</span>
+                        <span class="badge bg-light-success text-success ms-1" id="effCostBadge">14% Cheaper</span>
                       </div>
                       <div>
-                        <span class="text-muted">Uplift:</span>
+                        <span class="text-muted">Efficiency:</span>
                         <strong class="text-success ms-1"><span id="effUpliftBadge">3.4x Uplift</span></strong>
                       </div>
                     </div>
@@ -6226,19 +6224,44 @@
     }
 
     function openLaunchCampaignModalFromSim() {
-      const bud = Number(document.getElementById('sliderBudget').value);
-      const dis = Number(document.getElementById('sliderDiscount').value);
-      const cat = document.getElementById('selectOfferCategory').value;
+      const bud = Number(document.getElementById('sliderBudget')?.value || 100000);
+      const dis = Number(document.getElementById('sliderDiscount')?.value || 79);
+      const cat = document.getElementById('selectOfferCategory')?.value || 'RECHARGE';
 
-      document.getElementById('campName').value = `AI Targeted ${cat} (৳${dis} Bonus)`;
-      document.getElementById('campDesc').value = `Optimized for Persuadables with ৳${dis} reward on min ৳${dis * 4} txn`;
-      document.getElementById('campType').value = cat === 'RECHARGE' ? 'RECHARGE_BONUS' : (cat === 'ADD_MONEY' ? 'CASHBACK' : 'DISCOUNT');
-      document.getElementById('campDiscount').value = dis;
-      document.getElementById('campBudget').value = bud;
-      document.getElementById('campSegment').value = 'Persuadables';
-      document.getElementById('campMinTxn').value = dis * 4;
+      const stratNames = {
+        'RECHARGE': 'Mobile Recharge Cashback',
+        'ADD_MONEY': 'Add Money Wallet Boost',
+        'MERCHANT_PAY': 'Merchant Payment Discount',
+        'BILL_PAY': 'Utility Bill Pay Cashback'
+      };
+      const catTitle = stratNames[cat] || 'Promotional Offer';
+
+      const nameEl = document.getElementById('campName');
+      if (nameEl) nameEl.value = `${catTitle} (৳${dis} Reward)`;
+
+      const descEl = document.getElementById('campDesc');
+      if (descEl) descEl.value = `Exclusive ৳${dis} promotional reward on min ৳${dis * 4} transaction`;
+
+      const typeEl = document.getElementById('campType');
+      if (typeEl) typeEl.value = cat === 'RECHARGE' ? 'RECHARGE_BONUS' : (cat === 'ADD_MONEY' ? 'CASHBACK' : 'DISCOUNT');
+
+      const disEl = document.getElementById('campDiscount');
+      if (disEl) disEl.value = dis;
+
+      const budEl = document.getElementById('campBudget');
+      if (budEl) budEl.value = bud;
+
+      const segEl = document.getElementById('campSegment');
+      if (segEl) segEl.value = 'Persuadables';
+
+      const minEl = document.getElementById('campMinTxn');
+      if (minEl) minEl.value = dis * 4;
 
       openCampaignModal();
+
+      if (typeof autoDetectActionRoute === 'function') {
+        autoDetectActionRoute();
+      }
     }
 
     async function submitCreateCampaign() {
@@ -6367,8 +6390,8 @@
       const rateEl = document.getElementById('simConvRate');
       if (rateEl) {
         const cohortPct = ((data.conversion_rate || 0.285) * 100).toFixed(1);
-        rateEl.textContent = `${cohortPct}% of Persuadables (${data.uplift_multiplier || '3.4x'})`;
-        rateEl.title = `AI targets ${data.persuadables_targeted?.toLocaleString() || '19,000'} high-propensity persuadables out of ${data.target_audience_total?.toLocaleString() || aud.toLocaleString()} total audience.`;
+        rateEl.textContent = `${cohortPct}% Cohort Conv · ${data.uplift_multiplier || '3.4x'} Uplift`;
+        rateEl.title = `Predictive engine targets ${data.persuadables_targeted?.toLocaleString() || '4,329'} high-propensity users out of ${data.persuadables_total?.toLocaleString() || '19,000'} eligible persuadables.`;
       }
 
       const revEl = document.getElementById('simRevenue');
@@ -6386,19 +6409,34 @@
 
       // Update Cohort Footer Badges
       const pCountEl = document.getElementById('cohortPersuadableCount');
-      if (pCountEl) pCountEl.textContent = `${(data.persuadables_targeted || 19000).toLocaleString()} Users`;
+      if (pCountEl) pCountEl.textContent = (data.persuadables_targeted || 4329).toLocaleString();
+
+      const pTotalEl = document.getElementById('cohortPersuadableTotal');
+      if (pTotalEl) {
+        const totalP = data.persuadables_total || Math.round(aud * ((data.segments?.persuadables || 38) / 100));
+        pTotalEl.textContent = totalP.toLocaleString();
+      }
 
       const fCountEl = document.getElementById('cohortFatigueCount');
-      if (fCountEl) fCountEl.textContent = `${(data.fatigue_prevented_users || 17000).toLocaleString()} Users`;
+      if (fCountEl) {
+        const fatPct = Math.round(((data.fatigue_prevented_users || 0) / Math.max(1, aud)) * 100);
+        fCountEl.textContent = `${(data.fatigue_prevented_users || 17000).toLocaleString()} Users (${fatPct}%)`;
+      }
 
       const effMassCost = document.getElementById('effMassCost');
-      if (effMassCost) effMassCost.textContent = data.mass_campaign?.cost_per_conversion || 93;
+      if (effMassCost) effMassCost.textContent = data.mass_campaign?.cost_per_conversion || 94;
 
       const effAiCost = document.getElementById('effAiCost');
-      if (effAiCost) effAiCost.textContent = data.gencash_ai_campaign?.cost_per_conversion || 80;
+      if (effAiCost) effAiCost.textContent = data.gencash_ai_campaign?.cost_per_conversion || 81;
 
       const effCostBadge = document.getElementById('effCostBadge');
-      if (effCostBadge) effCostBadge.textContent = `${data.gencash_ai_campaign?.budget_saving_percentage || '30%'} Cheaper`;
+      if (effCostBadge) {
+        const massC = Number(data.mass_campaign?.cost_per_conversion || 94);
+        const aiC = Number(data.gencash_ai_campaign?.cost_per_conversion || 81);
+        const costDiff = Math.max(0, massC - aiC);
+        const actualSavingPct = Math.round((costDiff / Math.max(1, massC)) * 1000) / 10;
+        effCostBadge.textContent = `${data.gencash_ai_campaign?.budget_saving_percentage || actualSavingPct + '%'} Cheaper`;
+      }
 
       const effUpliftBadge = document.getElementById('effUpliftBadge');
       if (effUpliftBadge) effUpliftBadge.textContent = `${data.uplift_multiplier || '3.4x'} Uplift`;

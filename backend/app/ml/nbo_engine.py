@@ -907,8 +907,9 @@ class NBOIntelligenceEngine:
         mass_net_revenue = (mass_gross_tx_volume * margin_rate) + (mass_conversions * discount * 1.1)
 
         # Budget savings comparison
-        budget_saved = max(0.0, (mass_cost_per_conv - ai_cost_per_conv) * ai_conversions)
-        budget_saving_pct = round(max(30.0, min(85.0, ((mass_cost_per_conv - ai_cost_per_conv) / max(1.0, mass_cost_per_conv)) * 100)), 1)
+        cost_diff = max(0.0, mass_cost_per_conv - ai_cost_per_conv)
+        budget_saved = round(cost_diff * ai_conversions, 2)
+        budget_saving_pct = round((cost_diff / max(1.0, mass_cost_per_conv)) * 100, 1)
         uplift_multiplier = round(ai_cohort_conv / max(0.01, base_mass_conv), 1)
 
         return {
