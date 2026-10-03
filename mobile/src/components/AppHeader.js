@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLanguage } from '../context/LanguageContext';
+import GenCashLogo from './GenCashLogo';
 
 const HERITAGE_BG = require('../assets/header_bangladesh_heritage.jpg');
 
@@ -66,58 +67,63 @@ export default function AppHeader({
         />
       </View>
 
-      {/* 2. Tier 1: Top Utility Action Bar (Positioned at the very top edge) */}
+      {/* 2. Tier 1: Top Utility Action Bar with Brand Logo */}
       <View style={styles.topUtilityRow}>
-        {/* Spacer pushing controls to the far right */}
-        <View style={{ flex: 1 }} />
+        {/* Brand Logo Wordmark */}
+        <View style={styles.logoWrapper}>
+          <GenCashLogo width={115} height={23} />
+        </View>
 
-        {/* Language Switch Capsule (ENG | বাং) */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={toggleLanguage}
-          style={styles.langToggle}
-        >
-          <Text
-            style={[
-              styles.langText,
-              !isBangla && styles.activeLangText,
-            ]}
+        {/* Right Utility Actions */}
+        <View style={styles.topActionGroup}>
+          {/* Language Switch Capsule (ENG | বাং) */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={toggleLanguage}
+            style={styles.langToggle}
           >
-            ENG
-          </Text>
-          <Text style={styles.langDivider}>|</Text>
-          <Text
-            style={[
-              styles.langText,
-              isBangla && styles.activeLangText,
-            ]}
-          >
-            বাং
-          </Text>
-        </TouchableOpacity>
-
-        {/* Notification Bell */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={onOpenNotif}
-          style={styles.iconCircle}
-        >
-          <Ionicons name="notifications-outline" size={18} color="#0F4D3C" />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>
-              {String(unreadNotifCount > 0 ? unreadNotifCount : 3)}
+            <Text
+              style={[
+                styles.langText,
+                !isBangla && styles.activeLangText,
+              ]}
+            >
+              ENG
             </Text>
-          </View>
-        </TouchableOpacity>
+            <Text style={styles.langDivider}>|</Text>
+            <Text
+              style={[
+                styles.langText,
+                isBangla && styles.activeLangText,
+              ]}
+            >
+              বাং
+            </Text>
+          </TouchableOpacity>
 
-        {/* Settings Gear */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={onOpenSettings}
-          style={styles.iconCircle}
-        >
-          <Ionicons name="settings-outline" size={18} color="#0F4D3C" />
-        </TouchableOpacity>
+          {/* Notification Bell */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={onOpenNotif}
+            style={styles.iconCircle}
+          >
+            <Ionicons name="notifications-outline" size={18} color="#0F4D3C" />
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>
+                {String(unreadNotifCount > 0 ? unreadNotifCount : 3)}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Settings Gear */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={onOpenSettings}
+            style={styles.iconCircle}
+          >
+            <Ionicons name="settings-outline" size={18} color="#0F4D3C" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* 3. Tier 2: User Profile & Greeting Row (Full width & unobstructed) */}
@@ -179,9 +185,18 @@ const styles = StyleSheet.create({
   topUtilityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     zIndex: 4,
-    marginBottom: 6,
+    marginBottom: 8,
+  },
+  logoWrapper: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingVertical: 2,
+  },
+  topActionGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   langToggle: {
