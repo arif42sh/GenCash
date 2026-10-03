@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -12,17 +13,28 @@ router = APIRouter(prefix="/offers", tags=["Offers"])
 
 @router.get("/popup/active", response_model=Optional[OfferResponse])
 def get_active_popup_offer(db: Session = Depends(get_db)):
-    """Retrieve the currently active app-launch pop-up campaign offer."""
+    """Retrieve the currently active and non-expired app-launch pop-up campaign offer."""
+    today = date.today()
     offer = (
         db.query(Offer)
-        .filter(Offer.status == "ACTIVE", Offer.is_popup_banner == True)
+        .filter(
+            Offer.status == "ACTIVE",
+            Offer.is_popup_banner == True,
+            Offer.start_date <= today,
+            Offer.end_date >= today
+        )
         .order_by(Offer.created_at.desc())
         .first()
     )
     if not offer:
         offer = (
             db.query(Offer)
-            .filter(Offer.status == "ACTIVE", Offer.banner_image_url.isnot(None))
+            .filter(
+                Offer.status == "ACTIVE",
+                Offer.banner_image_url.isnot(None),
+                Offer.start_date <= today,
+                Offer.end_date >= today
+            )
             .order_by(Offer.created_at.desc())
             .first()
         )
@@ -36,8 +48,18 @@ def get_active_offers(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Retrieve all currently active promotional offers and discounts."""
-    offers = db.query(Offer).filter(Offer.status == "ACTIVE").all()
+    """Retrieve all currently active and unexpired promotional offers."""
+    today = date.today()
+    offers = (
+        db.query(Offer)
+        .filter(
+            Offer.status == "ACTIVE",
+            Offer.start_date <= today,
+            Offer.end_date >= today
+        )
+        .order_by(Offer.created_at.desc())
+        .all()
+    )
     return [OfferResponse.model_validate(o) for o in offers]
 
 

@@ -1187,17 +1187,29 @@ def get_campaigns_list(
     current_admin: AdminUser = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Retrieve all marketing campaigns with offer details."""
+    """Retrieve all marketing campaigns with offer details and dynamic expiration resolution."""
+    today = date.today()
     campaigns = db.query(Campaign).order_by(Campaign.created_at.desc()).all()
     results = []
+    db_changed = False
+
     for c in campaigns:
+        is_expired = bool(c.end_date and c.end_date < today)
+        resolved_status = "EXPIRED" if is_expired else (c.status or "ACTIVE")
+        if is_expired and c.status == "ACTIVE":
+            c.status = "EXPIRED"
+            if c.offer and c.offer.status == "ACTIVE":
+                c.offer.status = "EXPIRED"
+            db_changed = True
+
         results.append({
             "id": c.id,
             "campaign_name": c.campaign_name,
             "description": c.description,
             "target_segment": c.target_segment,
             "budget": float(c.budget),
-            "status": c.status,
+            "status": resolved_status,
+            "is_expired": is_expired,
             "start_date": str(c.start_date),
             "end_date": str(c.end_date),
             "offer": {
@@ -1205,9 +1217,17 @@ def get_campaigns_list(
                 "title": c.offer.title,
                 "offer_type": c.offer.offer_type,
                 "discount_value": float(c.offer.discount_value),
-                "minimum_transaction": float(c.offer.minimum_transaction)
+                "minimum_transaction": float(c.offer.minimum_transaction),
+                "status": "EXPIRED" if is_expired else (c.offer.status or "ACTIVE")
             } if c.offer else None
         })
+
+    if db_changed:
+        try:
+            db.commit()
+        except Exception:
+            db.rollback()
+
     return results
 
 
@@ -1216,10 +1236,20 @@ def get_all_admin_offers(
     current_admin: AdminUser = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Retrieve all promotional offers & discounts across campaigns and standalone promotions."""
+    """Retrieve all promotional offers & discounts with dynamic expiration status."""
+    today = date.today()
     offers = db.query(Offer).order_by(Offer.created_at.desc()).all()
-    return [
-        {
+    results = []
+    db_changed = False
+
+    for o in offers:
+        is_expired = bool(o.end_date and o.end_date < today)
+        resolved_status = "EXPIRED" if is_expired else (o.status or "ACTIVE")
+        if is_expired and o.status == "ACTIVE":
+            o.status = "EXPIRED"
+            db_changed = True
+
+        results.append({
             "id": o.id,
             "title": o.title,
             "description": o.description,
@@ -1228,13 +1258,20 @@ def get_all_admin_offers(
             "minimum_transaction": float(o.minimum_transaction),
             "start_date": str(o.start_date) if o.start_date else None,
             "end_date": str(o.end_date) if o.end_date else None,
-            "status": o.status,
+            "status": resolved_status,
+            "is_expired": is_expired,
             "banner_image_url": getattr(o, "banner_image_url", None),
             "is_popup_banner": bool(getattr(o, "is_popup_banner", False)),
             "target_screen": getattr(o, "target_screen", "MerchantPayment"),
-        }
-        for o in offers
-    ]
+        })
+
+    if db_changed:
+        try:
+            db.commit()
+        except Exception:
+            db.rollback()
+
+    return results
 
 
 @router.post("/campaigns")

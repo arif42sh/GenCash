@@ -6205,7 +6205,12 @@
               tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No active campaigns. Click "+ Deploy New Campaign".</td></tr>';
             } else {
               list.forEach(c => {
+                const tr = document.createElement('tr');
                 const segLabel = (c.target_segment || 'PERSUADABLES').toUpperCase();
+                let statusBadge = `<span class="badge-flat success">${c.status}</span>`;
+                if (c.status === 'EXPIRED') statusBadge = `<span class="badge-flat secondary" style="background:#64748B; color:#fff;">EXPIRED</span>`;
+                else if (c.status === 'PAUSED') statusBadge = `<span class="badge-flat warning">PAUSED</span>`;
+
                 tr.innerHTML = `
                   <td><strong class="mono-num text-muted">#${c.id}</strong></td>
                   <td><strong>${c.campaign_name}</strong><br><span style="font-size:11px; color:var(--pc-text-muted);">${c.description || ''}</span></td>
@@ -6214,7 +6219,7 @@
                   <td><strong class="mono-num">৳ ${c.offer?.discount_value || 0}</strong></td>
                   <td><span class="mono-num">৳ ${Number(c.budget).toLocaleString()}</span></td>
                   <td style="font-size:11.5px; color:var(--pc-text-muted);">${c.start_date} to ${c.end_date}</td>
-                  <td><span class="badge-flat success">${c.status}</span></td>
+                  <td>${statusBadge}</td>
                 `;
                 tbody.appendChild(tr);
               });
@@ -6232,7 +6237,8 @@
           const offers = await res.json();
           const tbody = document.getElementById('offersTableBody');
           const badge = document.getElementById('offersCountBadge');
-          if (badge) badge.innerHTML = `<i class="ti ti-tag"></i> ${offers.length} Active Offers`;
+          const activeCount = offers.filter(o => o.status === 'ACTIVE').length;
+          if (badge) badge.innerHTML = `<i class="ti ti-tag"></i> ${activeCount} Active / ${offers.length} Total Offers`;
           if (tbody) {
             tbody.innerHTML = '';
             if (offers.length === 0) {
@@ -6244,6 +6250,10 @@
                 if (o.offer_type === 'CASHBACK') catBadge = `<span class="badge-flat success">CASHBACK</span>`;
                 else if (o.offer_type === 'DISCOUNT') catBadge = `<span class="badge-flat warning">DISCOUNT</span>`;
                 else if (o.offer_type === 'RECHARGE_BONUS') catBadge = `<span class="badge-flat info">RECHARGE BONUS</span>`;
+
+                let statusBadge = `<span class="badge-flat success">${o.status}</span>`;
+                if (o.status === 'EXPIRED') statusBadge = `<span class="badge-flat secondary" style="background:#64748B; color:#fff;">EXPIRED</span>`;
+                else if (o.status === 'PAUSED') statusBadge = `<span class="badge-flat warning">PAUSED</span>`;
 
                 tr.innerHTML = `
                   <td><strong class="mono-num text-muted">#${o.id}</strong></td>
@@ -6263,7 +6273,7 @@
                   <td><strong class="mono-num text-success">৳ ${Number(o.discount_value || 0).toLocaleString()}</strong></td>
                   <td><span class="mono-num">৳ ${Number(o.minimum_transaction || 0).toLocaleString()}</span></td>
                   <td style="font-size:11.5px; color:var(--pc-text-muted);">${o.start_date || 'Ongoing'} to ${o.end_date || 'Open'}</td>
-                  <td><span class="badge-flat success">${o.status}</span></td>
+                  <td>${statusBadge}</td>
                 `;
                 tbody.appendChild(tr);
               });
