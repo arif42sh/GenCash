@@ -209,6 +209,24 @@ def get_admin_users(
     
     total = q.count()
     users = q.options(joinedload(User.wallet)).offset(offset).limit(limit).all()
+    user_ids = [u.id for u in users]
+    
+    # Calculate real lifetime transaction counts per user
+    txn_counts = {}
+    if user_ids:
+        counts_sender = db.query(Transaction.sender_id, func.count(Transaction.id)).filter(
+            Transaction.sender_id.in_(user_ids)
+        ).group_by(Transaction.sender_id).all()
+        counts_receiver = db.query(Transaction.receiver_id, func.count(Transaction.id)).filter(
+            Transaction.receiver_id.in_(user_ids)
+        ).group_by(Transaction.receiver_id).all()
+        for uid, c in counts_sender:
+            if uid:
+                txn_counts[uid] = txn_counts.get(uid, 0) + c
+        for uid, c in counts_receiver:
+            if uid:
+                txn_counts[uid] = txn_counts.get(uid, 0) + c
+
     results = []
     for u in users:
         u_persona = get_user_persona(u.phone, u.name)
@@ -230,8 +248,10 @@ def get_admin_users(
             "persona": u_persona,
             "status": u.status,
             "balance": float(u.wallet.balance) if u.wallet else 0.0,
-            "txns_count": 14 if u.id % 2 == 0 else 22,
-            "created_at": u.created_at
+            "txns_count": txn_counts.get(u.id, 0),
+            "created_at": u.created_at.isoformat() if u.created_at else None,
+            "created_at_fmt": u.created_at.strftime("%d %b %Y, %I:%M %p") if u.created_at else "N/A",
+            "created_at_date": u.created_at.strftime("%d %b %Y") if u.created_at else "N/A"
         })
     return {"total": total, "users": results}
 
@@ -856,6 +876,10 @@ def get_user_360_details(
     balance = float(user.wallet.balance) if user.wallet else 0.0
 
     # Aggregate financial signals
+    total_txns_count = db.query(func.count(Transaction.id)).filter(
+        or_(Transaction.sender_id == user.id, Transaction.receiver_id == user.id)
+    ).scalar() or 0
+
     total_sent_vol = db.query(func.sum(Transaction.amount)).filter(
         Transaction.sender_id == user.id,
         Transaction.status == TransactionStatus.COMPLETED.value
@@ -866,24 +890,50 @@ def get_user_360_details(
         Transaction.status == TransactionStatus.COMPLETED.value
     ).scalar() or 0.0
 
-    # Recent transactions
+    # 30-Day and full historical transactions (up to 300 records)
     recent_txns = db.query(Transaction).filter(
         or_(Transaction.sender_id == user.id, Transaction.receiver_id == user.id)
-    ).order_by(Transaction.transaction_time.desc()).limit(10).all()
+    ).order_by(Transaction.transaction_time.desc()).limit(300).all()
 
     txns_data = []
     for t in recent_txns:
         is_outgoing = (t.sender_id == user.id)
+        counterparty = ""
+        if is_outgoing:
+            if t.merchant_id:
+                counterparty = f"Merchant #{t.merchant_id}"
+            elif t.receiver:
+                counterparty = f"{t.receiver.name} ({t.receiver.phone})"
+            elif t.recipient_phone:
+                counterparty = t.recipient_phone
+            elif t.operator:
+                counterparty = f"{t.operator} Top-up"
+            else:
+                counterparty = "Self / Bank"
+        else:
+            if t.sender:
+                counterparty = f"{t.sender.name} ({t.sender.phone})"
+            else:
+                counterparty = "Bank / External Inflow"
+
+        tx_dt = t.transaction_time or t.created_at
         txns_data.append({
             "id": t.id,
             "code": t.transaction_code,
             "amount": float(t.amount),
-            "fee": float(t.fee),
+            "fee": float(t.fee or 0),
             "type": t.transaction_type,
             "status": t.status,
             "is_outgoing": is_outgoing,
-            "counterparty": t.receiver.phone if is_outgoing and t.receiver else (t.sender.phone if t.sender else (t.recipient_phone or "External")),
-            "time": t.transaction_time.strftime("%d %b %Y, %I:%M %p") if t.transaction_time else ""
+            "counterparty": counterparty,
+            "recipient_phone": t.recipient_phone or "",
+            "operator": t.operator or "",
+            "note": t.note or "",
+            "location": t.location or "",
+            "time": tx_dt.strftime("%d %b %Y, %I:%M %p") if tx_dt else "N/A",
+            "date": tx_dt.strftime("%Y-%m-%d") if tx_dt else "",
+            "date_display": tx_dt.strftime("%d %b %Y") if tx_dt else "N/A",
+            "iso_time": tx_dt.isoformat() if tx_dt else ""
         })
 
     # Latest AI insight
@@ -898,7 +948,8 @@ def get_user_360_details(
             "profile_image": user.profile_image,
             "avatar": user.profile_image,
             "status": user.status,
-            "created_at": user.created_at.strftime("%d %b %Y, %I:%M %p") if user.created_at else "",
+            "created_at": user.created_at.strftime("%d %b %Y, %I:%M %p") if user.created_at else "N/A",
+            "created_at_date": user.created_at.strftime("%d %b %Y") if user.created_at else "N/A",
             "nid_number": user.nid_number or "19942691234567890",
             "dob": user.dob or "1994-08-15",
             "kyc_status": user.kyc_status or "VERIFIED",
@@ -907,6 +958,7 @@ def get_user_360_details(
             "persona": persona,
             "balance": balance,
             "wallet_status": user.wallet.status if user.wallet else "ACTIVE",
+            "total_txns_count": int(total_txns_count),
             "total_sent": float(total_sent_vol),
             "total_received": float(total_rcv_vol),
             "failed_pin_attempts": user.failed_pin_attempts or 0

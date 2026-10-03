@@ -2585,7 +2585,7 @@
 
   <!-- [ Customer 360 Slide-over Drawer ] -->
   <div id="customerDrawerBackdrop" class="drawer-backdrop" onclick="closeCustomerDrawer(event)">
-    <div class="drawer-pane" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div class="drawer-pane" style="max-width:680px; width:100%;" onclick="event.stopPropagation()">
       <div class="drawer-header">
         <div>
           <h5 class="m-0 fw-bold"><i class="ti ti-id text-primary"></i> Customer 360° Dossier</h5>
@@ -3569,7 +3569,12 @@
           : `<div class="admin-avatar" style="width:36px; height:36px; font-size:13px; border-radius:50%; background:#0F4D3C; color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:bold;">${(u.name || 'U').charAt(0).toUpperCase()}</div>`;
 
         tr.innerHTML = `
-          <td><strong class="mono-num text-muted">#${u.id}</strong></td>
+          <td>
+            <strong class="mono-num text-muted">#${u.id}</strong><br>
+            <span class="badge bg-light text-muted border mt-1" style="font-size:10px; font-weight:normal;" title="Joined: ${u.created_at_fmt || 'N/A'}">
+              <i class="ti ti-calendar"></i> ${u.created_at_date || u.created_at_fmt || 'N/A'}
+            </span>
+          </td>
           <td>
             <div class="d-flex align-items-center gap-2">
               ${avatarHtml}
@@ -3585,7 +3590,7 @@
           </td>
           <td>${kycBadge}</td>
           <td>${personaBadge}</td>
-          <td><span class="mono-num">${u.txns_count || 0} Txns</span></td>
+          <td><span class="mono-num fw-bold text-dark">${u.txns_count || 0} Txns</span></td>
           <td><strong class="mono-num text-success">৳ ${Number(u.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></td>
           <td><span class="badge-flat ${isActive ? 'success' : 'danger'}">${u.status}</span></td>
           <td class="text-end" onclick="event.stopPropagation()">
@@ -3671,12 +3676,160 @@
       setTimeout(() => drawer.style.display = 'none', 240);
     }
 
+    let currentCustomerTxnDateFilter = 'ALL';
+    let currentCustomerTxnTypeFilter = 'ALL';
+    let currentCustomerTxnSearch = '';
+
+    function setDrawerDateFilter(filterVal, btn) {
+      currentCustomerTxnDateFilter = filterVal;
+      document.querySelectorAll('#customerTxnDateFilterGroup button').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      applyCustomerTxnFilter();
+    }
+
+    function applyCustomerTxnFilter(dateFilter, typeFilter, searchVal) {
+      if (dateFilter !== undefined) currentCustomerTxnDateFilter = dateFilter;
+      if (typeFilter !== undefined) currentCustomerTxnTypeFilter = typeFilter;
+      if (searchVal !== undefined) currentCustomerTxnSearch = searchVal.trim().toLowerCase();
+
+      const txns = (activeCustomerDossierData && activeCustomerDossierData.recent_transactions) || [];
+      const now = new Date();
+
+      const filtered = txns.filter(t => {
+        // Date filter
+        if (currentCustomerTxnDateFilter === 'TODAY') {
+          const tDate = new Date(t.iso_time || t.date);
+          if (isNaN(tDate.getTime()) || tDate.toDateString() !== now.toDateString()) return false;
+        } else if (currentCustomerTxnDateFilter === '7D') {
+          const tDate = new Date(t.iso_time || t.date);
+          if (isNaN(tDate.getTime())) return true;
+          const diffDays = (now - tDate) / (1000 * 60 * 60 * 24);
+          if (diffDays > 7) return false;
+        } else if (currentCustomerTxnDateFilter === '30D') {
+          const tDate = new Date(t.iso_time || t.date);
+          if (isNaN(tDate.getTime())) return true;
+          const diffDays = (now - tDate) / (1000 * 60 * 60 * 24);
+          if (diffDays > 30) return false;
+        }
+
+        // Type filter
+        if (currentCustomerTxnTypeFilter !== 'ALL' && t.type !== currentCustomerTxnTypeFilter) {
+          return false;
+        }
+
+        // Search query
+        if (currentCustomerTxnSearch) {
+          const matchCode = (t.code || '').toLowerCase().includes(currentCustomerTxnSearch);
+          const matchCounterparty = (t.counterparty || '').toLowerCase().includes(currentCustomerTxnSearch);
+          const matchNote = (t.note || '').toLowerCase().includes(currentCustomerTxnSearch);
+          const matchOp = (t.operator || '').toLowerCase().includes(currentCustomerTxnSearch);
+          const matchPhone = (t.recipient_phone || '').toLowerCase().includes(currentCustomerTxnSearch);
+          const matchType = (t.type || '').toLowerCase().includes(currentCustomerTxnSearch);
+          if (!matchCode && !matchCounterparty && !matchNote && !matchOp && !matchPhone && !matchType) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      renderFilteredCustomerTxns(filtered, txns.length);
+    }
+
+    function renderFilteredCustomerTxns(txns, totalCount) {
+      const container = document.getElementById('customerDossierTxnList');
+      const summary = document.getElementById('customerTxnCountSummary');
+      if (summary) {
+        summary.textContent = `Showing ${txns.length} of ${totalCount} records`;
+      }
+      if (!container) return;
+
+      if (txns.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4 text-muted" style="font-size:12px;">
+            <i class="ti ti-receipt-off fs-3 d-block mb-1 text-secondary"></i>
+            No transactions found matching the selected filter criteria.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = txns.map(t => {
+        let iconClass = 'ti-receipt';
+        let iconBg = '#F3F4F6';
+        let iconColor = '#4B5563';
+
+        if (t.type === 'RECHARGE') {
+          iconClass = 'ti-device-mobile';
+          iconBg = '#EFF6FF';
+          iconColor = '#2563EB';
+        } else if (t.type === 'MERCHANT_PAYMENT') {
+          iconClass = 'ti-shopping-bag';
+          iconBg = '#FEF3C7';
+          iconColor = '#D97706';
+        } else if (t.type === 'BILL_PAYMENT') {
+          iconClass = 'ti-bolt';
+          iconBg = '#EDE9FE';
+          iconColor = '#7C3AED';
+        } else if (t.type === 'SEND_MONEY') {
+          iconClass = 'ti-send';
+          iconBg = '#FEE2E2';
+          iconColor = '#DC2626';
+        } else if (t.type === 'ADD_MONEY' || t.type === 'RECEIVE_MONEY') {
+          iconClass = 'ti-download';
+          iconBg = '#ECFDF5';
+          iconColor = '#059669';
+        }
+
+        const opBadge = t.operator ? `<span class="badge bg-light text-dark border px-1" style="font-size:9.5px;"><i class="ti ti-antenna me-1"></i>${t.operator}</span>` : '';
+        const noteText = t.note ? `<div class="text-truncate text-muted" style="font-size:10.5px; max-width:270px;">${t.note}</div>` : '';
+
+        return `
+          <div class="d-flex align-items-center justify-content-between py-2 border-bottom hover-bg-subtle" style="font-size:12px;">
+            <div class="d-flex align-items-center gap-2" style="min-width:0;">
+              <div style="width:36px; height:36px; border-radius:8px; background:${iconBg}; color:${iconColor}; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">
+                <i class="ti ${iconClass}"></i>
+              </div>
+              <div style="min-width:0;">
+                <div class="d-flex align-items-center gap-1">
+                  <span class="fw-bold mono-num text-primary" style="font-size:11.5px;">${t.code}</span>
+                  ${opBadge}
+                </div>
+                <div class="fw-semibold text-dark text-truncate" style="font-size:11.5px; max-width:260px;">
+                  ${t.counterparty || t.recipient_phone || t.type}
+                </div>
+                ${noteText}
+                <div class="text-muted" style="font-size:10px;"><i class="ti ti-clock"></i> ${t.time}</div>
+              </div>
+            </div>
+            <div class="text-end flex-shrink-0 ms-2">
+              <strong class="mono-num ${t.is_outgoing ? 'text-danger' : 'text-success'}" style="font-size:13.5px;">
+                ${t.is_outgoing ? '-' : '+'} ৳ ${Number(t.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </strong>
+              <div style="font-size:10px;" class="text-muted">
+                Fee: ৳${Number(t.fee || 0).toFixed(2)}
+              </div>
+              <div style="font-size:10px;">
+                <span class="badge-flat ${t.status === 'COMPLETED' ? 'success' : (t.status === 'REVERSED' ? 'warning' : 'danger')}" style="font-size:9.5px; padding:1px 6px;">
+                  ${t.status}
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function renderCustomerDossier(data) {
       const u = data.user;
       const ai = data.ai_insight;
       const txns = data.recent_transactions || [];
       const content = document.getElementById('customerDrawerContent');
       if (!content) return;
+
+      currentCustomerTxnDateFilter = 'ALL';
+      currentCustomerTxnTypeFilter = 'ALL';
+      currentCustomerTxnSearch = '';
 
       const isVerified = u.kyc_status === 'VERIFIED';
       const isRejected = u.kyc_status === 'REJECTED';
@@ -3685,33 +3838,13 @@
       if (u.kyc_status === 'PENDING') kycStatusBadge = `<span class="badge-flat warning"><i class="ti ti-clock"></i> Pending Review</span>`;
       else if (isRejected) kycStatusBadge = `<span class="badge-flat danger"><i class="ti ti-alert-triangle"></i> Rejected</span>`;
 
-      let recentTxnsHtml = '';
-      if (txns.length === 0) {
-        recentTxnsHtml = '<div class="text-center py-3 text-muted" style="font-size:12px;">No transactions recorded yet.</div>';
-      } else {
-        recentTxnsHtml = txns.map(t => `
-          <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="font-size:12px;">
-            <div>
-              <span class="fw-bold mono-num text-primary">${t.code}</span>
-              <div class="text-muted" style="font-size:10.5px;">${t.type} • ${t.time}</div>
-            </div>
-            <div class="text-end">
-              <strong class="mono-num ${t.is_outgoing ? 'text-danger' : 'text-success'}">
-                ${t.is_outgoing ? '-' : '+'} ৳ ${Number(t.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-              </strong>
-              <div style="font-size:10.5px;"><span class="badge-flat ${t.status === 'COMPLETED' ? 'success' : (t.status === 'REVERSED' ? 'warning' : 'danger')}">${t.status}</span></div>
-            </div>
-          </div>
-        `).join('');
-      }
-
       const dossierAvatar = u.profile_image || u.avatar;
       const dossierAvatarHtml = dossierAvatar
         ? `<img src="${dossierAvatar.startsWith('http') || dossierAvatar.startsWith('data:') ? dossierAvatar : `${API_BASE}${dossierAvatar}`}" 
                alt="${u.name}" 
-               style="width:58px; height:58px; border-radius:50%; object-fit:cover; border:2px solid #4680FF; box-shadow:0 2px 8px rgba(0,0,0,0.15); display:block; margin:0 auto 8px auto;" 
-               onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'admin-avatar mx-auto mb-2\\' style=\\'width:52px; height:52px; font-size:20px; border-radius:50%; background:linear-gradient(135deg, #4680FF 0%, #2563EB 100%);\\'>${u.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</div>';" />`
-        : `<div class="admin-avatar mx-auto mb-2" style="width:52px; height:52px; font-size:20px; border-radius:50%; background:linear-gradient(135deg, #4680FF 0%, #2563EB 100%);">
+               style="width:62px; height:62px; border-radius:50%; object-fit:cover; border:2px solid #4680FF; box-shadow:0 2px 8px rgba(0,0,0,0.15); display:block; margin:0 auto 8px auto;" 
+               onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'admin-avatar mx-auto mb-2\\' style=\\'width:56px; height:56px; font-size:20px; border-radius:50%; background:linear-gradient(135deg, #4680FF 0%, #2563EB 100%);\\'>${u.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</div>';" />`
+        : `<div class="admin-avatar mx-auto mb-2" style="width:56px; height:56px; font-size:20px; border-radius:50%; background:linear-gradient(135deg, #4680FF 0%, #2563EB 100%);">
             ${u.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
           </div>`;
 
@@ -3723,14 +3856,87 @@
           <div class="text-muted" style="font-size:12px; margin-top:2px;">
             <i class="ti ti-phone"></i> ${u.phone} • <i class="ti ti-mail"></i> ${u.email || 'N/A'}
           </div>
-          <div class="d-flex justify-content-center gap-2 mt-2">
+          <div class="d-flex justify-content-center flex-wrap gap-2 mt-2">
             <span class="badge-flat ${u.status === 'ACTIVE' ? 'success' : 'danger'}">${u.status}</span>
             ${kycStatusBadge}
             <span class="persona-badge persona-urban">${u.persona}</span>
           </div>
+          <!-- Account Opening Date -->
+          <div class="mt-2 text-muted" style="font-size:11.5px;">
+            <i class="ti ti-calendar-event text-primary me-1"></i><strong>Account Created:</strong> ${u.created_at || 'N/A'}
+          </div>
         </div>
 
-        <!-- Section 1: National ID & KYC Voucher -->
+        <!-- Section 1: Financial KPI Overview Cards -->
+        <div class="row g-2 mb-3">
+          <div class="col-6 col-sm-3">
+            <div class="p-2 rounded border bg-light text-center h-100 shadow-sm">
+              <div class="text-muted" style="font-size:10px; text-transform:uppercase; letter-spacing:0.5px;"><i class="ti ti-wallet text-primary"></i> Balance</div>
+              <div class="fw-bold mono-num text-success mt-1" style="font-size:13.5px;">৳ ${Number(u.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="p-2 rounded border bg-light text-center h-100 shadow-sm">
+              <div class="text-muted" style="font-size:10px; text-transform:uppercase; letter-spacing:0.5px;"><i class="ti ti-receipt text-info"></i> Total Txns</div>
+              <div class="fw-bold mono-num text-dark mt-1" style="font-size:13.5px;">${u.total_txns_count || txns.length}</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="p-2 rounded border bg-light text-center h-100 shadow-sm">
+              <div class="text-muted" style="font-size:10px; text-transform:uppercase; letter-spacing:0.5px;"><i class="ti ti-arrow-up-right text-danger"></i> Outflow</div>
+              <div class="fw-bold mono-num text-danger mt-1" style="font-size:12.5px;">৳ ${Number(u.total_sent).toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="p-2 rounded border bg-light text-center h-100 shadow-sm">
+              <div class="text-muted" style="font-size:10px; text-transform:uppercase; letter-spacing:0.5px;"><i class="ti ti-arrow-down-left text-success"></i> Inflow</div>
+              <div class="fw-bold mono-num text-success mt-1" style="font-size:12.5px;">৳ ${Number(u.total_received).toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: 30-Day Customer Ledger with Interactive Date & Type Filters -->
+        <div class="detail-item-box mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+            <div>
+              <strong style="font-size:12.5px;"><i class="ti ti-receipt text-primary"></i> 30-Day Customer Ledger</strong>
+              <div id="customerTxnCountSummary" class="text-muted" style="font-size:10.5px;">Showing ${txns.length} of ${txns.length} records</div>
+            </div>
+            <div class="btn-group btn-group-sm" id="customerTxnDateFilterGroup">
+              <button class="btn btn-xs btn-outline-primary active" onclick="setDrawerDateFilter('ALL', this)" style="font-size:10.5px; padding:2px 7px;">All (30D)</button>
+              <button class="btn btn-xs btn-outline-primary" onclick="setDrawerDateFilter('30D', this)" style="font-size:10.5px; padding:2px 7px;">30 Days</button>
+              <button class="btn btn-xs btn-outline-primary" onclick="setDrawerDateFilter('7D', this)" style="font-size:10.5px; padding:2px 7px;">7 Days</button>
+              <button class="btn btn-xs btn-outline-primary" onclick="setDrawerDateFilter('TODAY', this)" style="font-size:10.5px; padding:2px 7px;">Today</button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Controls -->
+          <div class="row g-1 mb-2">
+            <div class="col-7">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-white border-end-0 py-0 text-muted" style="font-size:11px;"><i class="ti ti-search"></i></span>
+                <input type="text" id="customerTxnSearchInput" class="form-control form-control-sm border-start-0 py-1" style="font-size:11px;" placeholder="Search Txn ID, note, operator..." oninput="applyCustomerTxnFilter(undefined, undefined, this.value)">
+              </div>
+            </div>
+            <div class="col-5">
+              <select id="customerTxnTypeSelect" class="form-select form-select-sm py-1" style="font-size:11px;" onchange="applyCustomerTxnFilter(undefined, this.value, undefined)">
+                <option value="ALL">All Categories</option>
+                <option value="RECHARGE">Mobile Recharge</option>
+                <option value="MERCHANT_PAYMENT">Merchant Payment</option>
+                <option value="BILL_PAYMENT">Bill Payment</option>
+                <option value="SEND_MONEY">Send Money</option>
+                <option value="ADD_MONEY">Add Money</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Transaction List with smooth scroll -->
+          <div id="customerDossierTxnList" style="max-height:360px; overflow-y:auto; padding-right:4px;">
+            <!-- Filled dynamically by renderFilteredCustomerTxns -->
+          </div>
+        </div>
+
+        <!-- Section 3: National ID & KYC Voucher -->
         <div class="detail-item-box mb-3">
           <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
             <strong style="font-size:12.5px;"><i class="ti ti-id text-primary"></i> National Identity (NID) & KYC</strong>
@@ -3764,7 +3970,7 @@
           ` : ''}
         </div>
 
-        <!-- Section 2: Wallet Liquidity & Security -->
+        <!-- Section 4: Wallet Liquidity & Security -->
         <div class="detail-item-box mb-3">
           <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
             <strong style="font-size:12.5px;"><i class="ti ti-wallet text-success"></i> Wallet Liquidity & Security</strong>
@@ -3797,7 +4003,7 @@
           </div>
         </div>
 
-        <!-- Section 3: Track 04 AI Persona -->
+        <!-- Section 5: Track 04 AI Behavioral Scorecard -->
         ${ai ? `
           <div class="detail-item-box mb-3" style="border-left:3px solid var(--pc-primary);">
             <div class="d-flex justify-content-between align-items-center mb-1">
@@ -3808,16 +4014,10 @@
             <div class="text-muted" style="font-size:11.5px; line-height:1.4;">${ai.explanation}</div>
           </div>
         ` : ''}
-
-        <!-- Section 4: Recent Financial Transactions -->
-        <div class="detail-item-box">
-          <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
-            <strong style="font-size:12.5px;"><i class="ti ti-receipt text-secondary"></i> Recent Customer Ledger</strong>
-            <span style="font-size:11px; color:var(--pc-text-muted);">Top 10 Records</span>
-          </div>
-          ${recentTxnsHtml}
-        </div>
       `;
+
+      // Initial render of ledger records
+      renderFilteredCustomerTxns(txns, txns.length);
     }
 
     // KYC Review Modal Handlers
