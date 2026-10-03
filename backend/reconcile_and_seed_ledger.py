@@ -161,8 +161,9 @@ def reconcile_and_seed():
                 u_op = user_profiles[uid]["op"]
                 u_phone = user_profiles[uid]["phone"]
 
-                # 1. Mobile Recharge every 4-5 days
-                if (day + uid) % 4 == 0:
+                # 1. Mobile Recharge (User 3 recharges every 2-3 days as a heavy data user; Users 1 & 2 recharge every 4-5 days)
+                is_recharge_day = ((day + uid) % 3 == 0) if uid == 3 else ((day + uid) % 4 == 0)
+                if is_recharge_day:
                     minute_counter = (minute_counter + 7) % 50 + 5
                     txn_dt = day_date.replace(hour=11 + (uid % 4), minute=minute_counter, second=0)
                     rc_amounts = [49.0, 108.0, 249.0, 399.0, 499.0]
@@ -189,11 +190,11 @@ def reconcile_and_seed():
                         all_txns.append(t)
                         running_balances[uid] -= rc_amt
 
-                # 2. Dining / Chillox Burger Payment on evenings (Merchant #3)
-                if (day + uid * 2) % 6 == 1:
+                # 2. Dining / Chillox Burger Payment on evenings (Merchant #3) for Foodies (User 1 & User 3)
+                if (day + uid * 2) % 6 == 1 and uid in [1, 3]:
                     minute_counter = (minute_counter + 11) % 50 + 5
                     txn_dt = day_date.replace(hour=19 + (uid % 2), minute=minute_counter, second=0)
-                    dine_amt = Decimal(str(round(random.uniform(420.0, 1280.0), 2)))
+                    dine_amt = Decimal(str(round(random.uniform(350.0, 850.0 if uid == 3 else 1280.0), 2)))
 
                     if running_balances[uid] >= dine_amt + Decimal("500.00"):
                         code = f"TXN-PM-{txn_dt.strftime('%y%m%d')}-{uid}{day:02d}2"
@@ -216,15 +217,17 @@ def reconcile_and_seed():
                         all_txns.append(t)
                         running_balances[uid] -= dine_amt
 
-                # 3. Superstore Grocery at Shwapno (Merchant #1) or Unimart (Merchant #2)
-                if (day + uid) in [5, 12, 19, 26]:
+                # 3. Superstore Grocery at Shwapno (Merchant #1) or Unimart Mega Store (Merchant #2)
+                # User 2 shops at Unimart Mega Store; User 1 shops at Shwapno (Household grocery needs)
+                is_groc_day = (uid == 1 and (day + uid) in [5, 12, 19, 26]) or (uid == 2 and day in [3, 8, 14, 20, 26])
+                if is_groc_day:
                     minute_counter = (minute_counter + 13) % 50 + 5
-                    m_id = 1 if uid != 2 else 2
-                    m_name = "Shwapno Superstore" if m_id == 1 else "Unimart Mega Store"
-                    m_phone = "01700100001" if m_id == 1 else "01700100002"
-                    m_loc = "Dhanmondi 27, Dhaka" if m_id == 1 else "Gulshan 2, Dhaka"
+                    m_id = 2 if uid == 2 else 1
+                    m_name = "Unimart Mega Store" if m_id == 2 else "Shwapno Superstore"
+                    m_phone = "01700100002" if m_id == 2 else "01700100001"
+                    m_loc = "Gulshan 2, Dhaka" if m_id == 2 else "Dhanmondi 27, Dhaka"
                     txn_dt = day_date.replace(hour=17 + (uid % 3), minute=minute_counter, second=0)
-                    groc_amt = Decimal(str(round(random.uniform(1150.0, 2850.0), 2)))
+                    groc_amt = Decimal(str(round(random.uniform(1450.0, 3200.0), 2)))
 
                     if running_balances[uid] >= groc_amt + Decimal("500.00"):
                         code = f"TXN-PM-{txn_dt.strftime('%y%m%d')}-{uid}{day:02d}3"
@@ -239,7 +242,7 @@ def reconcile_and_seed():
                             status=TransactionStatus.COMPLETED.value,
                             recipient_phone=m_phone,
                             operator=None,
-                            note=f"Weekly Groceries at {m_name}",
+                            note=f"Weekly Groceries & Supplies at {m_name}",
                             location=m_loc,
                             transaction_time=txn_dt,
                             created_at=txn_dt,
@@ -247,11 +250,11 @@ def reconcile_and_seed():
                         all_txns.append(t)
                         running_balances[uid] -= groc_amt
 
-                # 4. Utility Bill Payment (DESCO Electricity / WASA)
-                if day in [7, 21] and uid in [1, 2]:
+                # 4. Utility Bill Payment (DESCO Electricity Monthly Bill) for Household Manager (User 2)
+                if day in [7, 21] and uid == 2:
                     minute_counter = (minute_counter + 9) % 50 + 5
                     txn_dt = day_date.replace(hour=14, minute=minute_counter, second=0)
-                    bill_amt = Decimal(str(round(random.uniform(1450.0, 2600.0), 2)))
+                    bill_amt = Decimal(str(round(random.uniform(1650.0, 2750.0), 2)))
 
                     if running_balances[uid] >= bill_amt + Decimal("500.00"):
                         code = f"TXN-BP-{txn_dt.strftime('%y%m%d')}-{uid}{day:02d}4"

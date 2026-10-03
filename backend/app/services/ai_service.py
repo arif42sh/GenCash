@@ -134,27 +134,38 @@ class AIService:
         and generates explainable attribution in Bengali & English.
         """
         from app.ml.nbo_engine import nbo_engine
+        from app.models.user import User
+        from sqlalchemy import or_
 
-        # Fetch user's recent transactions
+        user = db.query(User).filter(User.id == user_id).first()
+        user_balance = float(user.wallet.balance) if (user and user.wallet) else 2500.0
+
+        # Fetch user's recent transactions (both outgoing & incoming like Add Money)
         recent_txns = (
             db.query(Transaction)
-            .filter(Transaction.sender_id == user_id)
-            .order_by(Transaction.created_at.desc())
-            .limit(30)
+            .filter(or_(Transaction.sender_id == user_id, Transaction.receiver_id == user_id))
+            .order_by(Transaction.transaction_time.desc())
+            .limit(60)
             .all()
         )
 
         txn_dicts = []
         for t in recent_txns:
+            tx_dt = t.transaction_time or t.created_at
+            m_name = t.merchant.merchant_name if t.merchant else None
             txn_dicts.append({
                 "amount": float(t.amount),
                 "category": t.transaction_type,
-                "created_at": t.created_at
+                "operator": t.operator,
+                "merchant_name": m_name,
+                "is_outgoing": (t.sender_id == user_id),
+                "created_at": tx_dt
             })
 
         user_features = nbo_engine.compute_user_features(
-            user_balance=2500.0,
-            txns=txn_dicts if txn_dicts else None
+            user_balance=user_balance,
+            txns=txn_dicts if txn_dicts else None,
+            user_phone=user.phone if user else ""
         )
 
         ranked = nbo_engine.predict_next_best_offers(user_features)
@@ -162,6 +173,7 @@ class AIService:
 
         return {
             "user_id": user_id,
+            "user_name": user.name if user else "Customer",
             "user_features": user_features,
             "top_recommended_offer": top_offer,
             "ranked_offers": ranked,
