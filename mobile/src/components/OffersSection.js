@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -282,7 +282,7 @@ const MFS_PARTNERS = [
   { id: 'p6', name: 'DESCO / DPDC', icon: 'bulb-outline', color: '#D97706', bg: '#FEF3C7', category: 'BillPay' },
 ];
 
-export const OffersSection = ({ navigation, onOpenQR, hideTopBanner = false }) => {
+export const OffersSection = ({ navigation, onOpenQR, hideTopBanner = false, openAllModalTrigger = null }) => {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [showAllModal, setShowAllModal] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -290,6 +290,12 @@ export const OffersSection = ({ navigation, onOpenQR, hideTopBanner = false }) =
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedCode, setCopiedCode] = useState(null);
   const { t, isBangla } = useLanguage();
+
+  useEffect(() => {
+    if (openAllModalTrigger) {
+      setShowAllModal(true);
+    }
+  }, [openAllModalTrigger]);
 
   const handleClaim = (offer) => {
     setSelectedOffer(offer);

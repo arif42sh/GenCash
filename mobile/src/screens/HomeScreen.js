@@ -20,6 +20,9 @@ import { ActionGrid } from '../components/ActionGrid';
 import { OffersSection } from '../components/OffersSection';
 import { QRScannerModal } from '../components/QRScannerModal';
 import { UserReceiveQRModal } from '../components/UserReceiveQRModal';
+import { AppLaunchOfferModal } from '../components/AppLaunchOfferModal';
+
+let sessionLaunchPopupDismissed = false;
 
 const RECENT_CONTACTS = [
   { id: '1', name: 'Sadia', fullName: 'Sadia Rahman', phone: '01822222222', initials: 'SS', color: '#7C3AED', bg: '#EDE9FE' },
@@ -35,6 +38,9 @@ export const HomeScreen = ({ navigation }) => {
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [showUserQR, setShowUserQR] = useState(false);
+  const [showLaunchOfferModal, setShowLaunchOfferModal] = useState(false);
+  const [launchOffer, setLaunchOffer] = useState(null);
+  const [openAllOffersTrigger, setOpenAllOffersTrigger] = useState(0);
 
   const loadDashboardData = useCallback(async () => {
     try {
@@ -52,6 +58,82 @@ export const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     loadDashboardData();
   }, [loadDashboardData]);
+
+  // bKash / Nagad style Personalized NBO App-Launch Pop-up Trigger
+  useEffect(() => {
+    let isMounted = true;
+    const fetchTopOfferForPopup = async () => {
+      if (sessionLaunchPopupDismissed) return;
+      try {
+        const nboRes = await api.getNextBestOffers();
+        const top = nboRes?.top_recommended_offer;
+        if (top && isMounted) {
+          const formatted = {
+            id: top.offer_id,
+            category: top.category,
+            title: top.title,
+            titleEn: top.title,
+            headline: top.title,
+            sub: isBangla ? top.reason_bn : top.reason_en,
+            reason_bn: top.reason_bn,
+            reason_en: top.reason_en,
+            discount: `৳${top.discount_value || 50} ক্যাশব্যাক`,
+            targetScreen:
+              top.category === 'RECHARGE'
+                ? 'MobileRecharge'
+                : top.category === 'MERCHANT_PAY'
+                ? 'MerchantPayment'
+                : top.category === 'BILL_PAY'
+                ? 'MerchantPayment'
+                : 'AddMoney',
+            targetParams:
+              top.category === 'BILL_PAY'
+                ? { mode: 'utility' }
+                : top.category === 'MERCHANT_PAY'
+                ? { mode: 'merchant' }
+                : {},
+            btnText:
+              top.category === 'RECHARGE'
+                ? 'রিচার্জ করুন'
+                : top.category === 'MERCHANT_PAY'
+                ? 'পেমেন্ট করুন'
+                : 'অফারটি উপভোগ করুন',
+            btnTextEn:
+              top.category === 'RECHARGE'
+                ? 'Recharge Now'
+                : top.category === 'MERCHANT_PAY'
+                ? 'Pay Now'
+                : 'Grab Offer',
+          };
+          setLaunchOffer(formatted);
+          sessionLaunchPopupDismissed = true;
+          setTimeout(() => {
+            if (isMounted) setShowLaunchOfferModal(true);
+          }, 700);
+        }
+      } catch (err) {
+        console.warn('Failed to load launch popup offer:', err);
+      }
+    };
+
+    fetchTopOfferForPopup();
+    return () => {
+      isMounted = false;
+    };
+  }, [isBangla]);
+
+  const handleAcceptLaunchOffer = (offer) => {
+    setShowLaunchOfferModal(false);
+    sessionLaunchPopupDismissed = true;
+    if (offer?.targetScreen) {
+      navigation.navigate(offer.targetScreen, offer.targetParams || {});
+    }
+  };
+
+  const handleDismissLaunchOffer = () => {
+    setShowLaunchOfferModal(false);
+    sessionLaunchPopupDismissed = true;
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -180,8 +262,21 @@ export const HomeScreen = ({ navigation }) => {
           navigation={navigation}
           onOpenQR={() => setShowQRScanner(true)}
           hideTopBanner={true}
+          openAllModalTrigger={openAllOffersTrigger}
         />
       </ScrollView>
+
+      {/* App Launch Personalized NBO Pop-up Modal (bKash/Nagad style) */}
+      <AppLaunchOfferModal
+        visible={showLaunchOfferModal}
+        offer={launchOffer}
+        onClose={handleDismissLaunchOffer}
+        onAccept={handleAcceptLaunchOffer}
+        onViewAllOffers={() => {
+          handleDismissLaunchOffer();
+          setOpenAllOffersTrigger((prev) => prev + 1);
+        }}
+      />
 
       {/* QR Scanner Modal */}
       <QRScannerModal
