@@ -3326,13 +3326,13 @@
 
   <!-- [ Deploy Campaign Modal ] -->
   <div id="campaignModal" class="pc-modal-backdrop">
-    <div class="pc-modal-box" style="max-width: 820px; width: 100%; max-height: min(92vh, 720px); display: flex; flex-direction: column; overflow: hidden; padding: 20px 24px;">
+    <div class="pc-modal-box" style="max-width: 820px; width: 100%; max-height: min(92vh, 720px); display: flex; flex-direction: column; overflow: hidden; padding: 22px 26px;">
       <!-- Modal Header (Fixed) -->
       <div class="d-flex justify-content-between align-items-center pb-2.5 border-bottom flex-shrink-0 mb-3">
-        <h5 class="m-0 fw-bold d-flex align-items-center gap-2">
-          <i class="ti ti-rocket text-primary" style="font-size: 20px;"></i>
-          <span>Deploy Campaign & Promotional Offer</span>
-        </h5>
+        <div>
+          <h6 class="m-0 fw-bold" style="font-size: 15px; color: var(--pc-text);">Deploy Campaign & Promotional Offer</h6>
+          <div class="text-muted" style="font-size: 11.5px; margin-top: 2px;">Configure promotional parameters, audience distribution, and creative assets.</div>
+        </div>
         <button class="btn btn-sm btn-link text-muted p-1" onclick="closeCampaignModal()" title="Close">
           <i class="ti ti-x" style="font-size: 20px;"></i>
         </button>
@@ -3341,102 +3341,89 @@
       <!-- Modal Body (Scrollable 2-Column Grid) -->
       <div style="overflow-y: auto; overflow-x: hidden; flex: 1; padding-right: 6px;">
         <div class="row g-3">
-          <!-- Left Column: Campaign Details & Logic -->
+          <!-- Left Column: Campaign Parameters -->
           <div class="col-lg-7 d-flex flex-column gap-2.5">
             <div>
-              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Campaign Title</label>
-              <input type="text" class="form-control form-control-sm" id="campName" value="Boishakhi 20% Merchant Cashback" oninput="autoDetectActionRoute()">
+              <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Campaign Title</label>
+              <input type="text" class="form-control form-control-sm" id="campName" value="Boishakhi 20% Merchant Cashback" placeholder="e.g. Boishakhi 20% Merchant Cashback" oninput="autoDetectActionRoute()">
             </div>
 
             <div>
-              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Customer Offer Copy</label>
+              <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Offer Description</label>
               <input type="text" class="form-control form-control-sm" id="campDesc"
-                value="Enjoy 20% cashback up to ৳50 on all merchant QR payments" oninput="autoDetectActionRoute()">
+                value="Enjoy 20% cashback up to ৳50 on all merchant QR payments" placeholder="Customer offer copy" oninput="autoDetectActionRoute()">
             </div>
 
             <div class="row g-2">
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Offer Type / সুবিধার ধরন</label>
+                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Incentive Type</label>
                 <select id="campType" class="form-select form-select-sm" onchange="autoDetectActionRoute()">
-                  <option value="CASHBACK">CASHBACK (ক্যাশব্যাক)</option>
-                  <option value="DISCOUNT">DISCOUNT (ইনস্ট্যান্ট ছাড়)</option>
-                  <option value="RECHARGE_BONUS">RECHARGE_BONUS (রিচার্জ বোনাস)</option>
+                  <option value="CASHBACK">Cashback</option>
+                  <option value="DISCOUNT">Instant Discount</option>
+                  <option value="RECHARGE_BONUS">Recharge Bonus</option>
                 </select>
               </div>
               <div class="col-6">
-                <label class="form-label mb-1 d-flex align-items-center justify-content-between" style="font-size:12px; font-weight:600;">
-                  <span>Audience Targeting</span>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5" style="font-size:9px;">Auto ML</span>
-                </label>
-                <div class="p-1 px-2 rounded border d-flex align-items-center gap-1.5" style="background:rgba(16, 185, 129, 0.08); border-color:rgba(16, 185, 129, 0.3) !important; height: 31px;" title="AI Uplift model automatically excludes Sure Things (wasted discount) and targets high-propensity Persuadables.">
-                  <i class="ti ti-cpu text-success" style="font-size:15px; flex-shrink:0;"></i>
-                  <div style="font-size:11px; font-weight:700; color:#059669; line-height:1.1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                    AI Autonomous Causal Lift
-                  </div>
-                </div>
-                <input type="hidden" id="campSegment" value="Persuadables">
+                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Target Audience</label>
+                <select id="campSegment" class="form-select form-select-sm">
+                  <option value="Persuadables" selected>High-Propensity Customers</option>
+                  <option value="All Users">All Registered Customers</option>
+                  <option value="Dormant Users">Dormant Customer Reactivation</option>
+                </select>
               </div>
             </div>
 
             <div class="row g-2">
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Reward Value (৳)</label>
+                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Reward Value (৳)</label>
                 <input type="number" class="form-control form-control-sm" id="campDiscount" value="25">
               </div>
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Min Transaction (৳)</label>
+                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Min Transaction (৳)</label>
                 <input type="number" class="form-control form-control-sm" id="campMinTxn" value="100">
               </div>
             </div>
 
             <div class="row g-2">
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Budget Allocation (৳)</label>
+                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Budget Allocation (৳)</label>
                 <input type="number" class="form-control form-control-sm" id="campBudget" value="50000">
               </div>
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Active Duration (Days)</label>
+                <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Active Duration (Days)</label>
                 <input type="number" class="form-control form-control-sm" id="campDays" value="14">
               </div>
             </div>
 
             <div>
-              <label class="form-label mb-1 d-flex align-items-center justify-content-between" style="font-size:12px; font-weight:600;">
-                <span>Button Tap Action / পোস্টারে ট্যাপ করলে নেভিগেশন</span>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-1.5 py-0.5" style="font-size:9px;" id="aiRoutePill">
-                  <i class="ti ti-sparkles"></i> AI NLP Intent: Merchant QR (98%)
-                </span>
-              </label>
-              <div class="p-1 px-2.5 rounded border d-flex align-items-center justify-content-between" style="background:rgba(70, 128, 255, 0.05); border-color:rgba(70, 128, 255, 0.28) !important; min-height: 31px;">
-                <div class="d-flex align-items-center gap-2">
-                  <i class="ti ti-route text-primary" style="font-size:16px; flex-shrink:0;"></i>
-                  <span id="aiRouteLabel" style="font-size:11.5px; font-weight:600; color:var(--pc-text);">
-                    মার্চেন্ট পেমেন্ট / QR কাউন্টার (Merchant Payment)
-                  </span>
-                </div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5" style="font-size:9.5px; font-weight:700;">
-                  <i class="ti ti-check"></i> Auto Mapped
-                </span>
-              </div>
-              <input type="hidden" id="campTargetScreen" value="MerchantPayment">
+              <label class="form-label mb-1" style="font-size: 12px; font-weight: 600;">Action Destination</label>
+              <select id="campTargetScreen" class="form-select form-select-sm">
+                <option value="MerchantPayment">Merchant Payment (QR Counter)</option>
+                <option value="MobileRecharge">Mobile Recharge</option>
+                <option value="AddMoney">Add Money (Card & Bank Deposit)</option>
+                <option value="SendMoney">Send Money (P2P Transfer)</option>
+              </select>
+              <div class="text-muted mt-1" style="font-size: 11px;">Deep-link destination opened when user taps on the campaign creative.</div>
             </div>
           </div>
 
-          <!-- Right Column: Poster Flyer & Pop-up Configuration -->
+          <!-- Right Column: Poster Flyer & Interstitial Options -->
           <div class="col-lg-5 d-flex flex-column justify-content-between">
             <div>
-              <label class="form-label d-flex justify-content-between align-items-center mb-1" style="font-size:12px; font-weight:600;">
-                <span>📸 Poster / ব্যানার পোস্টার</span>
-                <span class="text-muted fw-normal" style="font-size:10.5px;">PNG, JPG, WebP</span>
-              </label>
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="form-label m-0" style="font-size: 12px; font-weight: 600;">Campaign Creative / Poster</label>
+                <span class="text-muted" style="font-size: 11px;">PNG, JPG, WebP</span>
+              </div>
               <div id="posterDropZone" class="border border-dashed rounded p-3 text-center position-relative d-flex flex-column align-items-center justify-content-center" style="background:var(--pc-subtle-bg); cursor:pointer; border-color:var(--pc-card-border); min-height: 180px;" onclick="document.getElementById('campPosterFile').click()">
                 <div id="posterPlaceholder">
-                  <i class="ti ti-photo-plus fs-1 text-primary"></i>
-                  <div style="font-size:12px; font-weight:700; margin-top:4px;">Click or Drag to Upload Poster</div>
-                  <div class="text-muted" style="font-size:10.5px; margin-top:2px;">1080×1350px (Flyer) or 1080×1080px</div>
+                  <div class="mb-2 text-primary opacity-75">
+                    <i class="ti ti-photo" style="font-size: 32px;"></i>
+                  </div>
+                  <div style="font-size: 12.5px; font-weight: 600; color: var(--pc-text);">Click or Drag to Upload Poster</div>
+                  <div class="text-muted" style="font-size: 11px; margin-top: 2px;">Recommended: 1080×1350px (Flyer) or 1080×1080px</div>
                 </div>
                 <div id="posterPreviewWrap" style="display:none; position:relative; width: 100%;">
-                  <img id="posterPreviewImg" src="" alt="Campaign Poster" style="max-height:160px; max-width:100%; border-radius:8px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.18);" />
+                  <img id="posterPreviewImg" src="" alt="Campaign Poster" style="max-height:160px; max-width:100%; border-radius:8px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.12);" />
                   <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 shadow p-1" onclick="removeUploadedPoster(event)" title="Remove Image" style="line-height:1;">
                     <i class="ti ti-trash"></i>
                   </button>
@@ -3446,15 +3433,17 @@
               <input type="hidden" id="campBannerUrl" value="">
             </div>
 
-            <!-- App-Launch Pop-up Switch Card -->
-            <div class="card p-2.5 border shadow-none mt-3" style="background:rgba(16, 185, 129, 0.05); border-color:rgba(16, 185, 129, 0.25) !important;">
+            <!-- App-Launch Interstitial Display Card -->
+            <div class="card p-3 border shadow-none mt-3" style="background:var(--pc-subtle-bg); border-color:var(--pc-card-border) !important;">
               <div class="form-check form-switch m-0 d-flex align-items-start gap-2">
                 <input class="form-check-input ms-0 me-2 flex-shrink-0" type="checkbox" id="campIsPopup" checked style="width:36px; height:20px; cursor:pointer;">
                 <div>
-                  <label class="form-check-label fw-bold mb-1" for="campIsPopup" style="font-size:12px; color:var(--pc-text); cursor:pointer;">
-                    🚀 App-Launch Pop-up Poster
+                  <label class="form-check-label fw-bold mb-0" for="campIsPopup" style="font-size: 12.5px; color:var(--pc-text); cursor:pointer;">
+                    App-Launch Interstitial Display
                   </label>
-                  <div class="text-muted" style="font-size:10.5px; line-height:1.35;">ইউজাররা GenCash অ্যাপ ওপেন করার সাথে সাথে এই পোস্টারটি ইন্টারস্টিশিয়াল ব্যানার আকারে দেখতে পাবে।</div>
+                  <div class="text-muted mt-0.5" style="font-size: 11px; line-height: 1.4;">
+                    Display full-screen promotional creative when customers launch the mobile app.
+                  </div>
                 </div>
               </div>
             </div>
@@ -3466,7 +3455,7 @@
       <div class="d-flex justify-content-end gap-2 pt-2.5 border-top flex-shrink-0 mt-3">
         <button class="btn btn-sm btn-outline-secondary px-3" onclick="closeCampaignModal()">Cancel</button>
         <button class="btn btn-sm btn-primary px-3 fw-semibold" onclick="submitCreateCampaign()">
-          <i class="ti ti-rocket"></i> Launch Campaign
+          Deploy Campaign
         </button>
       </div>
     </div>
@@ -6059,11 +6048,11 @@
               tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No active campaigns. Click "+ Deploy New Campaign".</td></tr>';
             } else {
               list.forEach(c => {
-                const segLabel = (c.target_segment || 'PERSUADABLES').toUpperCase();
+                const segLabel = c.target_segment || 'High-Propensity';
                 tr.innerHTML = `
                   <td><strong class="mono-num text-muted">#${c.id}</strong></td>
                   <td><strong>${c.campaign_name}</strong><br><span style="font-size:11px; color:var(--pc-text-muted);">${c.description || ''}</span></td>
-                  <td><span class="badge-flat primary d-inline-flex align-items-center gap-1"><i class="ti ti-cpu"></i> ${segLabel}</span></td>
+                  <td><span class="badge-flat primary">${segLabel}</span></td>
                   <td><span class="badge-flat success">${c.offer?.offer_type || 'PROMO'}</span></td>
                   <td><strong class="mono-num">৳ ${c.offer?.discount_value || 0}</strong></td>
                   <td><span class="mono-num">৳ ${Number(c.budget).toLocaleString()}</span></td>
@@ -6155,12 +6144,6 @@
 
       const screenInput = document.getElementById('campTargetScreen');
       if (screenInput) screenInput.value = targetScreen;
-
-      const labelEl = document.getElementById('aiRouteLabel');
-      if (labelEl) labelEl.textContent = label;
-
-      const pillEl = document.getElementById('aiRoutePill');
-      if (pillEl) pillEl.innerHTML = `<i class="ti ti-sparkles"></i> AI NLP Intent: ${intentName}`;
     }
 
     function openCampaignModal() {
@@ -6283,12 +6266,7 @@
         if (res.ok) {
           const resData = await res.json();
           closeCampaignModal();
-          const m = resData.ai_metrics || {};
-          const qualified = Number(m.qualified_persuadables || 3800).toLocaleString();
-          const suppressed = Number(m.sure_things_suppressed || 2400).toLocaleString();
-          const savedTk = Number(m.budget_saved_tk || 12500).toLocaleString();
-
-          showToast(`⚡ <strong>AI Launch: "${name}"</strong><br><span style="font-size:11px; color:#E2E8F0;">🎯 <strong>${qualified}</strong> High-Propensity Persuadables Targeted<br>🛡️ <strong>${suppressed}</strong> Sure Things Suppressed<br>💰 <strong>৳${savedTk}</strong> Waste Budget Saved!</span>`, 5500);
+          showToast(`Campaign "${name}" has been deployed successfully.`);
           fetchCampaignsList();
           switchTab('campaigns');
         }
