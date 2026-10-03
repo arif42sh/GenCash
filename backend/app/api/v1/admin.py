@@ -1308,9 +1308,36 @@ def broadcast_notification(
 ):
     """Broadcast real-time push notification / notice to all registered users."""
     from app.models.system import Notification
-    users = db.query(User).limit(500).all()
+    from app.models.marketing import CampaignResponse
+
+    is_promotional = request.notification_type.upper() in ["PROMOTION", "MARKETING", "OFFER", "PROMOTIONAL"]
+    users = db.query(User).filter(User.is_agent == False).limit(500).all()
     count = 0
+    shielded_count = 0
+
     for u in users:
+        if is_promotional:
+            # Offer Fatigue Shield gatekeeper: Check user's unresponsive streak
+            recent_resps = (
+                db.query(CampaignResponse)
+                .filter(CampaignResponse.user_id == u.id)
+                .order_by(CampaignResponse.sent_at.desc())
+                .limit(10)
+                .all()
+            )
+            streak = 0
+            for r in recent_resps:
+                if not r.converted and not r.clicked and not r.accepted:
+                    streak += 1
+                else:
+                    break
+            
+            fatigue = min(1.0, round(streak * 0.25, 2))
+            if fatigue >= 0.65:
+                # Offer Fatigue Shield Active: Suppress promo notification to prevent unsubscribe churn!
+                shielded_count += 1
+                continue
+
         notif = Notification(
             user_id=u.id,
             title=request.title,
@@ -1321,11 +1348,18 @@ def broadcast_notification(
         )
         db.add(notif)
         count += 1
+
     db.commit()
+
+    msg = f"Successfully dispatched to {count} users."
+    if shielded_count > 0:
+        msg += f" ({shielded_count} users protected by Offer Fatigue Shield - promotional pushes paused)."
+
     return {
         "success": True,
         "dispatched_count": count,
-        "message": f"Successfully broadcasted to {count} users."
+        "fatigue_shielded_count": shielded_count,
+        "message": msg
     }
 @router.post("/system/seed-100k-data")
 def seed_100k_synthetic_dataset(

@@ -342,6 +342,34 @@ def reconcile_and_seed():
             assert abs(wallet.balance - computed_balance) < Decimal("0.01"), "Ledger mismatch detected!"
 
         db.commit()
+
+        # Step 5: Seed realistic Campaign Responses for Offer Fatigue Shield
+        print("\n  🛡️ Seeding Campaign Responses for Offer Fatigue Shield...")
+        from app.models.marketing import Campaign, CampaignResponse
+        db.query(CampaignResponse).delete(synchronize_session=False)
+
+        camp = db.query(Campaign).first()
+        camp_id = camp.id if camp else 1
+
+        # User 1 (Arif): Engaged, last offer was converted! Streak = 0, Fatigue = 0.0
+        r1 = CampaignResponse(campaign_id=camp_id, user_id=1, sent_at=now - timedelta(days=2), viewed=True, clicked=True, accepted=True, converted=True, transaction_value=Decimal("799.00"))
+        
+        # User 2 (Sadia): Converted an offer 5 days ago, viewed 1 offer yesterday. Streak = 1, Fatigue = 0.25 (Mild)
+        r2_old = CampaignResponse(campaign_id=camp_id, user_id=2, sent_at=now - timedelta(days=5), viewed=True, clicked=True, accepted=True, converted=True, transaction_value=Decimal("1500.00"))
+        r2_new = CampaignResponse(campaign_id=camp_id, user_id=2, sent_at=now - timedelta(days=1), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
+
+        # User 3 (Rafiqul): Engaged student, converted mobile data pack! Streak = 0, Fatigue = 0.0
+        r3 = CampaignResponse(campaign_id=camp_id, user_id=3, sent_at=now - timedelta(days=3), viewed=True, clicked=True, accepted=True, converted=True, transaction_value=Decimal("399.00"))
+
+        # User 4 (Dormant / Overwhelmed): Ignored 3 consecutive promo campaigns! Streak = 3, Fatigue = 0.75 -> SLEEPING_DOG, Cool-off Active!
+        r4_1 = CampaignResponse(campaign_id=camp_id, user_id=4, sent_at=now - timedelta(days=8), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
+        r4_2 = CampaignResponse(campaign_id=camp_id, user_id=4, sent_at=now - timedelta(days=4), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
+        r4_3 = CampaignResponse(campaign_id=camp_id, user_id=4, sent_at=now - timedelta(days=1), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
+
+        db.add_all([r1, r2_old, r2_new, r3, r4_1, r4_2, r4_3])
+        db.commit()
+        print("  ✓ Campaign Responses seeded: User 1 (Streak=0), User 2 (Streak=1), User 3 (Streak=0), User 4 (Streak=3 - Shield Active!)")
+
         print(f"\n🎉 Successfully created {len(all_txns)} fully reconciled transactions!")
         print("✅ 100% Solvency, 100% Double-Entry verified, No collisions, Realistic daytime timestamps!")
 

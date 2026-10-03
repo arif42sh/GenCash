@@ -1,4 +1,5 @@
 from typing import List, Optional
+from pydantic import BaseModel
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
@@ -55,6 +56,26 @@ def submit_ai_feedback(
     Submit feedback loop data (ACCEPTED/DISMISSED) on an AI insight to close the intelligence loop.
     """
     return AIService.record_feedback(db=db, user_id=current_user.id, request=request)
+
+
+class DismissOfferRequest(BaseModel):
+    offer_id: str
+    category: Optional[str] = None
+    reason: Optional[str] = "dismissed_by_user"
+
+
+@router.post("/offers/dismiss")
+def dismiss_offer(
+    request: DismissOfferRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Offer Fatigue Shield: User dismisses or closes an offer.
+    Records an unengaged campaign response in DB and increments fatigue score.
+    """
+    user_id = current_user.id if current_user else 1
+    return AIService.record_offer_dismissal(db=db, user_id=user_id, offer_id=request.offer_id)
 
 
 @router.get("/next-best-offers")

@@ -162,22 +162,94 @@ class AIService:
                 "created_at": tx_dt
             })
 
+        # Offer Fatigue Shield: Calculate user's unresponsive streak from campaign response logs
+        from app.models.marketing import CampaignResponse, Campaign
+        recent_responses = (
+            db.query(CampaignResponse)
+            .filter(CampaignResponse.user_id == user_id)
+            .order_by(CampaignResponse.sent_at.desc())
+            .limit(10)
+            .all()
+        )
+        unresponsive_streak = 0
+        for r in recent_responses:
+            if not r.converted and not r.clicked and not r.accepted:
+                unresponsive_streak += 1
+            else:
+                break
+
         user_features = nbo_engine.compute_user_features(
             user_balance=user_balance,
             txns=txn_dicts if txn_dicts else None,
+            recent_ignored_offers=unresponsive_streak,
             user_phone=user.phone if user else ""
         )
 
+        fatigue_score = float(user_features.get("fatigue_score", 0.0))
+        is_cooloff_active = (fatigue_score >= 0.65)
+
         ranked = nbo_engine.predict_next_best_offers(user_features)
         top_offer = ranked[0] if ranked else None
+
+        fatigue_shield = {
+            "fatigue_score": fatigue_score,
+            "unresponsive_streak": unresponsive_streak,
+            "is_cooloff_active": is_cooloff_active,
+            "status_bn": "কুল-অফ সক্রিয় (নোটিফিকেশন বিরতি)" if is_cooloff_active else "স্বাভাবিক (সক্রিয়)",
+            "status_en": "Cool-off Active (Promos paused to protect user)" if is_cooloff_active else "Normal (Active)",
+            "message_bn": "টানা ৩+ অফারে সাড়া না দেওয়ায় গ্রাহককে বিরক্তি থেকে বাঁচাতে এআই পুশ নোটিফিকেশন সাময়িক স্থগিত করেছে।" if is_cooloff_active else "গ্রাহক সন্তুষ্ট ও নিয়মিত সম্পৃক্ত রয়েছেন।"
+        }
 
         return {
             "user_id": user_id,
             "user_name": user.name if user else "Customer",
             "user_features": user_features,
+            "fatigue_shield": fatigue_shield,
             "top_recommended_offer": top_offer,
             "ranked_offers": ranked,
             "generated_at": datetime.utcnow().isoformat(),
+        }
+
+    @staticmethod
+    def record_offer_dismissal(db: Session, user_id: int, offer_id: str) -> Dict[str, Any]:
+        """Offer Fatigue Shield: records an offer dismissal and updates fatigue score."""
+        from app.models.marketing import Campaign, CampaignResponse
+        from datetime import datetime
+        campaign = db.query(Campaign).first()
+        camp_id = campaign.id if campaign else 1
+
+        resp = CampaignResponse(
+            campaign_id=camp_id,
+            user_id=user_id,
+            sent_at=datetime.utcnow(),
+            viewed=True,
+            clicked=False,
+            accepted=False,
+            converted=False,
+            transaction_value=0.00
+        )
+        db.add(resp)
+        db.commit()
+
+        # Recalculate streak
+        recent = db.query(CampaignResponse).filter(CampaignResponse.user_id == user_id).order_by(CampaignResponse.sent_at.desc()).limit(10).all()
+        streak = 0
+        for r in recent:
+            if not r.converted and not r.clicked and not r.accepted:
+                streak += 1
+            else:
+                break
+
+        fatigue = min(1.0, round(streak * 0.25, 2))
+        is_cooloff = (fatigue >= 0.65)
+
+        return {
+            "status": "success",
+            "message": "Offer dismissal logged to Offer Fatigue Shield.",
+            "unresponsive_streak": streak,
+            "fatigue_score": fatigue,
+            "is_cooloff_active": is_cooloff,
+            "cooloff_message_bn": "টানা ৩টি অফার এড়িয়ে যাওয়ায় গ্রাহক সুরক্ষা মোড (Cool-off) সক্রিয় হয়েছে।" if is_cooloff else "ফ্যাটিগ স্কোর আপডেট হয়েছে।"
         }
 
     @staticmethod

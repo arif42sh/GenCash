@@ -193,6 +193,7 @@ export default function OfferCarousel({ navigation, onOpenAllOffers }) {
   const [bannerList, setBannerList] = useState(BANNERS);
   const [selectedAiOffer, setSelectedAiOffer] = useState(null);
   const [aiModalVisible, setAiModalVisible] = useState(false);
+  const [fatigueShield, setFatigueShield] = useState(null);
   const flatListRef = useRef(null);
   const isInteracting = useRef(false);
 
@@ -236,6 +237,9 @@ export default function OfferCarousel({ navigation, onOpenAllOffers }) {
           // Sort so the AI recommended offer is ranked first at index 0
           updated.sort((a, b) => (b.isAiRecommended ? 1 : 0) - (a.isAiRecommended ? 1 : 0));
           setBannerList(updated);
+          if (res.fatigue_shield) {
+            setFatigueShield(res.fatigue_shield);
+          }
         }
       } catch (err) {
         // Fallback to default BANNERS safely
@@ -532,9 +536,19 @@ export default function OfferCarousel({ navigation, onOpenAllOffers }) {
                   </Text>
                 </View>
                 <View style={styles.factorItem}>
-                  <Ionicons name="checkmark-circle" size={15} color="#00D09C" />
+                  <Ionicons
+                    name={fatigueShield?.is_cooloff_active ? "shield-checkmark" : "checkmark-circle"}
+                    size={15}
+                    color={fatigueShield?.is_cooloff_active ? "#F59E0B" : "#00D09C"}
+                  />
                   <Text style={styles.factorText}>
-                    {isBangla ? 'নোটিফিকেশন ফ্যাটিগ পেনাল্টি শূন্য' : 'No campaign fatigue penalty detected'}
+                    {fatigueShield?.is_cooloff_active
+                      ? (isBangla
+                          ? `ফ্যাটিগ শিল্ড সক্রিয়: ${fatigueShield.status_bn}`
+                          : `Fatigue Shield Active: ${fatigueShield.status_en}`)
+                      : (isBangla
+                          ? `নোটিফিকেশন ফ্যাটিগ পেনাল্টি শূন্য (${fatigueShield?.unresponsive_streak || 0} ইগনোর)`
+                          : `No fatigue penalty detected (${fatigueShield?.unresponsive_streak || 0} streak)`)}
                   </Text>
                 </View>
               </View>
