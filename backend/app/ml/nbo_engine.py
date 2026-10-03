@@ -1,6 +1,6 @@
 """
 GenCash Next-Best-Offer & Uplift Intelligence Engine
-DIU CPC x upay AI Hackathon 2026 - Track 04: Growth & Campaign Intelligence
+Enterprise Machine Learning & Campaign Optimization Core
 
 Implements:
 1. Feature Extraction Pipeline (RFM, Category Propensities, Offer Fatigue)

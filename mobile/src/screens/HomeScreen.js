@@ -146,7 +146,7 @@ export const HomeScreen = ({ navigation }) => {
         {/* 3. Other Services (7 Professional Mint Icons Grid) */}
         <ActionGrid onSelectAction={handleActionSelect} />
 
-        {/* 4. Dedicated AI Financial Insight Teaser Card (SRS / Hackathon Requirement) */}
+        {/* 4. Dedicated Financial Insight Card */}
         <TouchableOpacity
           activeOpacity={0.88}
           style={styles.aiInsightCard}
@@ -154,21 +154,23 @@ export const HomeScreen = ({ navigation }) => {
         >
           <View style={styles.aiInsightHeader}>
             <View style={styles.aiBadgePill}>
-              <Ionicons name="sparkles" size={13} color="#064E3B" style={{ marginRight: 4 }} />
-              <Text style={styles.aiBadgeText}>✦ AI Financial Insight</Text>
+              <Ionicons name="trending-up" size={13} color="#064E3B" style={{ marginRight: 4 }} />
+              <Text style={styles.aiBadgeText}>{isBangla ? 'ফিন্যান্সিয়াল ইনসাইট' : 'Financial Insight'}</Text>
             </View>
             <View style={styles.aiConfidencePill}>
-              <Text style={styles.aiConfidenceText}>89% Confidence</Text>
+              <Text style={styles.aiConfidenceText}>{isBangla ? 'সাপ্তাহিক আপডেট' : 'Weekly Analysis'}</Text>
             </View>
           </View>
 
-          <Text style={styles.aiInsightTitle}>Spending Anomaly Detected</Text>
+          <Text style={styles.aiInsightTitle}>{isBangla ? 'খরচের সতর্কতা পাওয়া গেছে' : 'Spending Anomaly Detected'}</Text>
           <Text style={styles.aiInsightSub}>
-            Your food & dining expenses are 18% higher than usual this week.
+            {isBangla
+              ? 'এই সপ্তাহে আপনার কেনাকাটা ও খাবার খরচ সাধারণের তুলনায় ১৮% বেশি।'
+              : 'Your food & dining expenses are 18% higher than usual this week.'}
           </Text>
 
           <View style={styles.aiInsightFooter}>
-            <Text style={styles.aiInsightActionText}>Review Budget Insights</Text>
+            <Text style={styles.aiInsightActionText}>{isBangla ? 'বাজেট ইনসাইট দেখুন' : 'Review Budget Insights'}</Text>
             <Ionicons name="arrow-forward" size={14} color="#064E3B" />
           </View>
         </TouchableOpacity>

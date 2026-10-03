@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="GenCash API",
-    description="AI-Powered Intelligent Digital Financial Services Platform — AI Hackathon 2026 (DIU CPC × upay)",
+    description="Next-Generation Intelligent Digital Financial Services (MFS) Platform",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -97,7 +97,7 @@ def root():
         "docs": "/docs",
         "admin": "/admin",
         "simulator": "/simulator",
-        "event": "AI Hackathon 2026 — DIU CPC × upay",
+        "edition": "Enterprise Production Edition",
         "architecture": "INPUT -> INTELLIGENCE -> ACTION"
     }
 

@@ -1,6 +1,6 @@
 """
 GenCash 100,000 (1 Lakh) High-Performance MFS Synthetic Data Engine
-DIU CPC x upay AI Hackathon 2026 - Track 04: Growth & Campaign Intelligence
+Enterprise Growth & Campaign Intelligence Module
 
 Generates and batch-seeds 100,000 realistic MFS transactions, 3,500 active users,
 and campaign uplift histories into MySQL database.

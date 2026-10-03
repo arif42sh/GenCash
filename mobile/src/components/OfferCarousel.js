@@ -227,12 +227,6 @@ export default function OfferCarousel({ navigation, onOpenAllOffers }) {
           <Text style={styles.sectionTitle}>
             {isBangla ? 'স্মার্ট প্রমোশন ও অফার' : 'Smart Promotions & Offers'}
           </Text>
-          <View style={styles.aiTag}>
-            <Ionicons name="sparkles" size={10} color="#00D09C" />
-            <Text style={styles.aiTagText}>
-              {isBangla ? 'AI পার্সোনালাইজড' : 'AI Powered'}
-            </Text>
-          </View>
         </View>
         {Boolean(onOpenAllOffers) ? (
           <TouchableOpacity
@@ -385,14 +379,14 @@ export default function OfferCarousel({ navigation, onOpenAllOffers }) {
             <View style={styles.modalHeader}>
               <View style={styles.modalHeaderLeft}>
                 <View style={styles.modalSparkleWrap}>
-                  <Ionicons name="sparkles" size={16} color="#00D09C" />
+                  <Ionicons name="gift-outline" size={16} color="#00D09C" />
                 </View>
                 <View>
                   <Text style={styles.modalHeading}>
-                    {isBangla ? 'উপায় AI গ্রোথ ইন্টেলিজেন্স' : 'upay AI Growth Intelligence'}
+                    {isBangla ? 'অফার ও ক্যাশব্যাক বিবরণ' : 'Offer & Cashback Details'}
                   </Text>
                   <Text style={styles.modalSubheading}>
-                    {isBangla ? 'স্বচ্ছ Next-Best-Offer বিশ্লেষণ' : 'Transparent Next-Best-Offer Analysis'}
+                    {isBangla ? 'আপনার অ্যাকাউন্টের জন্য প্রযোজ্য অফার' : 'Exclusive offer for your account'}
                   </Text>
                 </View>
               </View>

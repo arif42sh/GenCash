@@ -1,10 +1,10 @@
 """
 GenCash Synthetic MFS Data Generator
-DIU CPC x upay AI Hackathon 2026 - Track 04: Growth & Campaign Intelligence
+Enterprise Growth & Campaign Intelligence Module
 
 Generates realistic, statistically sound synthetic customer profiles,
-transaction sequences, and campaign engagement histories following the
-Hackathon Guideline (Section 11: Data Strategy - No Production Data Required).
+transaction sequences, and campaign engagement histories following
+statistically grounded Power-Law distribution standards.
 """
 
 import random

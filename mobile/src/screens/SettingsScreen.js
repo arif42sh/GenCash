@@ -226,7 +226,7 @@ export const SettingsScreen = ({ navigation }) => {
         {/* App Version Footer */}
         <View style={styles.versionFooter}>
           <Text style={styles.versionTitle}>GenCash MFS Platform</Text>
-          <Text style={styles.versionSub}>v2.4.0 • DIU CPC × upay AI Hackathon Edition</Text>
+          <Text style={styles.versionSub}>v2.4.0 • Enterprise Edition</Text>
         </View>
       </ScrollView>
 
