@@ -3108,7 +3108,7 @@
                   <span class="text-muted" style="font-size:12px;">Customer-level mathematical transparency, conversion reasoning & fatigue suppression (বাংলা ও English)</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                  <span class="badge-flat primary"><i class="ti ti-cpu"></i> GradientBoosting v1.4</span>
+                  <span class="badge-flat primary"><i class="ti ti-cpu"></i> GradientBoosting v2.1</span>
                   <span class="badge-flat success"><i class="ti ti-shield-check"></i> 100% Auditable</span>
                 </div>
               </div>
@@ -6855,16 +6855,16 @@
               <div class="mt-2 pt-2 border-top text-muted" style="font-size:11.5px;">
                 <strong class="text-dark"><i class="ti ti-math-symbols"></i> Mathematical SHAP Attribution Weights:</strong>
                 <div class="d-flex flex-wrap gap-2 mt-1">
-                  <span class="badge bg-white text-success border"><i class="ti ti-plus"></i> recency: ${attr.recency_impact || '+0.22'}</span>
-                  <span class="badge bg-white text-success border"><i class="ti ti-plus"></i> frequency: ${attr.frequency_impact || '+0.35'}</span>
-                  <span class="badge bg-white text-success border"><i class="ti ti-plus"></i> category_match: ${attr.category_affinity || '+0.45'}</span>
-                  <span class="badge bg-white text-danger border"><i class="ti ti-minus"></i> fatigue_penalty: ${attr.fatigue_penalty || '-0.05'}</span>
+                  <span class="badge bg-white text-success border px-2 py-1"><i class="ti ti-arrow-up-right me-0.5"></i> recency: ${attr.recency_impact || '+0.22'}</span>
+                  <span class="badge bg-white text-success border px-2 py-1"><i class="ti ti-arrow-up-right me-0.5"></i> frequency: ${attr.frequency_impact || '+0.35'}</span>
+                  <span class="badge bg-white text-success border px-2 py-1"><i class="ti ti-arrow-up-right me-0.5"></i> category_match: ${attr.category_affinity || '+0.45'}</span>
+                  <span class="badge bg-white text-danger border px-2 py-1"><i class="ti ti-arrow-down-right me-0.5"></i> fatigue_penalty: ${attr.fatigue_penalty || '-0.05'}</span>
                 </div>
               </div>
             </div>
 
             <div class="d-flex justify-content-between align-items-center text-muted" style="font-size:11px;">
-              <span><i class="ti ti-cpu"></i> Inference Engine: <code>${item.model_version || 'GradientBoostingClassifier v1.4'}</code></span>
+              <span><i class="ti ti-cpu"></i> Inference Engine: <code>${item.model_version || 'GBDT-v2.1-NBO'}</code></span>
               <span><i class="ti ti-calendar"></i> ${new Date(item.created_at || Date.now()).toLocaleString()}</span>
             </div>
           </div>
