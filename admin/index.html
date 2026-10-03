@@ -3345,19 +3345,19 @@
           <div class="col-lg-7 d-flex flex-column gap-2.5">
             <div>
               <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Campaign Title</label>
-              <input type="text" class="form-control form-control-sm" id="campName" value="Boishakhi 20% Merchant Cashback">
+              <input type="text" class="form-control form-control-sm" id="campName" value="Boishakhi 20% Merchant Cashback" oninput="autoDetectActionRoute()">
             </div>
 
             <div>
               <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Customer Offer Copy</label>
               <input type="text" class="form-control form-control-sm" id="campDesc"
-                value="Enjoy 20% cashback up to ৳50 on all merchant QR payments">
+                value="Enjoy 20% cashback up to ৳50 on all merchant QR payments" oninput="autoDetectActionRoute()">
             </div>
 
             <div class="row g-2">
               <div class="col-6">
                 <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Offer Type / সুবিধার ধরন</label>
-                <select id="campType" class="form-select form-select-sm">
+                <select id="campType" class="form-select form-select-sm" onchange="autoDetectActionRoute()">
                   <option value="CASHBACK">CASHBACK (ক্যাশব্যাক)</option>
                   <option value="DISCOUNT">DISCOUNT (ইনস্ট্যান্ট ছাড়)</option>
                   <option value="RECHARGE_BONUS">RECHARGE_BONUS (রিচার্জ বোনাস)</option>
@@ -3401,14 +3401,24 @@
             </div>
 
             <div>
-              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Button Action / পোস্টারে ট্যাপ করলে ইউজার কোথায় যাবে?</label>
-              <select id="campTargetScreen" class="form-select form-select-sm">
-                <option value="MerchantPayment">মার্চেন্ট পেমেন্ট / QR কাউন্টার পেমেন্ট (Merchant Payment)</option>
-                <option value="MobileRecharge">মোবাইল রিচার্জ (Mobile Recharge)</option>
-                <option value="AddMoney">অ্যাড মানি / কার্ড ও ব্যাংক ডিপোজিট (Add Money)</option>
-                <option value="SendMoney">সেন্ড মানি (Send Money)</option>
-                <option value="None">শুধুমাত্র তথ্য ও ডিসকাউন্ট ভিউ (Info Only)</option>
-              </select>
+              <label class="form-label mb-1 d-flex align-items-center justify-content-between" style="font-size:12px; font-weight:600;">
+                <span>Button Tap Action / পোস্টারে ট্যাপ করলে নেভিগেশন</span>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-1.5 py-0.5" style="font-size:9px;" id="aiRoutePill">
+                  <i class="ti ti-sparkles"></i> AI NLP Intent: Merchant QR (98%)
+                </span>
+              </label>
+              <div class="p-1 px-2.5 rounded border d-flex align-items-center justify-content-between" style="background:rgba(70, 128, 255, 0.05); border-color:rgba(70, 128, 255, 0.28) !important; min-height: 31px;">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="ti ti-route text-primary" style="font-size:16px; flex-shrink:0;"></i>
+                  <span id="aiRouteLabel" style="font-size:11.5px; font-weight:600; color:var(--pc-text);">
+                    মার্চেন্ট পেমেন্ট / QR কাউন্টার (Merchant Payment)
+                  </span>
+                </div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5" style="font-size:9.5px; font-weight:700;">
+                  <i class="ti ti-check"></i> Auto Mapped
+                </span>
+              </div>
+              <input type="hidden" id="campTargetScreen" value="MerchantPayment">
             </div>
           </div>
 
@@ -6119,8 +6129,43 @@
       }
     }
 
+    function autoDetectActionRoute() {
+      const name = (document.getElementById('campName')?.value || '').toLowerCase();
+      const desc = (document.getElementById('campDesc')?.value || '').toLowerCase();
+      const type = (document.getElementById('campType')?.value || '').toUpperCase();
+      const combined = name + ' ' + desc;
+
+      let targetScreen = 'MerchantPayment';
+      let label = 'মার্চেন্ট পেমেন্ট / QR কাউন্টার (Merchant Payment)';
+      let intentName = 'Merchant QR (98% Match)';
+
+      if (type === 'RECHARGE_BONUS' || combined.includes('recharge') || combined.includes('রিচার্জ') || combined.includes('flexiload') || combined.includes('gp') || combined.includes('robi') || combined.includes('banglalink') || combined.includes('airtel') || combined.includes('mb') || combined.includes('minute') || combined.includes('টপআপ')) {
+        targetScreen = 'MobileRecharge';
+        label = 'মোবাইল রিচার্জ (Mobile Recharge)';
+        intentName = 'Telecom Recharge (99% Match)';
+      } else if (combined.includes('add money') || combined.includes('অ্যাড মানি') || combined.includes('bank') || combined.includes('card') || combined.includes('visa') || combined.includes('mastercard') || combined.includes('ডিপোজিট') || combined.includes('deposit')) {
+        targetScreen = 'AddMoney';
+        label = 'অ্যাড মানি / কার্ড ও ব্যাংক ডিপোজিট (Add Money)';
+        intentName = 'Bank/Card Deposit (97% Match)';
+      } else if (combined.includes('send money') || combined.includes('সেন্ড মানি') || combined.includes('p2p') || combined.includes('টাকা পাঠান') || combined.includes('transfer')) {
+        targetScreen = 'SendMoney';
+        label = 'সেন্ড মানি (Send Money)';
+        intentName = 'P2P Transfer (96% Match)';
+      }
+
+      const screenInput = document.getElementById('campTargetScreen');
+      if (screenInput) screenInput.value = targetScreen;
+
+      const labelEl = document.getElementById('aiRouteLabel');
+      if (labelEl) labelEl.textContent = label;
+
+      const pillEl = document.getElementById('aiRoutePill');
+      if (pillEl) pillEl.innerHTML = `<i class="ti ti-sparkles"></i> AI NLP Intent: ${intentName}`;
+    }
+
     function openCampaignModal() {
       document.getElementById('campaignModal').style.display = 'flex';
+      autoDetectActionRoute();
     }
 
     function closeCampaignModal() {
