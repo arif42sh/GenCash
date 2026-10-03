@@ -573,11 +573,16 @@
     }
 
     .cell-data h5 {
-      font-size: 19px;
-      font-weight: 800;
+      font-size: 16px;
+      font-weight: 600;
       color: var(--pc-text);
       margin: 0;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.2px;
+      line-height: 1.25;
+      font-family: var(--pc-font);
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
     }
 
     .cell-data span {
@@ -3508,11 +3513,16 @@
 
         if (res.ok) {
           const data = await res.json();
-          document.getElementById('kpiUsers').textContent = (data.total_users || 0).toLocaleString();
-          document.getElementById('kpiActiveUsers').textContent = (data.active_users || 0).toLocaleString();
-          document.getElementById('kpiVolume').textContent = `৳ ${(data.total_volume || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-          document.getElementById('kpiTxnCount').textContent = (data.total_transactions || 0).toLocaleString();
-          document.getElementById('kpiAiInsights').textContent = data.total_ai_insights || '0';
+          const formatMetricCurrency = (val) => {
+            const n = Number(val || 0);
+            return `<span style="font-size:13px; font-weight:500; color:var(--pc-text-muted); margin-right:2px;">৳</span><span>${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+          };
+
+          document.getElementById('kpiUsers').innerHTML = (data.total_users || 0).toLocaleString();
+          document.getElementById('kpiActiveUsers').innerHTML = (data.active_users || 0).toLocaleString();
+          document.getElementById('kpiVolume').innerHTML = formatMetricCurrency(data.total_volume || 0);
+          document.getElementById('kpiTxnCount').innerHTML = (data.total_transactions || 0).toLocaleString();
+          document.getElementById('kpiAiInsights').innerHTML = data.total_ai_insights || '0';
 
           // Dynamic Model Banner Sync
           const txns = data.total_transactions || 0;
@@ -3543,11 +3553,11 @@
           const dmEl = document.getElementById('userKpiDormant');
           if (dmEl) dmEl.textContent = (data.dormant_count || 30190).toLocaleString();
 
-          // Fee Split
-          document.getElementById('kpiPlatformFee').textContent = `৳ ${(data.platform_net_fee || 0).toFixed(2)}`;
-          document.getElementById('kpiAgentCommission').textContent = `৳ ${(data.agent_commission || 0).toFixed(2)}`;
+          // Fee Split (Formatted with comma separators and sleek inline symbol)
+          document.getElementById('kpiPlatformFee').innerHTML = formatMetricCurrency(data.platform_net_fee || 0);
+          document.getElementById('kpiAgentCommission').innerHTML = formatMetricCurrency(data.agent_commission || 0);
           const agentCommDisplay = document.getElementById('agentCommissionDisplay');
-          if (agentCommDisplay) agentCommDisplay.textContent = `৳ ${(data.agent_commission || 0).toFixed(2)}`;
+          if (agentCommDisplay) agentCommDisplay.innerHTML = formatMetricCurrency(data.agent_commission || 0);
 
           // Channel Volumes (Smart Compact Currency Formatter with Full Amount Tooltips)
           if (data.channel_volumes) {
