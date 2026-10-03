@@ -1281,12 +1281,13 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(17, 24, 39, 0.6);
+      background: rgba(17, 24, 39, 0.65);
       z-index: 1070;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 16px;
+      overflow-y: auto;
     }
 
     .pc-modal-box {
@@ -1298,6 +1299,7 @@
       padding: 22px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       animation: modalPop 0.18s ease-out;
+      max-height: calc(100vh - 32px);
     }
 
     @keyframes modalPop {
@@ -3324,114 +3326,134 @@
 
   <!-- [ Deploy Campaign Modal ] -->
   <div id="campaignModal" class="pc-modal-backdrop">
-    <div class="pc-modal-box" style="max-width:540px;">
-      <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-        <h5 class="m-0 fw-bold">Deploy AI-Personalized Campaign</h5>
-        <button class="btn btn-sm btn-link text-muted" onclick="closeCampaignModal()"><i class="ti ti-x"
-            style="font-size:18px;"></i></button>
+    <div class="pc-modal-box" style="max-width: 820px; width: 100%; max-height: min(92vh, 720px); display: flex; flex-direction: column; overflow: hidden; padding: 20px 24px;">
+      <!-- Modal Header (Fixed) -->
+      <div class="d-flex justify-content-between align-items-center pb-2.5 border-bottom flex-shrink-0 mb-3">
+        <h5 class="m-0 fw-bold d-flex align-items-center gap-2">
+          <i class="ti ti-rocket text-primary" style="font-size: 20px;"></i>
+          <span>Deploy Campaign & Promotional Offer</span>
+        </h5>
+        <button class="btn btn-sm btn-link text-muted p-1" onclick="closeCampaignModal()" title="Close">
+          <i class="ti ti-x" style="font-size: 20px;"></i>
+        </button>
       </div>
-      <div>
-        <div class="mb-3">
-          <label class="form-label" style="font-size:12px; font-weight:600;">Campaign Title</label>
-          <input type="text" class="form-control form-control-sm" id="campName" value="Boishakhi 20% Merchant Cashback">
-        </div>
-        <div class="mb-3">
-          <label class="form-label" style="font-size:12px; font-weight:600;">Customer Offer Copy</label>
-          <input type="text" class="form-control form-control-sm" id="campDesc"
-            value="Enjoy 20% cashback up to ৳50 on all merchant QR payments">
-        </div>
-        <div class="row g-2 mb-3">
-          <div class="col-6">
-            <label class="form-label" style="font-size:12px; font-weight:600;">Offer Type</label>
-            <select id="campType" class="form-select form-select-sm">
-              <option value="CASHBACK">CASHBACK</option>
-              <option value="DISCOUNT">DISCOUNT</option>
-              <option value="RECHARGE_BONUS">RECHARGE_BONUS</option>
-            </select>
-          </div>
-          <div class="col-6">
-            <label class="form-label" style="font-size:12px; font-weight:600;">Target Segment</label>
-            <select id="campSegment" class="form-select form-select-sm">
-              <option value="Persuadables">Persuadables (High Uplift)</option>
-              <option value="Sure Things">Sure Things (Loyal)</option>
-              <option value="Dormant Users">Dormant Users (Reactivation)</option>
-              <option value="All Users">All Users (Broad)</option>
-            </select>
-          </div>
-        </div>
-        <div class="row g-2 mb-3">
-          <div class="col-6">
-            <label class="form-label" style="font-size:12px; font-weight:600;">Reward Value (৳)</label>
-            <input type="number" class="form-control form-control-sm" id="campDiscount" value="25">
-          </div>
-          <div class="col-6">
-            <label class="form-label" style="font-size:12px; font-weight:600;">Min Transaction (৳)</label>
-            <input type="number" class="form-control form-control-sm" id="campMinTxn" value="100">
-          </div>
-        </div>
-        <div class="row g-2 mb-3">
-          <div class="col-6">
-            <label class="form-label" style="font-size:12px; font-weight:600;">Budget Allocation (৳)</label>
-            <input type="number" class="form-control form-control-sm" id="campBudget" value="50000">
-          </div>
-          <div class="col-6">
-            <label class="form-label" style="font-size:12px; font-weight:600;">Active Duration (Days)</label>
-            <input type="number" class="form-control form-control-sm" id="campDays" value="14">
-          </div>
-        </div>
 
-        <!-- Campaign Poster / Flyer Upload (Like Nagad / Upay Banner) -->
-        <div class="mb-3">
-          <label class="form-label d-flex justify-content-between align-items-center" style="font-size:12px; font-weight:600;">
-            <span>📸 Campaign Poster / ব্যানার পোস্টার (App Launch & In-Feed)</span>
-            <span class="text-muted fw-normal" style="font-size:10.5px;">PNG, JPG, WebP</span>
-          </label>
-          <div id="posterDropZone" class="border border-dashed rounded p-3 text-center position-relative" style="background:var(--pc-subtle-bg); cursor:pointer; border-color:var(--pc-card-border);" onclick="document.getElementById('campPosterFile').click()">
-            <div id="posterPlaceholder">
-              <i class="ti ti-photo-plus fs-2 text-primary"></i>
-              <div style="font-size:12.5px; font-weight:700; margin-top:4px;">Click or Drag to Upload Poster</div>
-              <div class="text-muted" style="font-size:11px;">Recommended: 1080×1350px (Flyer) or 1080×1080px (Square)</div>
-            </div>
-            <div id="posterPreviewWrap" style="display:none; position:relative;">
-              <img id="posterPreviewImg" src="" alt="Campaign Poster" style="max-height:160px; max-width:100%; border-radius:10px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.18);" />
-              <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 shadow" onclick="removeUploadedPoster(event)" title="Remove Image">
-                <i class="ti ti-trash"></i>
-              </button>
-            </div>
-          </div>
-          <input type="file" id="campPosterFile" accept="image/*" style="display:none;" onchange="handlePosterSelected(this)">
-          <input type="hidden" id="campBannerUrl" value="">
-        </div>
-
-        <!-- Show as App-Launch Pop-up Switch -->
-        <div class="card p-2.5 mb-3 border shadow-none" style="background:rgba(16, 185, 129, 0.05); border-color:rgba(16, 185, 129, 0.25) !important;">
-          <div class="form-check form-switch m-0 d-flex align-items-center gap-2">
-            <input class="form-check-input ms-0 me-2" type="checkbox" id="campIsPopup" checked style="width:36px; height:20px; cursor:pointer;">
+      <!-- Modal Body (Scrollable 2-Column Grid) -->
+      <div style="overflow-y: auto; overflow-x: hidden; flex: 1; padding-right: 6px;">
+        <div class="row g-3">
+          <!-- Left Column: Campaign Details & Logic -->
+          <div class="col-lg-7 d-flex flex-column gap-2.5">
             <div>
-              <label class="form-check-label fw-bold" for="campIsPopup" style="font-size:12.5px; color:var(--pc-text); cursor:pointer;">
-                🚀 Show as App-Launch Pop-up? (অ্যাপ ওপেন হলে বড় পোস্টার দেখাবে)
+              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Campaign Title</label>
+              <input type="text" class="form-control form-control-sm" id="campName" value="Boishakhi 20% Merchant Cashback">
+            </div>
+
+            <div>
+              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Customer Offer Copy</label>
+              <input type="text" class="form-control form-control-sm" id="campDesc"
+                value="Enjoy 20% cashback up to ৳50 on all merchant QR payments">
+            </div>
+
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Offer Type</label>
+                <select id="campType" class="form-select form-select-sm">
+                  <option value="CASHBACK">CASHBACK</option>
+                  <option value="DISCOUNT">DISCOUNT</option>
+                  <option value="RECHARGE_BONUS">RECHARGE_BONUS</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Target Segment</label>
+                <select id="campSegment" class="form-select form-select-sm">
+                  <option value="Persuadables">Persuadables (High Uplift)</option>
+                  <option value="Sure Things">Sure Things (Loyal)</option>
+                  <option value="Dormant Users">Dormant Users (Reactivation)</option>
+                  <option value="All Users">All Users (Broad)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Reward Value (৳)</label>
+                <input type="number" class="form-control form-control-sm" id="campDiscount" value="25">
+              </div>
+              <div class="col-6">
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Min Transaction (৳)</label>
+                <input type="number" class="form-control form-control-sm" id="campMinTxn" value="100">
+              </div>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Budget Allocation (৳)</label>
+                <input type="number" class="form-control form-control-sm" id="campBudget" value="50000">
+              </div>
+              <div class="col-6">
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Active Duration (Days)</label>
+                <input type="number" class="form-control form-control-sm" id="campDays" value="14">
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Button Action / পোস্টারে ট্যাপ করলে ইউজার কোথায় যাবে?</label>
+              <select id="campTargetScreen" class="form-select form-select-sm">
+                <option value="MerchantPayment">মার্চেন্ট পেমেন্ট / QR কাউন্টার পেমেন্ট (Merchant Payment)</option>
+                <option value="MobileRecharge">মোবাইল রিচার্জ (Mobile Recharge)</option>
+                <option value="AddMoney">অ্যাড মানি / কার্ড ও ব্যাংক ডিপোজিট (Add Money)</option>
+                <option value="SendMoney">সেন্ড মানি (Send Money)</option>
+                <option value="None">শুধুমাত্র তথ্য ও ডিসকাউন্ট ভিউ (Info Only)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Right Column: Poster Flyer & Pop-up Configuration -->
+          <div class="col-lg-5 d-flex flex-column justify-content-between">
+            <div>
+              <label class="form-label d-flex justify-content-between align-items-center mb-1" style="font-size:12px; font-weight:600;">
+                <span>📸 Poster / ব্যানার পোস্টার</span>
+                <span class="text-muted fw-normal" style="font-size:10.5px;">PNG, JPG, WebP</span>
               </label>
-              <div class="text-muted" style="font-size:11px;">ইউজাররা GenCash অ্যাপ ওপেন করার সাথে সাথে এই পোস্টারটি ইন্টারস্টিশিয়াল ব্যানার আকারে দেখতে পাবে।</div>
+              <div id="posterDropZone" class="border border-dashed rounded p-3 text-center position-relative d-flex flex-column align-items-center justify-content-center" style="background:var(--pc-subtle-bg); cursor:pointer; border-color:var(--pc-card-border); min-height: 180px;" onclick="document.getElementById('campPosterFile').click()">
+                <div id="posterPlaceholder">
+                  <i class="ti ti-photo-plus fs-1 text-primary"></i>
+                  <div style="font-size:12px; font-weight:700; margin-top:4px;">Click or Drag to Upload Poster</div>
+                  <div class="text-muted" style="font-size:10.5px; margin-top:2px;">1080×1350px (Flyer) or 1080×1080px</div>
+                </div>
+                <div id="posterPreviewWrap" style="display:none; position:relative; width: 100%;">
+                  <img id="posterPreviewImg" src="" alt="Campaign Poster" style="max-height:160px; max-width:100%; border-radius:8px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.18);" />
+                  <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 shadow p-1" onclick="removeUploadedPoster(event)" title="Remove Image" style="line-height:1;">
+                    <i class="ti ti-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <input type="file" id="campPosterFile" accept="image/*" style="display:none;" onchange="handlePosterSelected(this)">
+              <input type="hidden" id="campBannerUrl" value="">
+            </div>
+
+            <!-- App-Launch Pop-up Switch Card -->
+            <div class="card p-2.5 border shadow-none mt-3" style="background:rgba(16, 185, 129, 0.05); border-color:rgba(16, 185, 129, 0.25) !important;">
+              <div class="form-check form-switch m-0 d-flex align-items-start gap-2">
+                <input class="form-check-input ms-0 me-2 flex-shrink-0" type="checkbox" id="campIsPopup" checked style="width:36px; height:20px; cursor:pointer;">
+                <div>
+                  <label class="form-check-label fw-bold mb-1" for="campIsPopup" style="font-size:12px; color:var(--pc-text); cursor:pointer;">
+                    🚀 App-Launch Pop-up Poster
+                  </label>
+                  <div class="text-muted" style="font-size:10.5px; line-height:1.35;">ইউজাররা GenCash অ্যাপ ওপেন করার সাথে সাথে এই পোস্টারটি ইন্টারস্টিশিয়াল ব্যানার আকারে দেখতে পাবে।</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        <!-- Action Redirection on Tap -->
-        <div class="mb-2">
-          <label class="form-label" style="font-size:12px; font-weight:600;">Button Action / পোস্টারে ট্যাপ করলে ইউজার কোথায় যাবে?</label>
-          <select id="campTargetScreen" class="form-select form-select-sm">
-            <option value="MerchantPayment">মার্চেন্ট পেমেন্ট / QR কাউন্টার পেমেন্ট (Merchant Payment)</option>
-            <option value="MobileRecharge">মোবাইল রিচার্জ (Mobile Recharge)</option>
-            <option value="AddMoney">অ্যাড মানি / কার্ড ও ব্যাংক ডিপোজিট (Add Money)</option>
-            <option value="SendMoney">সেন্ড মানি (Send Money)</option>
-            <option value="None">শুধুমাত্র তথ্য ও ডিসকাউন্ট ভিউ (Info Only)</option>
-          </select>
-        </div>
       </div>
-      <div class="d-flex justify-content-end gap-2 mt-4 pt-2 border-top">
-        <button class="btn btn-sm btn-outline-secondary" onclick="closeCampaignModal()">Cancel</button>
-        <button class="btn btn-sm btn-primary" onclick="submitCreateCampaign()"><i class="ti ti-rocket"></i> Launch
-          Campaign</button>
+
+      <!-- Modal Footer (Fixed Sticky) -->
+      <div class="d-flex justify-content-end gap-2 pt-2.5 border-top flex-shrink-0 mt-3">
+        <button class="btn btn-sm btn-outline-secondary px-3" onclick="closeCampaignModal()">Cancel</button>
+        <button class="btn btn-sm btn-primary px-3 fw-semibold" onclick="submitCreateCampaign()">
+          <i class="ti ti-rocket"></i> Launch Campaign
+        </button>
       </div>
     </div>
   </div>
