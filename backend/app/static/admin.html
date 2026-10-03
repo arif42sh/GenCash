@@ -648,6 +648,8 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .badge-flat.success {
@@ -823,6 +825,7 @@
       overflow: hidden;
       min-width: 0;
       width: 100%;
+      height: 100%;
       transition: all 0.15s ease;
     }
 
@@ -888,6 +891,10 @@
       margin: 0;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
       transition: all 0.15s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .user-metric-card:hover {
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
@@ -921,6 +928,82 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    /* Telco Recharge Cards */
+    .telco-card {
+      background: var(--pc-card-bg);
+      border: 1px solid var(--pc-card-border);
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      height: 100%;
+      min-height: 145px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.15s ease;
+    }
+    .telco-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      transform: translateY(-2px);
+    }
+    .telco-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .telco-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--pc-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+      line-height: 1.25;
+    }
+    .telco-badge {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+    .telco-body {
+      margin-top: auto;
+      margin-bottom: auto;
+      padding: 2px 0 6px 0;
+    }
+    .telco-pack {
+      font-size: 15.5px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .telco-sub {
+      font-size: 11px;
+      color: var(--pc-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    .telco-footer {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--pc-card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      line-height: 1.2;
     }
 
     /* Slide-over Drawer */
@@ -1434,7 +1517,7 @@
               <div class="card-body">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-2.5 g-xl-3">
                   <!-- Channel 1: P2P Send Money -->
-                  <div class="col">
+                  <div class="col d-flex">
                     <div class="channel-box" title="P2P Send Money Throughput">
                       <div class="channel-icon" style="background:rgba(70,128,255,0.12); color:#4680FF;">
                         <i class="ti ti-send"></i>
@@ -1450,7 +1533,7 @@
                   </div>
 
                   <!-- Channel 2: Mobile Recharge -->
-                  <div class="col">
+                  <div class="col d-flex">
                     <div class="channel-box" title="Mobile Recharge Throughput">
                       <div class="channel-icon" style="background:rgba(44,168,127,0.12); color:#2CA87F;">
                         <i class="ti ti-device-mobile"></i>
@@ -1466,7 +1549,7 @@
                   </div>
 
                   <!-- Channel 3: MFS Cash Out -->
-                  <div class="col">
+                  <div class="col d-flex">
                     <div class="channel-box" title="MFS Cash-Out (1.85%) Throughput">
                       <div class="channel-icon" style="background:rgba(220,38,38,0.12); color:#DC2626;">
                         <i class="ti ti-building-bank"></i>
@@ -1482,7 +1565,7 @@
                   </div>
 
                   <!-- Channel 4: Merchant QR Pay -->
-                  <div class="col">
+                  <div class="col d-flex">
                     <div class="channel-box" title="Merchant QR Payments Throughput">
                       <div class="channel-icon" style="background:rgba(0,166,166,0.12); color:#00A6A6;">
                         <i class="ti ti-qrcode"></i>
@@ -1498,7 +1581,7 @@
                   </div>
 
                   <!-- Channel 5: Add Money Gateway -->
-                  <div class="col">
+                  <div class="col d-flex">
                     <div class="channel-box" title="Bank & Card Add Money Gateway Throughput">
                       <div class="channel-icon" style="background:rgba(229,138,0,0.12); color:#E58A00;">
                         <i class="ti ti-credit-card"></i>
@@ -1596,8 +1679,8 @@
         <!-- Real MFS User & KYC Metric Cards -->
         <!-- Real MFS User & KYC Metric Cards (Enterprise Stripe/Linear style) -->
         <div class="row g-3 mb-3">
-          <div class="col-md-3">
-            <div class="user-metric-card" style="border-left: 3px solid #10B981; cursor: pointer;" onclick="setUserKycFilter('VERIFIED')">
+          <div class="col-md-3 d-flex">
+            <div class="user-metric-card w-100" style="border-left: 3px solid #10B981; cursor: pointer;" onclick="setUserKycFilter('VERIFIED')">
               <div class="user-metric-label">Verified KYC Users</div>
               <div class="d-flex align-items-baseline justify-content-between">
                 <div class="user-metric-count text-success" id="userKpiVerified">98,450</div>
@@ -1606,8 +1689,8 @@
               <div class="user-metric-sub">Biometric NID Verified Accounts</div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="user-metric-card" style="border-left: 3px solid #F59E0B; cursor: pointer;" onclick="setUserKycFilter('PENDING')">
+          <div class="col-md-3 d-flex">
+            <div class="user-metric-card w-100" style="border-left: 3px solid #F59E0B; cursor: pointer;" onclick="setUserKycFilter('PENDING')">
               <div class="user-metric-label">Pending KYC Review</div>
               <div class="d-flex align-items-baseline justify-content-between">
                 <div class="user-metric-count text-warning" id="userKpiPending">1,550</div>
@@ -1616,8 +1699,8 @@
               <div class="user-metric-sub">Awaiting Manual Compliance Approval</div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="user-metric-card" style="border-left: 3px solid #3B82F6;">
+          <div class="col-md-3 d-flex">
+            <div class="user-metric-card w-100" style="border-left: 3px solid #3B82F6;">
               <div class="user-metric-label">Active Cash-Out Agents</div>
               <div class="d-flex align-items-baseline justify-content-between">
                 <div class="user-metric-count text-primary" id="userKpiAgents">50</div>
@@ -1626,8 +1709,8 @@
               <div class="user-metric-sub">Agent Liquidity Service Points</div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="user-metric-card" style="border-left: 3px solid #EF4444;">
+          <div class="col-md-3 d-flex">
+            <div class="user-metric-card w-100" style="border-left: 3px solid #EF4444;">
               <div class="user-metric-label">Dormant / At-Risk Users</div>
               <div class="d-flex align-items-baseline justify-content-between">
                 <div class="user-metric-count text-danger" id="userKpiDormant">30,190</div>
@@ -1813,8 +1896,8 @@
       <div id="tab-agents" class="tab-section">
         <!-- Summary KPI Cards -->
         <div class="row g-3 mb-3">
-          <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-primary);">
+          <div class="col-md-3 d-flex">
+            <div class="card standard-card p-3 m-0 w-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--pc-primary);">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <span class="text-muted" style="font-size:12px;">Total Float Liquidity</span>
@@ -1824,8 +1907,8 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-warning);">
+          <div class="col-md-3 d-flex">
+            <div class="card standard-card p-3 m-0 w-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--pc-warning);">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <span class="text-muted" style="font-size:12px;">Commissions Disbursed</span>
@@ -1835,8 +1918,8 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-success);">
+          <div class="col-md-3 d-flex">
+            <div class="card standard-card p-3 m-0 w-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--pc-success);">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <span class="text-muted" style="font-size:12px;">Active Agent Points</span>
@@ -1846,8 +1929,8 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-danger);">
+          <div class="col-md-3 d-flex">
+            <div class="card standard-card p-3 m-0 w-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--pc-danger);">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <span class="text-muted" style="font-size:12px;">Liquidity Float Alerts</span>
@@ -1942,8 +2025,8 @@
       <div id="tab-merchants" class="tab-section">
         <!-- Summary KPI Cards -->
         <div class="row g-3 mb-3">
-          <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-primary);">
+          <div class="col-md-3 d-flex">
+            <div class="card standard-card p-3 m-0 w-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--pc-primary);">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <span class="text-muted" style="font-size:12px;">Active Retail Merchants</span>
@@ -1953,8 +2036,8 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-warning);">
+          <div class="col-md-3 d-flex">
+            <div class="card standard-card p-3 m-0 w-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--pc-warning);">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <span class="text-muted" style="font-size:12px;">Unsettled Liquidity Pool</span>
@@ -1964,8 +2047,8 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-success);">
+          <div class="col-md-3 d-flex">
+            <div class="card standard-card p-3 m-0 w-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--pc-success);">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <span class="text-muted" style="font-size:12px;">Total Settled to Banks</span>
@@ -1975,8 +2058,8 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="card standard-card p-3 m-0" style="border-left: 4px solid var(--pc-info);">
+          <div class="col-md-3 d-flex">
+            <div class="card standard-card p-3 m-0 w-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--pc-info);">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
                   <span class="text-muted" style="font-size:12px;">Standard MDR Rate</span>
@@ -2040,83 +2123,93 @@
 
       <!-- ================= 6. MOBILE RECHARGE & TELCOS VIEW ================= -->
       <div id="tab-recharge" class="tab-section">
-        <div class="row g-3 mb-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3 mb-4">
           <!-- GP -->
-          <div class="col-md-4 col-xl">
-            <div class="card standard-card p-3 m-0" style="border-top:3px solid #00A6A6;">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="fw-bold m-0">Grameenphone (GP)</h6>
-                <span class="badge-flat primary">46% Share</span>
+          <div class="col d-flex">
+            <div class="card standard-card p-3 m-0 w-100 telco-card" style="border-top:3px solid #00A6A6;">
+              <div class="telco-header">
+                <h6 class="telco-title" title="Grameenphone (GP)">Grameenphone (GP)</h6>
+                <span class="badge-flat primary telco-badge">46% Share</span>
               </div>
-              <div class="mono-num fw-bold text-primary mb-1" style="font-size:16px;">৳ 799 Bundle</div>
-              <div style="font-size:11px; color:var(--pc-text-muted);">Unlimited Internet + ৳79 AI Cashback</div>
-              <div class="mt-2 pt-2 border-top d-flex justify-content-between" style="font-size:11px;">
-                <span>Gateway: GP Connect</span>
-                <span class="text-success"><i class="ti ti-circle-check"></i> Operational</span>
+              <div class="telco-body">
+                <div class="mono-num fw-bold text-primary telco-pack">৳ 799 Bundle</div>
+                <div class="telco-sub" title="Unlimited Internet + ৳79 AI Cashback">Unlimited Internet + ৳79 AI Cashback</div>
+              </div>
+              <div class="telco-footer">
+                <span class="text-muted">Gateway: GP Connect</span>
+                <span class="text-success fw-medium"><i class="ti ti-circle-check"></i> Operational</span>
               </div>
             </div>
           </div>
 
           <!-- Robi -->
-          <div class="col-md-4 col-xl">
-            <div class="card standard-card p-3 m-0" style="border-top:3px solid #DC2626;">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="fw-bold m-0">Robi Axiata</h6>
-                <span class="badge-flat danger">28% Share</span>
+          <div class="col d-flex">
+            <div class="card standard-card p-3 m-0 w-100 telco-card" style="border-top:3px solid #DC2626;">
+              <div class="telco-header">
+                <h6 class="telco-title" title="Robi Axiata">Robi Axiata</h6>
+                <span class="badge-flat danger telco-badge">28% Share</span>
               </div>
-              <div class="mono-num fw-bold text-danger mb-1" style="font-size:16px;">৳ 148 Pack</div>
-              <div style="font-size:11px; color:var(--pc-text-muted);">10GB 7 Days + ৳20 Cashback</div>
-              <div class="mt-2 pt-2 border-top d-flex justify-content-between" style="font-size:11px;">
-                <span>Gateway: Robi Direct</span>
-                <span class="text-success"><i class="ti ti-circle-check"></i> Operational</span>
+              <div class="telco-body">
+                <div class="mono-num fw-bold text-danger telco-pack">৳ 148 Pack</div>
+                <div class="telco-sub" title="10GB 7 Days + ৳20 Cashback">10GB 7 Days + ৳20 Cashback</div>
+              </div>
+              <div class="telco-footer">
+                <span class="text-muted">Gateway: Robi Direct</span>
+                <span class="text-success fw-medium"><i class="ti ti-circle-check"></i> Operational</span>
               </div>
             </div>
           </div>
 
           <!-- Banglalink -->
-          <div class="col-md-4 col-xl">
-            <div class="card standard-card p-3 m-0" style="border-top:3px solid #E58A00;">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="fw-bold m-0">Banglalink (BL)</h6>
-                <span class="badge-flat warning">18% Share</span>
+          <div class="col d-flex">
+            <div class="card standard-card p-3 m-0 w-100 telco-card" style="border-top:3px solid #E58A00;">
+              <div class="telco-header">
+                <h6 class="telco-title" title="Banglalink (BL)">Banglalink (BL)</h6>
+                <span class="badge-flat warning telco-badge">18% Share</span>
               </div>
-              <div class="mono-num fw-bold text-warning mb-1" style="font-size:16px;">৳ 108 Pack</div>
-              <div style="font-size:11px; color:var(--pc-text-muted);">5GB 7 Days + ৳15 Cashback</div>
-              <div class="mt-2 pt-2 border-top d-flex justify-content-between" style="font-size:11px;">
-                <span>Gateway: BL Direct</span>
-                <span class="text-success"><i class="ti ti-circle-check"></i> Operational</span>
+              <div class="telco-body">
+                <div class="mono-num fw-bold text-warning telco-pack">৳ 108 Pack</div>
+                <div class="telco-sub" title="5GB 7 Days + ৳15 Cashback">5GB 7 Days + ৳15 Cashback</div>
+              </div>
+              <div class="telco-footer">
+                <span class="text-muted">Gateway: BL Direct</span>
+                <span class="text-success fw-medium"><i class="ti ti-circle-check"></i> Operational</span>
               </div>
             </div>
           </div>
 
           <!-- Airtel -->
-          <div class="col-md-6 col-xl">
-            <div class="card standard-card p-3 m-0" style="border-top:3px solid #DC2626;">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="fw-bold m-0">Airtel BD</h6>
-                <span class="badge-flat danger">6% Share</span>
+          <div class="col d-flex">
+            <div class="card standard-card p-3 m-0 w-100 telco-card" style="border-top:3px solid #DC2626;">
+              <div class="telco-header">
+                <h6 class="telco-title" title="Airtel BD">Airtel BD</h6>
+                <span class="badge-flat danger telco-badge">6% Share</span>
               </div>
-              <div class="mono-num fw-bold mb-1" style="font-size:16px;">৳ 99 Combo</div>
-              <div style="font-size:11px; color:var(--pc-text-muted);">3GB + 100 Mins combo</div>
-              <div class="mt-2 pt-2 border-top d-flex justify-content-between" style="font-size:11px;">
-                <span>Gateway: Airtel Core</span>
-                <span class="text-success"><i class="ti ti-circle-check"></i> Operational</span>
+              <div class="telco-body">
+                <div class="mono-num fw-bold telco-pack" style="color:var(--pc-danger);">৳ 99 Combo</div>
+                <div class="telco-sub" title="3GB + 100 Mins combo">3GB + 100 Mins combo</div>
+              </div>
+              <div class="telco-footer">
+                <span class="text-muted">Gateway: Airtel Core</span>
+                <span class="text-success fw-medium"><i class="ti ti-circle-check"></i> Operational</span>
               </div>
             </div>
           </div>
 
           <!-- Teletalk -->
-          <div class="col-md-6 col-xl">
-            <div class="card standard-card p-3 m-0" style="border-top:3px solid #2CA87F;">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="fw-bold m-0">Teletalk</h6>
-                <span class="badge-flat success">2% Share</span>
+          <div class="col d-flex">
+            <div class="card standard-card p-3 m-0 w-100 telco-card" style="border-top:3px solid #2CA87F;">
+              <div class="telco-header">
+                <h6 class="telco-title" title="Teletalk">Teletalk</h6>
+                <span class="badge-flat success telco-badge">2% Share</span>
               </div>
-              <div class="mono-num fw-bold text-success mb-1" style="font-size:16px;">৳ 49 Bornomala</div>
-              <div style="font-size:11px; color:var(--pc-text-muted);">Student Special Pack</div>
-              <div class="mt-2 pt-2 border-top d-flex justify-content-between" style="font-size:11px;">
-                <span>Gateway: Gov Core</span>
-                <span class="text-success"><i class="ti ti-circle-check"></i> Operational</span>
+              <div class="telco-body">
+                <div class="mono-num fw-bold text-success telco-pack">৳ 49 Bornomala</div>
+                <div class="telco-sub" title="Student Special Pack">Student Special Pack</div>
+              </div>
+              <div class="telco-footer">
+                <span class="text-muted">Gateway: Gov Core</span>
+                <span class="text-success fw-medium"><i class="ti ti-circle-check"></i> Operational</span>
               </div>
             </div>
           </div>
@@ -2220,10 +2313,10 @@
         </div>
 
         <!-- Model Metrics Grid -->
-        <div class="row">
-          <div class="col-xl-3 col-md-6">
-            <div class="card flat-card">
-              <div class="cell-box">
+        <div class="row g-3 mb-3">
+          <div class="col-xl-3 col-md-6 d-flex">
+            <div class="card flat-card w-100 mb-0 d-flex flex-column justify-content-center">
+              <div class="cell-box h-100">
                 <div class="flat-icon-wrap primary"><i class="ti ti-chart-dots"></i></div>
                 <div class="cell-data">
                   <h5 class="mono-num" id="modelRocAuc">0.98</h5>
@@ -2233,9 +2326,9 @@
             </div>
           </div>
 
-          <div class="col-xl-3 col-md-6">
-            <div class="card flat-card">
-              <div class="cell-box">
+          <div class="col-xl-3 col-md-6 d-flex">
+            <div class="card flat-card w-100 mb-0 d-flex flex-column justify-content-center">
+              <div class="cell-box h-100">
                 <div class="flat-icon-wrap success"><i class="ti ti-target"></i></div>
                 <div class="cell-data">
                   <h5 class="mono-num text-success" id="modelPrecision">96.4%</h5>
@@ -2245,9 +2338,9 @@
             </div>
           </div>
 
-          <div class="col-xl-3 col-md-6">
-            <div class="card flat-card">
-              <div class="cell-box">
+          <div class="col-xl-3 col-md-6 d-flex">
+            <div class="card flat-card w-100 mb-0 d-flex flex-column justify-content-center">
+              <div class="cell-box h-100">
                 <div class="flat-icon-wrap warning"><i class="ti ti-activity-heartbeat"></i></div>
                 <div class="cell-data">
                   <h5 class="mono-num text-warning" id="modelRecall">94.1%</h5>
@@ -2257,9 +2350,9 @@
             </div>
           </div>
 
-          <div class="col-xl-3 col-md-6">
-            <div class="card flat-card">
-              <div class="cell-box">
+          <div class="col-xl-3 col-md-6 d-flex">
+            <div class="card flat-card w-100 mb-0 d-flex flex-column justify-content-center">
+              <div class="cell-box h-100">
                 <div class="flat-icon-wrap purple"><i class="ti ti-award"></i></div>
                 <div class="cell-data">
                   <h5 class="mono-num" style="color:var(--pc-purple);" id="modelF1Score">95.2%</h5>
