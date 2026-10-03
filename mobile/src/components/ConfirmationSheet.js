@@ -23,6 +23,7 @@ export const ConfirmationSheet = ({
   note,
   pin,
   setPin,
+  requirePin = true,
   onConfirm,
   onCancel,
   isLoading = false,
@@ -33,8 +34,10 @@ export const ConfirmationSheet = ({
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const [isHolding, setIsHolding] = useState(false);
 
+  const isPinMissing = requirePin && (!pin || pin.length < 4);
+
   const startHold = () => {
-    if (!pin || pin.length < 4) {
+    if (isPinMissing) {
       return;
     }
     setIsHolding(true);
@@ -125,26 +128,28 @@ export const ConfirmationSheet = ({
             ) : null}
           </View>
 
-          <CustomInput
-            label={isBangla ? 'আপনার অ্যাকাউন্টের ৫-ডিজিট পিন দিন' : 'Enter 5-digit Account PIN'}
-            value={pin}
-            onChangeText={setPin}
-            placeholder="•••••"
-            icon="lock-closed-outline"
-            secureTextEntry
-            keyboardType="number-pad"
-            maxLength={6}
-          />
+          {requirePin && (
+            <CustomInput
+              label={isBangla ? 'আপনার অ্যাকাউন্টের পিন দিন' : 'Enter Account PIN'}
+              value={pin}
+              onChangeText={setPin}
+              placeholder="••••••"
+              icon="lock-closed-outline"
+              secureTextEntry
+              keyboardType="number-pad"
+              maxLength={6}
+            />
+          )}
 
           {/* Iconic bKash/Nagad Style "Tap & Hold to Confirm" Button */}
           <View style={styles.holdContainer}>
             <Pressable
               onPressIn={startHold}
               onPressOut={stopHold}
-              disabled={isLoading || !pin || pin.length < 4}
+              disabled={isLoading || isPinMissing}
               style={[
                 styles.holdButton,
-                (!pin || pin.length < 4 || isLoading) && styles.holdButtonDisabled,
+                (isPinMissing || isLoading) && styles.holdButtonDisabled,
               ]}
             >
               {/* Dynamic Animated Filling Background */}
@@ -183,8 +188,8 @@ export const ConfirmationSheet = ({
             </Pressable>
 
             <Text style={styles.holdHintText}>
-              {!pin || pin.length < 4
-                ? (isBangla ? '⚠️ অনুগ্রহ করে আগে সঠিক পিন নম্বর দিন' : '⚠️ Enter account PIN first')
+              {isPinMissing
+                ? (isBangla ? '⚠️ অনুগ্রহ করে সঠিক পিন নম্বর দিন' : '⚠️ Enter account PIN first')
                 : (isBangla ? 'বৃত্তটি সম্পূর্ণ পূরণ হওয়া পর্যন্ত চেপে ধরে রাখুন' : 'Touch and hold until the button completes')}
             </Text>
           </View>

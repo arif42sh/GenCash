@@ -20,6 +20,11 @@ class AdminLoginRequest(BaseModel):
     password: str = Field(..., min_length=6, example="admin123456")
 
 
+class ChangePinRequest(BaseModel):
+    old_pin: str = Field(..., min_length=4, max_length=20, example="123456")
+    new_pin: str = Field(..., min_length=4, max_length=20, example="654321")
+
+
 class UserResponse(BaseModel):
     id: int
     name: str

@@ -103,6 +103,14 @@ export const api = {
     return res.data;
   },
 
+  async changePin(oldPin, newPin) {
+    const res = await apiClient.post('/api/auth/change-pin', {
+      old_pin: oldPin,
+      new_pin: newPin,
+    });
+    return res.data;
+  },
+
   async uploadAvatar(base64DataOrUri) {
     const res = await apiClient.put(ENDPOINTS.ME, { avatar: base64DataOrUri });
     return res.data;
@@ -139,12 +147,13 @@ export const api = {
     return res.data;
   },
 
-  async mobileRecharge(mobileNumber, operator, amount, rechargeType = 'PREPAID') {
+  async mobileRecharge(mobileNumber, operator, amount, rechargeType = 'PREPAID', password = null) {
     const res = await apiClient.post(ENDPOINTS.RECHARGE, {
       mobile_number: mobileNumber,
       operator,
       amount: parseFloat(amount),
       recharge_type: rechargeType,
+      password: password || undefined,
     });
     return res.data;
   },

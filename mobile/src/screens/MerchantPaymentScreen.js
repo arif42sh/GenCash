@@ -156,7 +156,7 @@ export const MerchantPaymentScreen = ({ navigation, route }) => {
   const { wallet, refreshWallet } = useAuth();
   const { isBangla } = useLanguage();
   
-  const initialMode = route?.params?.mode === 'bill_pay' ? 'bill_pay' : 'merchant';
+  const initialMode = (route?.params?.mode === 'bill_pay' || route?.params?.mode === 'utility') ? 'bill_pay' : 'merchant';
   const [activeMode, setActiveMode] = useState(initialMode);
   const [selectedCategory, setSelectedCategory] = useState('All');
   
@@ -229,6 +229,7 @@ export const MerchantPaymentScreen = ({ navigation, route }) => {
     }
 
     setErrorMessage('');
+    setPin('');
     setShowConfirm(true);
   };
 
@@ -239,7 +240,8 @@ export const MerchantPaymentScreen = ({ navigation, route }) => {
         merchantPhone.trim(),
         amount,
         note.trim(),
-        selectedMerchant?.id
+        selectedMerchant?.id,
+        pin || undefined
       );
       setShowConfirm(false);
       setSuccessTxn(res);

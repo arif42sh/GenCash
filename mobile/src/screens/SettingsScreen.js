@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { useLanguage } from '../context/LanguageContext';
+import { api } from '../services/api';
 
 export const SettingsScreen = ({ navigation }) => {
   const { language, setLanguage, t, isBangla } = useLanguage();
@@ -26,7 +27,7 @@ export const SettingsScreen = ({ navigation }) => {
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
 
-  const handleChangePin = () => {
+  const handleChangePin = async () => {
     if (!oldPin || !newPin || !confirmPin) {
       Alert.alert('Error', isBangla ? 'সবগুলো ফিল্ড পূরণ করুন।' : 'Please fill all PIN fields.');
       return;
@@ -35,16 +36,21 @@ export const SettingsScreen = ({ navigation }) => {
       Alert.alert('Mismatch', isBangla ? 'নতুন পিন দুটি মেলেনি।' : 'New PINs do not match.');
       return;
     }
-    if (newPin.length < 4) {
-      Alert.alert('Invalid', isBangla ? 'পিন ন্যূনতম ৪ ডিজিটের হতে হবে।' : 'PIN must be at least 4 digits.');
+    if (newPin.length < 4 || newPin.length > 6 || !/^\d+$/.test(newPin)) {
+      Alert.alert('Invalid', isBangla ? 'পিন অবশ্যই ৪ থেকে ৬ সংখ্যার হতে হবে।' : 'PIN must be between 4 and 6 digits.');
       return;
     }
 
-    setShowPinModal(false);
-    setOldPin('');
-    setNewPin('');
-    setConfirmPin('');
-    Alert.alert('Success', isBangla ? 'আপনার পিন সফলভাবে পরিবর্তিত হয়েছে।' : 'Your PIN has been updated successfully.');
+    try {
+      await api.changePin(oldPin.trim(), newPin.trim());
+      setShowPinModal(false);
+      setOldPin('');
+      setNewPin('');
+      setConfirmPin('');
+      Alert.alert('Success', isBangla ? 'আপনার পিন সফলভাবে পরিবর্তিত হয়েছে।' : 'Your PIN has been updated successfully.');
+    } catch (err) {
+      Alert.alert('Failed', err.message);
+    }
   };
 
   return (

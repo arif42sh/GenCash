@@ -27,10 +27,10 @@ const RECENT_CONTACTS = [
   { name: 'Chillox', phone: '01788888888', initials: 'CH', color: '#4338CA', bg: '#E0E7FF' },
 ];
 
-export const SendMoneyScreen = ({ navigation }) => {
-  const { wallet, refreshWallet } = useAuth();
+export const SendMoneyScreen = ({ navigation, route }) => {
+  const { user, wallet, refreshWallet } = useAuth();
   const { isBangla } = useLanguage();
-  const [receiverPhone, setReceiverPhone] = useState('');
+  const [receiverPhone, setReceiverPhone] = useState(route?.params?.receiverPhone || route?.params?.phone || '');
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [pin, setPin] = useState('');
@@ -43,6 +43,10 @@ export const SendMoneyScreen = ({ navigation }) => {
   const handleProceed = () => {
     if (!receiverPhone.trim()) {
       setErrorMessage(isBangla ? 'অনুগ্রহ করে প্রাপকের মোবাইল নম্বর লিখুন।' : 'Please enter the recipient mobile number.');
+      return;
+    }
+    if (user?.phone && receiverPhone.trim() === user.phone.trim()) {
+      setErrorMessage(isBangla ? 'নিজের নম্বরে সেন্ড মানি করা সম্ভব নয়।' : 'Cannot send money to your own mobile number.');
       return;
     }
     const numAmount = parseFloat(amount);

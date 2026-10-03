@@ -18,6 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { storage } from '../services/storage';
+import { api } from '../services/api';
 import { CustomButton } from '../components/CustomButton';
 import { UserReceiveQRModal } from '../components/UserReceiveQRModal';
 
@@ -246,23 +247,28 @@ export const ProfileScreen = ({ navigation }) => {
       Alert.alert(isBangla ? 'অমিল' : 'Mismatch', isBangla ? 'নতুন পিন ও কনফার্ম পিন মিলছে না।' : 'New PIN and Confirm PIN do not match.');
       return;
     }
-    if (newPin.length !== 5 || !/^\d+$/.test(newPin)) {
+    if (newPin.length < 4 || newPin.length > 6 || !/^\d+$/.test(newPin)) {
       Alert.alert(
         isBangla ? 'অবৈধ পিন' : 'Invalid PIN',
-        isBangla ? 'নিরাপত্তার জন্য পিন অবশ্যই ৫-সংখ্যার নম্বর হতে হবে।' : 'PIN must be exactly 5 digits.'
+        isBangla ? 'নিরাপত্তার জন্য পিন অবশ্যই ৪ থেকে ৬-সংখ্যার নম্বর হতে হবে।' : 'PIN must be between 4 and 6 digits.'
       );
       return;
     }
 
-    await storage.setItem('@gencash_user_pin', newPin);
-    setOldPin('');
-    setNewPin('');
-    setConfirmPin('');
-    setActiveModal(null);
-    Alert.alert(
-      isBangla ? 'সফল' : 'Success',
-      isBangla ? 'আপনার অ্যাকাউন্ট পিন সফলভাবে পরিবর্তন হয়েছে।' : 'Your account PIN has been updated successfully.'
-    );
+    try {
+      await api.changePin(oldPin.trim(), newPin.trim());
+      await storage.setItem('@gencash_user_pin', newPin.trim());
+      setOldPin('');
+      setNewPin('');
+      setConfirmPin('');
+      setActiveModal(null);
+      Alert.alert(
+        isBangla ? 'সফল' : 'Success',
+        isBangla ? 'আপনার অ্যাকাউন্ট পিন সফলভাবে পরিবর্তন হয়েছে।' : 'Your account PIN has been updated successfully.'
+      );
+    } catch (err) {
+      Alert.alert(isBangla ? 'ব্যর্থ' : 'Failed', err.message);
+    }
   };
 
   // Preference Toggle Handlers
@@ -761,21 +767,21 @@ export const ProfileScreen = ({ navigation }) => {
               style={styles.modalInput}
               value={oldPin}
               onChangeText={setOldPin}
-              placeholder={isBangla ? 'বর্তমান ৫-ডিজিট পিন লিখুন' : 'Enter current 5-digit PIN'}
+              placeholder={isBangla ? 'বর্তমান পিন লিখুন' : 'Enter current PIN'}
               secureTextEntry
               keyboardType="numeric"
-              maxLength={5}
+              maxLength={6}
             />
 
-            <Text style={styles.inputLabel}>{isBangla ? 'নতুন ৫-ডিজিট পিন' : 'New 5-Digit PIN'}</Text>
+            <Text style={styles.inputLabel}>{isBangla ? 'নতুন পিন (৪-৬ সংখ্যা)' : 'New PIN (4-6 digits)'}</Text>
             <TextInput
               style={styles.modalInput}
               value={newPin}
               onChangeText={setNewPin}
-              placeholder={isBangla ? 'নতুন ৫-ডিজিট পিন লিখুন' : 'Enter new 5-digit PIN'}
+              placeholder={isBangla ? 'নতুন পিন লিখুন' : 'Enter new PIN'}
               secureTextEntry
               keyboardType="numeric"
-              maxLength={5}
+              maxLength={6}
             />
 
             <Text style={styles.inputLabel}>{isBangla ? 'নতুন পিন পুনরায় লিখুন' : 'Confirm New PIN'}</Text>
@@ -786,7 +792,7 @@ export const ProfileScreen = ({ navigation }) => {
               placeholder={isBangla ? 'কনফার্ম করতে পিন পুনরায় লিখুন' : 'Confirm new PIN'}
               secureTextEntry
               keyboardType="numeric"
-              maxLength={5}
+              maxLength={6}
             />
 
             <CustomButton

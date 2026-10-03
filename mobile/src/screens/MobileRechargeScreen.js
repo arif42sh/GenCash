@@ -101,7 +101,8 @@ export const MobileRechargeScreen = ({ navigation }) => {
         mobileNumber.trim(),
         selectedOperator.name,
         parseFloat(amount),
-        rechargeType
+        rechargeType,
+        pin || undefined
       );
       setShowConfirm(false);
       setSuccessTxn(res);

@@ -54,6 +54,7 @@ export const CashOutScreen = ({ navigation }) => {
     }
 
     setErrorMessage('');
+    setPin('');
     setShowConfirm(true);
   };
 

@@ -210,12 +210,44 @@ export const HomeScreen = ({ navigation }) => {
   };
 
   const handleQuickSend = (contact) => {
-    navigation.navigate('SendMoney');
+    navigation.navigate('SendMoney', { receiverPhone: contact.phone });
   };
 
   const handleQRScanned = (scannedData) => {
     setShowQRScanner(false);
-    navigation.navigate('MerchantPayment');
+    if (!scannedData) {
+      navigation.navigate('MerchantPayment');
+      return;
+    }
+    let phone = '';
+    let name = '';
+    let isUser = false;
+    if (typeof scannedData === 'string') {
+      if (scannedData.includes('{')) {
+        try {
+          const parsed = JSON.parse(scannedData);
+          phone = parsed.phone || parsed.account || '';
+          name = parsed.name || '';
+          isUser = parsed.type === 'user';
+        } catch (e) {}
+      } else {
+        const match = scannedData.match(/(01\d{9})/);
+        if (match) {
+          phone = match[1];
+        } else {
+          phone = scannedData.trim();
+        }
+        if (scannedData.toLowerCase().includes('user') || scannedData.toLowerCase().includes('send')) {
+          isUser = true;
+        }
+      }
+    }
+
+    if (isUser) {
+      navigation.navigate('SendMoney', { receiverPhone: phone });
+    } else {
+      navigation.navigate('MerchantPayment', { phone, merchant_name: name });
+    }
   };
 
   const { t, isBangla } = useLanguage();

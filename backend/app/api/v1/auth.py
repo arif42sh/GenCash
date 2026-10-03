@@ -4,12 +4,14 @@ from app.core.database import get_db
 from app.schemas.auth import (
     UserRegisterRequest,
     UserLoginRequest,
+    ChangePinRequest,
     TokenResponse,
     UserResponse,
 )
 from app.services.auth_service import AuthService
 from app.api.deps import get_current_user
 from app.models.user import User
+from app.core.security import verify_password, get_password_hash
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -53,3 +55,39 @@ def get_current_user_profile(current_user: User = Depends(get_current_user)):
     Get profile details for authenticated user.
     """
     return UserResponse.model_validate(current_user)
+
+
+@router.post("/change-pin")
+def change_pin(
+    request: ChangePinRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Update user transaction PIN.
+    Accepts 4 to 6 digit numeric PIN.
+    """
+    clean_old = request.old_pin.strip()
+    clean_new = request.new_pin.strip()
+
+    if not verify_password(clean_old, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current PIN is incorrect."
+        )
+
+    if not clean_new.isdigit():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New PIN must consist of numbers only."
+        )
+
+    if len(clean_new) < 4 or len(clean_new) > 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New PIN must be 4 to 6 digits long."
+        )
+
+    current_user.password_hash = get_password_hash(clean_new)
+    db.commit()
+    return {"status": "success", "message": "PIN updated successfully."}

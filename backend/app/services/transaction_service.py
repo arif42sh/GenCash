@@ -45,7 +45,7 @@ class TransactionService:
         if not request.password or not verify_password(request.password, sender.password_hash):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Incorrect account PIN. Please provide your valid 6-digit PIN."
+                detail="Incorrect account PIN. Please provide your valid account PIN."
             )
 
         # Cannot send money to oneself
@@ -204,6 +204,13 @@ class TransactionService:
         amount = Decimal(str(round(request.amount, 2)))
         fee = Decimal("0.00")
         total_debit = amount + fee
+
+        # PIN verification if provided
+        if request.password and not verify_password(request.password, sender.password_hash):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Incorrect account PIN for mobile recharge."
+            )
 
         sender_wallet = db.query(Wallet).filter(Wallet.user_id == sender.id).with_for_update().first()
         if not sender_wallet or sender_wallet.status != WalletStatus.ACTIVE:

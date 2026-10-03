@@ -432,8 +432,7 @@ export const AddMoneyScreen = ({ navigation }) => {
         amount={amount || 0}
         fee={0}
         note={isBangla ? 'ওয়ালেটে ফান্ড ডিপোজিট' : 'GenCash Wallet Deposit'}
-        pin={pin}
-        setPin={setPin}
+        requirePin={false}
         isLoading={loading}
         onConfirm={handleAddMoney}
         onCancel={() => setShowConfirm(false)}

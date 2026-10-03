@@ -22,6 +22,7 @@ class MobileRechargeRequest(BaseModel):
     operator: str = Field(..., example="Grameenphone")
     amount: float = Field(..., gt=0, example=50.0)
     recharge_type: Optional[str] = Field("PREPAID", example="PREPAID")
+    password: Optional[str] = Field(None, min_length=4, description="User PIN for mobile recharge")
 
 
 class MerchantPaymentRequest(BaseModel):
