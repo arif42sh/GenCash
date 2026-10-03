@@ -14,6 +14,7 @@ import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNotifications } from '../context/NotificationContext';
+import { API_BASE_URL } from '../constants/config';
 import { api } from '../services/api';
 import AppHeader from '../components/AppHeader';
 import { BalanceCard } from '../components/BalanceCard';
@@ -69,6 +70,49 @@ export const HomeScreen = ({ navigation }) => {
     const fetchTopOfferForPopup = async () => {
       if (sessionLaunchPopupDismissed) return;
       try {
+        const resolveBannerUrl = (url) => {
+          if (!url) return null;
+          if (url.startsWith('http://') || url.startsWith('https://')) return url;
+          return `${API_BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+        };
+
+        // 1. Check if Admin has deployed an active poster pop-up campaign
+        let adminPopup = null;
+        try {
+          adminPopup = await api.getActivePopupOffer();
+        } catch (e) {
+          adminPopup = null;
+        }
+
+        if (adminPopup && isMounted) {
+          const discountStr = adminPopup.discount_value
+            ? (isBangla ? `৳${adminPopup.discount_value} ক্যাশব্যাক` : `৳${adminPopup.discount_value} Cashback`)
+            : (isBangla ? 'বিশেষ অফার' : 'Special Offer');
+
+          const formatted = {
+            id: adminPopup.id,
+            category: adminPopup.offer_type || 'MERCHANT_PAY',
+            title: adminPopup.title,
+            titleEn: adminPopup.title,
+            headline: adminPopup.title,
+            sub: adminPopup.description || (isBangla ? 'জেনক্যাশ দিয়ে পেমেন্ট করলেই উপভোগ করুন আকর্ষণীয় ক্যাশব্যাক সুবিধা।' : 'Pay with GenCash QR to unlock instant savings on your bill.'),
+            discount: discountStr,
+            badge: isBangla ? 'লাভের অফার' : 'Campaign Offer',
+            image: resolveBannerUrl(adminPopup.banner_image_url),
+            validity: isBangla ? 'সীমিত সময়ের জন্য • শর্ত প্রযোজ্য' : 'Limited time campaign • T&C apply',
+            targetScreen: adminPopup.target_screen === 'None' ? null : (adminPopup.target_screen || 'MerchantPayment'),
+            targetParams: {},
+            btnText: isBangla ? 'অফারটি উপভোগ করুন' : 'Claim Offer',
+          };
+          setLaunchOffer(formatted);
+          sessionLaunchPopupDismissed = true;
+          setTimeout(() => {
+            if (isMounted) setShowLaunchOfferModal(true);
+          }, 700);
+          return;
+        }
+
+        // 2. Fallback to Top NBO offer
         const nboRes = await api.getNextBestOffers();
         const top = nboRes?.top_recommended_offer;
         if (top && isMounted) {
@@ -100,6 +144,7 @@ export const HomeScreen = ({ navigation }) => {
             sub: commercialSub,
             discount: discountStr,
             badge: campaignBadge,
+            image: null,
             validity: isBangla
               ? 'সীমিত সময়ের জন্য • শর্ত প্রযোজ্য'
               : 'Limited time campaign • T&C apply',

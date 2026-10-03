@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
@@ -8,6 +8,27 @@ from app.models.marketing import Offer
 from app.schemas.offer import OfferResponse
 
 router = APIRouter(prefix="/offers", tags=["Offers"])
+
+
+@router.get("/popup/active", response_model=Optional[OfferResponse])
+def get_active_popup_offer(db: Session = Depends(get_db)):
+    """Retrieve the currently active app-launch pop-up campaign offer."""
+    offer = (
+        db.query(Offer)
+        .filter(Offer.status == "ACTIVE", Offer.is_popup_banner == True)
+        .order_by(Offer.created_at.desc())
+        .first()
+    )
+    if not offer:
+        offer = (
+            db.query(Offer)
+            .filter(Offer.status == "ACTIVE", Offer.banner_image_url.isnot(None))
+            .order_by(Offer.created_at.desc())
+            .first()
+        )
+    if not offer:
+        return None
+    return OfferResponse.model_validate(offer)
 
 
 @router.get("", response_model=List[OfferResponse])

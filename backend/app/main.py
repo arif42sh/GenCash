@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.core.database import engine, Base, SessionLocal
+from app.core.database import engine, Base, SessionLocal, check_and_add_offer_columns
 import app.models  # load all models
 from app.api.v1 import (
     auth,
@@ -22,6 +22,7 @@ from seed_data import seed_initial_data
 async def lifespan(app: FastAPI):
     # Startup: Create tables if not exist
     Base.metadata.create_all(bind=engine)
+    check_and_add_offer_columns()
     # Auto-seed basic seed data if empty
     db = SessionLocal()
     try:

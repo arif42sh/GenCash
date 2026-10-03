@@ -3369,7 +3369,7 @@
             <input type="number" class="form-control form-control-sm" id="campMinTxn" value="100">
           </div>
         </div>
-        <div class="row g-2">
+        <div class="row g-2 mb-3">
           <div class="col-6">
             <label class="form-label" style="font-size:12px; font-weight:600;">Budget Allocation (৳)</label>
             <input type="number" class="form-control form-control-sm" id="campBudget" value="50000">
@@ -3378,6 +3378,54 @@
             <label class="form-label" style="font-size:12px; font-weight:600;">Active Duration (Days)</label>
             <input type="number" class="form-control form-control-sm" id="campDays" value="14">
           </div>
+        </div>
+
+        <!-- Campaign Poster / Flyer Upload (Like Nagad / Upay Banner) -->
+        <div class="mb-3">
+          <label class="form-label d-flex justify-content-between align-items-center" style="font-size:12px; font-weight:600;">
+            <span>📸 Campaign Poster / ব্যানার পোস্টার (App Launch & In-Feed)</span>
+            <span class="text-muted fw-normal" style="font-size:10.5px;">PNG, JPG, WebP</span>
+          </label>
+          <div id="posterDropZone" class="border border-dashed rounded p-3 text-center position-relative" style="background:var(--pc-subtle-bg); cursor:pointer; border-color:var(--pc-card-border);" onclick="document.getElementById('campPosterFile').click()">
+            <div id="posterPlaceholder">
+              <i class="ti ti-photo-plus fs-2 text-primary"></i>
+              <div style="font-size:12.5px; font-weight:700; margin-top:4px;">Click or Drag to Upload Poster</div>
+              <div class="text-muted" style="font-size:11px;">Recommended: 1080×1350px (Flyer) or 1080×1080px (Square)</div>
+            </div>
+            <div id="posterPreviewWrap" style="display:none; position:relative;">
+              <img id="posterPreviewImg" src="" alt="Campaign Poster" style="max-height:160px; max-width:100%; border-radius:10px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.18);" />
+              <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 shadow" onclick="removeUploadedPoster(event)" title="Remove Image">
+                <i class="ti ti-trash"></i>
+              </button>
+            </div>
+          </div>
+          <input type="file" id="campPosterFile" accept="image/*" style="display:none;" onchange="handlePosterSelected(this)">
+          <input type="hidden" id="campBannerUrl" value="">
+        </div>
+
+        <!-- Show as App-Launch Pop-up Switch -->
+        <div class="card p-2.5 mb-3 border shadow-none" style="background:rgba(16, 185, 129, 0.05); border-color:rgba(16, 185, 129, 0.25) !important;">
+          <div class="form-check form-switch m-0 d-flex align-items-center gap-2">
+            <input class="form-check-input ms-0 me-2" type="checkbox" id="campIsPopup" checked style="width:36px; height:20px; cursor:pointer;">
+            <div>
+              <label class="form-check-label fw-bold" for="campIsPopup" style="font-size:12.5px; color:var(--pc-text); cursor:pointer;">
+                🚀 Show as App-Launch Pop-up? (অ্যাপ ওপেন হলে বড় পোস্টার দেখাবে)
+              </label>
+              <div class="text-muted" style="font-size:11px;">ইউজাররা GenCash অ্যাপ ওপেন করার সাথে সাথে এই পোস্টারটি ইন্টারস্টিশিয়াল ব্যানার আকারে দেখতে পাবে।</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Redirection on Tap -->
+        <div class="mb-2">
+          <label class="form-label" style="font-size:12px; font-weight:600;">Button Action / পোস্টারে ট্যাপ করলে ইউজার কোথায় যাবে?</label>
+          <select id="campTargetScreen" class="form-select form-select-sm">
+            <option value="MerchantPayment">মার্চেন্ট পেমেন্ট / QR কাউন্টার পেমেন্ট (Merchant Payment)</option>
+            <option value="MobileRecharge">মোবাইল রিচার্জ (Mobile Recharge)</option>
+            <option value="AddMoney">অ্যাড মানি / কার্ড ও ব্যাংক ডিপোজিট (Add Money)</option>
+            <option value="SendMoney">সেন্ড মানি (Send Money)</option>
+            <option value="None">শুধুমাত্র তথ্য ও ডিসকাউন্ট ভিউ (Info Only)</option>
+          </select>
         </div>
       </div>
       <div class="d-flex justify-content-end gap-2 mt-4 pt-2 border-top">
@@ -6018,8 +6066,16 @@
                 tr.innerHTML = `
                   <td><strong class="mono-num text-muted">#${o.id}</strong></td>
                   <td>
-                    <strong>${o.title}</strong><br>
-                    <span style="font-size:11px; color:var(--pc-text-muted);">${o.description || 'Promotional cash reward'}</span>
+                    <div class="d-flex align-items-center gap-2">
+                      ${o.banner_image_url ? `<img src="${o.banner_image_url.startsWith('http') ? o.banner_image_url : (API_BASE + o.banner_image_url)}" style="width:42px; height:42px; object-fit:cover; border-radius:8px; border:1px solid rgba(0,0,0,0.1); flex-shrink:0;" />` : ''}
+                      <div>
+                        <div class="d-flex align-items-center gap-1">
+                          <strong>${o.title}</strong>
+                          ${o.is_popup_banner ? '<span class="badge bg-danger text-white" style="font-size:9px; padding:2px 5px;">Popup Flyer</span>' : ''}
+                        </div>
+                        <span style="font-size:11px; color:var(--pc-text-muted);">${o.description || 'Promotional cash reward'}</span>
+                      </div>
+                    </div>
                   </td>
                   <td>${catBadge}</td>
                   <td><strong class="mono-num text-success">৳ ${Number(o.discount_value || 0).toLocaleString()}</strong></td>
@@ -6043,6 +6099,60 @@
 
     function closeCampaignModal() {
       document.getElementById('campaignModal').style.display = 'none';
+      removeUploadedPoster();
+    }
+
+    async function handlePosterSelected(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+
+      // Local preview immediately
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const previewImg = document.getElementById('posterPreviewImg');
+        if (previewImg) previewImg.src = e.target.result;
+        const ph = document.getElementById('posterPlaceholder');
+        if (ph) ph.style.display = 'none';
+        const wrap = document.getElementById('posterPreviewWrap');
+        if (wrap) wrap.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+
+      // Upload to backend
+      const token = await ensureAdminAuth();
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/campaigns/upload-banner`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('campBannerUrl').value = data.url;
+          showToast('📸 Campaign poster uploaded successfully!');
+        } else {
+          showToast('⚠️ Server upload warning, using local file preview');
+        }
+      } catch (err) {
+        console.warn('Banner upload network error:', err);
+      }
+    }
+
+    function removeUploadedPoster(e) {
+      if (e) e.stopPropagation();
+      const fileInp = document.getElementById('campPosterFile');
+      if (fileInp) fileInp.value = '';
+      const urlInp = document.getElementById('campBannerUrl');
+      if (urlInp) urlInp.value = '';
+      const previewImg = document.getElementById('posterPreviewImg');
+      if (previewImg) previewImg.src = '';
+      const wrap = document.getElementById('posterPreviewWrap');
+      if (wrap) wrap.style.display = 'none';
+      const ph = document.getElementById('posterPlaceholder');
+      if (ph) ph.style.display = 'block';
     }
 
     function openLaunchCampaignModalFromSim() {
@@ -6071,6 +6181,10 @@
       const budget = parseFloat(document.getElementById('campBudget').value) || 10000;
       const days = parseInt(document.getElementById('campDays').value) || 14;
 
+      const bannerUrl = document.getElementById('campBannerUrl').value.trim() || null;
+      const isPopup = document.getElementById('campIsPopup').checked;
+      const targetScreen = document.getElementById('campTargetScreen').value;
+
       if (!name) {
         alert('Please give a campaign name.');
         return;
@@ -6089,12 +6203,15 @@
             minimum_transaction: minTxn,
             target_segment: segment,
             budget: budget,
-            days_active: days
+            days_active: days,
+            banner_image_url: bannerUrl,
+            is_popup_banner: isPopup,
+            target_screen: targetScreen
           })
         });
         if (res.ok) {
           closeCampaignModal();
-          showToast(`🚀 Campaign "${name}" deployed!`);
+          showToast(`🚀 Campaign "${name}" deployed with ${isPopup ? 'App-Launch Pop-up Flyer!' : 'In-Feed Banner'}`);
           switchTab('campaigns');
         }
       } catch (e) {

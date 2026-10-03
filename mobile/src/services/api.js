@@ -188,6 +188,15 @@ export const api = {
     return res.data;
   },
 
+  async getActivePopupOffer() {
+    try {
+      const res = await apiClient.get('/api/offers/popup/active');
+      return res.data;
+    } catch (e) {
+      return null;
+    }
+  },
+
   // AI Intelligence
   async getAIInsights() {
     const res = await apiClient.get(ENDPOINTS.AI_INSIGHTS);

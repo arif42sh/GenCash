@@ -16,6 +16,9 @@ class Offer(Base):
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)
     status = Column(String(20), default="ACTIVE", nullable=False)
+    banner_image_url = Column(String(500), nullable=True)
+    is_popup_banner = Column(Boolean, default=False, nullable=False)
+    target_screen = Column(String(100), default="MerchantPayment", nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     # Relationships

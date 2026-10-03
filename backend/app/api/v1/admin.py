@@ -1,11 +1,13 @@
 import csv
 import io
+import os
+import shutil
 import uuid
 from typing import List, Optional
 from datetime import datetime, date, timedelta
 from decimal import Decimal
 from pydantic import BaseModel
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, or_
@@ -50,6 +52,9 @@ class CreateCampaignRequest(BaseModel):
     target_segment: str = "Persuadables"
     budget: float = 10000.0
     days_active: int = 14
+    banner_image_url: Optional[str] = None
+    is_popup_banner: bool = False
+    target_screen: Optional[str] = "MerchantPayment"
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -1210,7 +1215,10 @@ def get_all_admin_offers(
             "minimum_transaction": float(o.minimum_transaction),
             "start_date": str(o.start_date) if o.start_date else None,
             "end_date": str(o.end_date) if o.end_date else None,
-            "status": o.status
+            "status": o.status,
+            "banner_image_url": getattr(o, "banner_image_url", None),
+            "is_popup_banner": bool(getattr(o, "is_popup_banner", False)),
+            "target_screen": getattr(o, "target_screen", "MerchantPayment"),
         }
         for o in offers
     ]
@@ -1228,13 +1236,16 @@ def create_new_campaign(
 
     offer = Offer(
         title=request.campaign_name,
-        description=request.description or f"AI Targeted {request.offer_type} offer for {request.target_segment}",
+        description=request.description or f"Campaign {request.offer_type} offer for {request.target_segment}",
         offer_type=request.offer_type,
         discount_value=Decimal(str(request.discount_value)),
         minimum_transaction=Decimal(str(request.minimum_transaction)),
         start_date=start_d,
         end_date=end_d,
-        status="ACTIVE"
+        status="ACTIVE",
+        banner_image_url=request.banner_image_url,
+        is_popup_banner=request.is_popup_banner,
+        target_screen=request.target_screen or "MerchantPayment"
     )
     db.add(offer)
     db.flush()
@@ -1260,7 +1271,48 @@ def create_new_campaign(
         "campaign_name": campaign.campaign_name,
         "target_segment": campaign.target_segment,
         "discount_value": float(offer.discount_value),
-        "status": campaign.status
+        "status": campaign.status,
+        "banner_image_url": offer.banner_image_url,
+        "is_popup_banner": offer.is_popup_banner,
+        "target_screen": offer.target_screen
+    }
+
+
+@router.post("/campaigns/upload-banner")
+async def upload_campaign_banner(
+    file: UploadFile = File(...),
+    current_admin: AdminUser = Depends(get_current_admin)
+):
+    """Upload a campaign poster / flyer image for in-app popups and banners."""
+    allowed_exts = {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif"}
+    ext = os.path.splitext(file.filename or "")[1].lower()
+    if ext not in allowed_exts:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid image format. Allowed formats: {', '.join(allowed_exts)}"
+        )
+
+    # Save to backend/app/static/uploads/campaigns/
+    static_uploads = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+        "static",
+        "uploads",
+        "campaigns"
+    )
+    os.makedirs(static_uploads, exist_ok=True)
+
+    filename = f"poster_{uuid.uuid4().hex[:10]}{ext}"
+    target_path = os.path.join(static_uploads, filename)
+
+    with open(target_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    relative_url = f"/static/uploads/campaigns/{filename}"
+    return {
+        "success": True,
+        "url": relative_url,
+        "filename": filename,
+        "message": "Campaign poster uploaded successfully."
     }
 
 

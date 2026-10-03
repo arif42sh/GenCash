@@ -79,3 +79,36 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def check_and_add_offer_columns():
+    """Ensure Offer table has banner_image_url, is_popup_banner, target_screen columns."""
+    try:
+        db = SessionLocal()
+        try:
+            dialect_name = db.bind.dialect.name
+            if dialect_name == "mysql":
+                cols = db.execute(text("SHOW COLUMNS FROM offers")).fetchall()
+                existing_cols = {c[0] for c in cols}
+                if "banner_image_url" not in existing_cols:
+                    db.execute(text("ALTER TABLE offers ADD COLUMN banner_image_url VARCHAR(500) NULL"))
+                if "is_popup_banner" not in existing_cols:
+                    db.execute(text("ALTER TABLE offers ADD COLUMN is_popup_banner TINYINT(1) DEFAULT 0 NOT NULL"))
+                if "target_screen" not in existing_cols:
+                    db.execute(text("ALTER TABLE offers ADD COLUMN target_screen VARCHAR(100) DEFAULT 'MerchantPayment' NULL"))
+                db.commit()
+            elif dialect_name == "sqlite":
+                cols = db.execute(text("PRAGMA table_info(offers)")).fetchall()
+                existing_cols = {c[1] for c in cols}
+                if "banner_image_url" not in existing_cols:
+                    db.execute(text("ALTER TABLE offers ADD COLUMN banner_image_url VARCHAR(500)"))
+                if "is_popup_banner" not in existing_cols:
+                    db.execute(text("ALTER TABLE offers ADD COLUMN is_popup_banner BOOLEAN DEFAULT 0"))
+                if "target_screen" not in existing_cols:
+                    db.execute(text("ALTER TABLE offers ADD COLUMN target_screen VARCHAR(100) DEFAULT 'MerchantPayment'"))
+                db.commit()
+        finally:
+            db.close()
+    except Exception as e:
+        logger.warning(f"Offer column verification notice: {e}")
+
