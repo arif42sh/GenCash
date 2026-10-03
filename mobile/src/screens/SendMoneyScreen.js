@@ -14,6 +14,7 @@ import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
+import { TRANSACTION_FEES } from '../constants/config';
 import { CustomInput } from '../components/CustomInput';
 import { CustomButton } from '../components/CustomButton';
 import { ConfirmationSheet } from '../components/ConfirmationSheet';
@@ -31,14 +32,16 @@ export const SendMoneyScreen = ({ navigation, route }) => {
   const { user, wallet, refreshWallet } = useAuth();
   const { isBangla } = useLanguage();
   const [receiverPhone, setReceiverPhone] = useState(route?.params?.receiverPhone || route?.params?.phone || '');
-  const [amount, setAmount] = useState('');
-  const [note, setNote] = useState('');
+  const [amount, setAmount] = useState(route?.params?.amount ? String(route.params.amount) : '');
+  const [note, setNote] = useState(route?.params?.note || '');
   const [pin, setPin] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successTxn, setSuccessTxn] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const sendMoneyFee = TRANSACTION_FEES.SEND_MONEY;
 
   const handleProceed = () => {
     if (!receiverPhone.trim()) {
@@ -54,7 +57,7 @@ export const SendMoneyScreen = ({ navigation, route }) => {
       setErrorMessage(isBangla ? 'সঠিক টাকার পরিমাণ দিন।' : 'Please enter a valid transfer amount.');
       return;
     }
-    const totalRequired = numAmount + 5.0; // ৳5 fee
+    const totalRequired = numAmount + sendMoneyFee;
     if (wallet && totalRequired > parseFloat(wallet.balance)) {
       setErrorMessage(
         isBangla
@@ -234,7 +237,7 @@ export const SendMoneyScreen = ({ navigation, route }) => {
         recipientLabel={isBangla ? 'প্রাপক মোবাইল' : 'Recipient Phone'}
         recipientValue={receiverPhone}
         amount={amount || 0}
-        fee={5.0}
+        fee={sendMoneyFee}
         note={note}
         pin={pin}
         setPin={setPin}

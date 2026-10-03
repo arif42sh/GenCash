@@ -102,6 +102,29 @@ def list_transactions(
     return TransactionListResponse(total=total, transactions=txns)
 
 
+@router.get("/directory")
+def get_merchant_and_biller_directory(db: Session = Depends(get_db)):
+    """
+    Retrieve active merchant outlets and utility billers for customer mobile apps.
+    """
+    from app.models.merchant import Merchant
+    merchants = db.query(Merchant).filter(Merchant.status == "ACTIVE").order_by(Merchant.id.asc()).all()
+    results = []
+    for m in merchants:
+        cat_name = m.category.name if m.category else "Retail"
+        is_utility = "utility" in cat_name.lower() or "bill" in cat_name.lower()
+        results.append({
+            "id": m.id,
+            "name": m.merchant_name,
+            "phone": m.phone,
+            "category": cat_name,
+            "type": "bill_pay" if is_utility else "merchant",
+            "location": m.location,
+            "bangla_qr_id": m.bangla_qr_id,
+        })
+    return results
+
+
 @router.get("/{id}", response_model=TransactionResponse)
 def get_transaction_details(
     id: int,

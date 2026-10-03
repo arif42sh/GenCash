@@ -41,13 +41,13 @@ const DIRECTORY_ITEMS = [
   },
   {
     id: 2,
-    name: 'Daily Shopping',
+    name: 'Unimart Mega Store',
     phone: '01700100002',
     category: 'Grocery',
     type: 'merchant',
     icon: 'basket-outline',
     color: '#0D9488',
-    branches: 'PRAN-RFL Group Outlet',
+    branches: 'Gulshan 2, Dhanmondi, Dhaka',
   },
   {
     id: 3,
@@ -61,33 +61,33 @@ const DIRECTORY_ITEMS = [
   },
   {
     id: 4,
-    name: 'Star Tech & Engineering',
+    name: 'Star Tech Ltd',
     phone: '01700100004',
     category: 'Electronics',
     type: 'merchant',
     icon: 'laptop-outline',
     color: '#3B82F6',
-    branches: 'Official Tech Mega Store',
+    branches: 'Multiplan Center, IDB Bhaban',
   },
   {
     id: 5,
-    name: 'Yellow Fashion Hub',
+    name: 'Apex Footwear',
     phone: '01700100005',
     category: 'Fashion',
     type: 'merchant',
     icon: 'shirt-outline',
     color: '#EC4899',
-    branches: 'BEXIMCO Lifestyle Store',
+    branches: 'Bashundhara City, Dhanmondi',
   },
   {
     id: 6,
-    name: 'Ryans Computers',
+    name: 'Labaid Diagnostic',
     phone: '01700100006',
-    category: 'Electronics',
+    category: 'Healthcare & Pharmacy',
     type: 'merchant',
-    icon: 'hardware-chip-outline',
-    color: '#6366F1',
-    branches: 'IDB Bhaban, Multiplan Center',
+    icon: 'medkit-outline',
+    color: '#10B981',
+    branches: 'Dhanmondi, Gulshan, Uttara',
   },
   // Utility & Bill Pay Biller Organizations
   {
@@ -159,7 +159,8 @@ export const MerchantPaymentScreen = ({ navigation, route }) => {
   const initialMode = (route?.params?.mode === 'bill_pay' || route?.params?.mode === 'utility') ? 'bill_pay' : 'merchant';
   const [activeMode, setActiveMode] = useState(initialMode);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  
+  const [directoryList, setDirectoryList] = useState(DIRECTORY_ITEMS);
+
   // Set default selected item based on mode or params
   const matchedItem = route?.params?.phone
     ? DIRECTORY_ITEMS.find((d) => d.phone === route.params.phone)
@@ -182,9 +183,32 @@ export const MerchantPaymentScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  useEffect(() => {
+    let isMounted = true;
+    const fetchDir = async () => {
+      try {
+        const liveItems = await api.getDirectory();
+        if (Array.isArray(liveItems) && liveItems.length > 0 && isMounted) {
+          const merged = liveItems.map((item) => {
+            const fallback = DIRECTORY_ITEMS.find((d) => d.phone === item.phone);
+            return {
+              ...item,
+              icon: fallback?.icon || (item.type === 'bill_pay' ? 'receipt-outline' : 'cart-outline'),
+              color: fallback?.color || '#059669',
+              branches: item.location || fallback?.branches || 'Official Partner',
+            };
+          });
+          setDirectoryList(merged);
+        }
+      } catch (e) {}
+    };
+    fetchDir();
+    return () => { isMounted = false; };
+  }, []);
+
   const currentCategories = activeMode === 'bill_pay' ? BILL_CATEGORIES : RETAIL_CATEGORIES;
 
-  const filteredMerchants = DIRECTORY_ITEMS.filter((m) => {
+  const filteredMerchants = directoryList.filter((m) => {
     if (m.type !== activeMode) return false;
     if (selectedCategory === 'All') return true;
     return m.category === selectedCategory;
@@ -193,7 +217,7 @@ export const MerchantPaymentScreen = ({ navigation, route }) => {
   const handleSwitchMode = (mode) => {
     setActiveMode(mode);
     setSelectedCategory('All');
-    const firstOfMode = DIRECTORY_ITEMS.find((d) => d.type === mode) || DIRECTORY_ITEMS[0];
+    const firstOfMode = directoryList.find((d) => d.type === mode) || directoryList[0];
     setSelectedMerchant(firstOfMode);
     setMerchantPhone(firstOfMode.phone);
     setNote(mode === 'bill_pay' ? `${firstOfMode.name} বিল পরিশোধ` : `${firstOfMode.name}-এ কেনাকাটা`);

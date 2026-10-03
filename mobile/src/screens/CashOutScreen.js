@@ -14,6 +14,7 @@ import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
+import { TRANSACTION_FEES } from '../constants/config';
 import { CustomInput } from '../components/CustomInput';
 import { CustomButton } from '../components/CustomButton';
 import { ConfirmationSheet } from '../components/ConfirmationSheet';
@@ -32,7 +33,8 @@ export const CashOutScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const numAmount = parseFloat(amount) || 0;
-  const fee = Math.round(numAmount * 0.0185 * 100) / 100; // 1.85%
+  const feeRate = TRANSACTION_FEES.CASH_OUT_PERCENT;
+  const fee = Math.round(numAmount * feeRate * 100) / 100;
   const total = numAmount + fee;
 
   const handleProceed = () => {

@@ -191,6 +191,11 @@ export const api = {
     return res.data;
   },
 
+  async getDirectory() {
+    const res = await apiClient.get('/api/transactions/directory');
+    return res.data;
+  },
+
   // Offers
   async getOffers() {
     const res = await apiClient.get(ENDPOINTS.OFFERS);

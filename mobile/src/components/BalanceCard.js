@@ -18,9 +18,9 @@ export const BalanceCard = ({
     setIsRevealed((prev) => !prev);
   };
 
-  const displayAmount = (balance !== undefined && balance !== null && balance !== 0)
-    ? balance
-    : 12500.00;
+  const displayAmount = (balance !== undefined && balance !== null && !isNaN(Number(balance)))
+    ? Number(balance)
+    : 0.00;
 
   const rawFormatted = Number(displayAmount).toLocaleString('en-US', {
     minimumFractionDigits: 2,

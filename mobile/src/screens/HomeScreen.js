@@ -44,6 +44,7 @@ export const HomeScreen = ({ navigation }) => {
   const [launchOffer, setLaunchOffer] = useState(null);
   const [spendingAnomaly, setSpendingAnomaly] = useState(null);
   const [openAllOffersTrigger, setOpenAllOffersTrigger] = useState(0);
+  const [recentContacts, setRecentContacts] = useState(RECENT_CONTACTS);
 
   const loadDashboardData = useCallback(async () => {
     try {
@@ -55,10 +56,57 @@ export const HomeScreen = ({ navigation }) => {
       if (nboRes?.spending_anomaly) {
         setSpendingAnomaly(nboRes.spending_anomaly);
       }
+
+      // Dynamically load recent contacts from actual user transaction history
+      try {
+        const txnRes = await api.getTransactions(null, 15);
+        if (txnRes?.transactions && txnRes.transactions.length > 0) {
+          const uniqueContacts = [];
+          const seenPhones = new Set();
+          const colorsList = [
+            { color: '#059669', bg: '#D1FAE5' },
+            { color: '#2563EB', bg: '#DBEAFE' },
+            { color: '#D97706', bg: '#FEF3C7' },
+            { color: '#7C3AED', bg: '#EDE9FE' },
+            { color: '#DC2626', bg: '#FEE2E2' },
+          ];
+
+          for (const tx of txnRes.transactions) {
+            const isOutgoing = tx.direction === 'DEBIT';
+            const phone = isOutgoing ? (tx.receiver_phone || tx.recipient_phone) : tx.sender_phone;
+            const name = isOutgoing
+              ? (tx.receiver_name || tx.recipient_name || tx.merchant_name || 'Contact')
+              : (tx.sender_name || 'Sender');
+
+            if (phone && !seenPhones.has(phone) && phone !== user?.phone) {
+              seenPhones.add(phone);
+              const initials = name
+                .split(' ')
+                .map((w) => w[0])
+                .join('')
+                .slice(0, 2)
+                .toUpperCase() || 'GC';
+              const theme = colorsList[uniqueContacts.length % colorsList.length];
+              uniqueContacts.push({
+                id: `dynamic-${phone}`,
+                name: name.split(' ')[0],
+                phone,
+                initials,
+                color: theme.color,
+                bg: theme.bg,
+              });
+              if (uniqueContacts.length >= 6) break;
+            }
+          }
+          if (uniqueContacts.length > 0) {
+            setRecentContacts(uniqueContacts);
+          }
+        }
+      } catch (err) {}
     } catch (e) {
       console.warn('Dashboard data fetch error:', e);
     }
-  }, [refreshWallet, refreshNotifications]);
+  }, [refreshWallet, refreshNotifications, user?.phone]);
 
   useEffect(() => {
     loadDashboardData();
@@ -305,7 +353,7 @@ export const HomeScreen = ({ navigation }) => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.contactsScroll}
           >
-            {RECENT_CONTACTS.map((c) => (
+            {recentContacts.map((c) => (
               <TouchableOpacity
                 key={c.id}
                 style={styles.contactItem}

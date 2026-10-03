@@ -78,3 +78,12 @@ export const MOBILE_OPERATORS = [
   { id: 'AIRTEL', name: 'Airtel', code: '016', color: '#ED1B24', logo: 'heart', logoAsset: 'airtel' },
   { id: 'TT', name: 'Teletalk', code: '015', color: '#009944', logo: 'leaf', logoAsset: 'teletalk' },
 ];
+
+export const TRANSACTION_FEES = {
+  SEND_MONEY: 5.00,
+  CASH_OUT_PERCENT: 0.0185, // 1.85%
+  RECHARGE: 0.00,
+  PAYMENT: 0.00,
+  ADD_MONEY: 0.00,
+};
+
