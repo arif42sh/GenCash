@@ -98,14 +98,16 @@ def get_next_best_offers(
 def simulate_campaign(
     budget: float = 100000.0,
     audience_size: int = 50000,
-    discount_value: float = 79.0
+    discount_value: float = 79.0,
+    strategy: str = "RECHARGE"
 ):
     """
     Track 04 Admin Campaign Simulator:
-    Demonstrates 35%+ budget savings and 2.4x conversion uplift by targeting Persuadables.
+    Demonstrates 35%+ budget savings and 2.4x-3.4x conversion uplift by targeting Persuadables.
     """
     return AIService.simulate_campaign(
         budget=budget,
         audience_size=audience_size,
-        discount_value=discount_value
+        discount_value=discount_value,
+        strategy=strategy
     )

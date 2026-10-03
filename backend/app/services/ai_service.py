@@ -265,12 +265,14 @@ class AIService:
     def simulate_campaign(
         budget: float = 100000.0,
         audience_size: int = 50000,
-        discount_value: float = 79.0
+        discount_value: float = 79.0,
+        strategy: str = "RECHARGE"
     ) -> Dict[str, Any]:
         """Track 04 Admin Campaign Simulator: Uplift & Budget ROI Analytics."""
         from app.ml.nbo_engine import nbo_engine
         return nbo_engine.simulate_campaign(
             campaign_budget=budget,
             target_audience_size=audience_size,
-            offer_discount=discount_value
+            offer_discount=discount_value,
+            strategy=strategy
         )
