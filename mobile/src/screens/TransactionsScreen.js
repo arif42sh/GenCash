@@ -179,6 +179,30 @@ export const TransactionsScreen = ({ navigation }) => {
               </View>
             </View>
 
+            {/* AI Spending & Flow Intelligence Banner */}
+            <TouchableOpacity
+              style={styles.aiAnalyticsBanner}
+              onPress={() => navigation.navigate('AIHub')}
+              activeOpacity={0.85}
+            >
+              <View style={styles.aiBannerLeft}>
+                <View style={styles.aiBannerIconWrap}>
+                  <Ionicons name="sparkles" size={16} color="#059669" />
+                </View>
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <Text style={styles.aiBannerTitle}>
+                    {isBangla ? 'এআই ব্যয় ও লেনদেন বিশ্লেষণ' : 'AI Spending & Flow Intelligence'}
+                  </Text>
+                  <Text style={styles.aiBannerSub}>
+                    {isBangla
+                      ? 'রিচার্জ, পেমেন্ট, সেন্ড মানির সঠিক হিসাব এবং এআই ইনসাইট দেখুন'
+                      : 'View recharge, payment & send money breakdown with AI'}
+                  </Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color="#059669" />
+            </TouchableOpacity>
+
             {/* Search Input */}
             <View style={styles.searchContainer}>
               <Ionicons name="search-outline" size={18} color="#64748B" style={styles.searchIcon} />
@@ -628,4 +652,40 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
+  aiAnalyticsBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#ECFDF5',
+    marginHorizontal: 16,
+    marginBottom: 12,
+    padding: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#A7F3D0',
+  },
+  aiBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  aiBannerIconWrap: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: '#D1FAE5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  aiBannerTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#065F46',
+  },
+  aiBannerSub: {
+    fontSize: 11,
+    color: '#047857',
+    marginTop: 2,
+  },
 });
+
