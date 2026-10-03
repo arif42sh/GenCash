@@ -191,7 +191,7 @@ def get_admin_users(
     db: Session = Depends(get_db)
 ):
     """List all platform users with wallet status, KYC credentials, RFM signals, and AI persona."""
-    q = db.query(User)
+    q = db.query(User).filter(User.is_agent == False)
     if status and status != "ALL":
         q = q.filter(User.status == status)
     if kyc_status and kyc_status != "ALL":
@@ -880,7 +880,7 @@ def get_user_360_details(
         or_(Transaction.sender_id == user.id, Transaction.receiver_id == user.id)
     ).scalar() or 0
 
-    total_sent_vol = db.query(func.sum(Transaction.amount)).filter(
+    total_sent_vol = db.query(func.sum(Transaction.amount + Transaction.fee)).filter(
         Transaction.sender_id == user.id,
         Transaction.status == TransactionStatus.COMPLETED.value
     ).scalar() or 0.0
@@ -900,19 +900,23 @@ def get_user_360_details(
         is_outgoing = (t.sender_id == user.id)
         counterparty = ""
         if is_outgoing:
-            if t.merchant_id:
+            if t.merchant:
+                counterparty = f"{t.merchant.merchant_name}"
+            elif t.merchant_id:
                 counterparty = f"Merchant #{t.merchant_id}"
             elif t.receiver:
                 counterparty = f"{t.receiver.name} ({t.receiver.phone})"
-            elif t.recipient_phone:
-                counterparty = t.recipient_phone
             elif t.operator:
                 counterparty = f"{t.operator} Top-up"
+            elif t.recipient_phone:
+                counterparty = t.recipient_phone
             else:
                 counterparty = "Self / Bank"
         else:
             if t.sender:
                 counterparty = f"{t.sender.name} ({t.sender.phone})"
+            elif t.transaction_type == "ADD_MONEY":
+                counterparty = t.note or "Bank Deposit / Card Transfer"
             else:
                 counterparty = "Bank / External Inflow"
 
@@ -950,8 +954,8 @@ def get_user_360_details(
             "status": user.status,
             "created_at": user.created_at.strftime("%d %b %Y, %I:%M %p") if user.created_at else "N/A",
             "created_at_date": user.created_at.strftime("%d %b %Y") if user.created_at else "N/A",
-            "nid_number": user.nid_number or "19942691234567890",
-            "dob": user.dob or "1994-08-15",
+            "nid_number": user.nid_number or "N/A",
+            "dob": user.dob or "N/A",
             "kyc_status": user.kyc_status or "VERIFIED",
             "kyc_rejection_reason": user.kyc_rejection_reason,
             "kyc_verified_at": user.kyc_verified_at.strftime("%d %b %Y, %I:%M %p") if user.kyc_verified_at else None,

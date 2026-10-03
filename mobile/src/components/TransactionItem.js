@@ -40,6 +40,12 @@ const TYPE_CONFIG = {
     tagColor: '#10B981',
     avatarBg: '#E8F7F0',
   },
+  BILL_PAYMENT: {
+    icon: 'flash',
+    label: 'Bill Pay',
+    tagColor: '#7C3AED',
+    avatarBg: '#EDE9FE',
+  },
 };
 
 export const TransactionItem = ({ transaction, onPress }) => {
@@ -65,13 +71,16 @@ export const TransactionItem = ({ transaction, onPress }) => {
         : (transaction.receiver_name || transaction.receiver_phone || 'Recipient');
     }
     if (transaction.transaction_type === 'RECHARGE') {
-      return transaction.operator || transaction.recipient_phone || 'Mobile Topup';
+      return transaction.operator ? `${transaction.operator} Top-up` : (transaction.recipient_phone || 'Mobile Topup');
     }
     if (transaction.transaction_type === 'MERCHANT_PAYMENT') {
       return transaction.merchant_name || 'Merchant Store';
     }
+    if (transaction.transaction_type === 'BILL_PAYMENT') {
+      return transaction.note || 'Utility Bill Payment';
+    }
     if (transaction.transaction_type === 'ADD_MONEY') {
-      return 'Bank Deposit';
+      return transaction.note || 'Bank Deposit';
     }
     if (transaction.transaction_type === 'CASH_OUT') {
       return transaction.recipient_phone ? `Agent (${transaction.recipient_phone})` : 'Agent Cashout';
@@ -119,7 +128,7 @@ export const TransactionItem = ({ transaction, onPress }) => {
             isCredit ? styles.creditAmount : styles.debitAmount,
           ]}
         >
-          {isCredit ? '+$' : '-$'}{amountFormatted}
+          {isCredit ? '+৳' : '-৳'}{amountFormatted}
         </Text>
         <Text style={styles.timestamp}>{timeStr}</Text>
       </View>

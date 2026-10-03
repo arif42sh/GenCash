@@ -380,7 +380,14 @@ class TransactionService:
         )
 
         if transaction_type and transaction_type != "ALL":
-            query = query.filter(Transaction.transaction_type == transaction_type)
+            if transaction_type in ["RECEIVED", "RECEIVE_MONEY"]:
+                # Incoming money transfers where current user received funds
+                query = query.filter(Transaction.receiver_id == user_id, Transaction.transaction_type != TransactionType.ADD_MONEY.value)
+            elif transaction_type == "SEND_MONEY":
+                # Outgoing money transfers where current user sent funds
+                query = query.filter(Transaction.sender_id == user_id, Transaction.transaction_type == TransactionType.SEND_MONEY.value)
+            else:
+                query = query.filter(Transaction.transaction_type == transaction_type)
 
         total = query.count()
         txns = query.order_by(desc(Transaction.transaction_time)).offset(offset).limit(limit).all()

@@ -20,10 +20,11 @@ const FILTERS = [
   { id: 'ALL', label: 'All', bn: 'সব' },
   { id: 'SEND_MONEY', label: 'Send Money', bn: 'সেন্ড মানি' },
   { id: 'RECHARGE', label: 'Recharge', bn: 'রিচার্জ' },
-  { id: 'CASH_OUT', label: 'Cash Out', bn: 'ক্যাশ আউট' },
-  { id: 'RECEIVED', label: 'Received', bn: 'প্রাপ্ত মানি' },
   { id: 'MERCHANT_PAYMENT', label: 'Payment', bn: 'পেমেন্ট' },
+  { id: 'BILL_PAYMENT', label: 'Bill Pay', bn: 'বিল পে' },
+  { id: 'RECEIVED', label: 'Received', bn: 'প্রাপ্ত মানি' },
   { id: 'ADD_MONEY', label: 'Add Money', bn: 'টাকা যোগ' },
+  { id: 'CASH_OUT', label: 'Cash Out', bn: 'ক্যাশ আউট' },
 ];
 
 export const TransactionsScreen = ({ navigation }) => {
