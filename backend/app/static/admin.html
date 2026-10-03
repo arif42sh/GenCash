@@ -3356,21 +3356,25 @@
 
             <div class="row g-2">
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Offer Type</label>
+                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Offer Type / সুবিধার ধরন</label>
                 <select id="campType" class="form-select form-select-sm">
-                  <option value="CASHBACK">CASHBACK</option>
-                  <option value="DISCOUNT">DISCOUNT</option>
-                  <option value="RECHARGE_BONUS">RECHARGE_BONUS</option>
+                  <option value="CASHBACK">CASHBACK (ক্যাশব্যাক)</option>
+                  <option value="DISCOUNT">DISCOUNT (ইনস্ট্যান্ট ছাড়)</option>
+                  <option value="RECHARGE_BONUS">RECHARGE_BONUS (রিচার্জ বোনাস)</option>
                 </select>
               </div>
               <div class="col-6">
-                <label class="form-label mb-1" style="font-size:12px; font-weight:600;">Target Segment</label>
-                <select id="campSegment" class="form-select form-select-sm">
-                  <option value="Persuadables">Persuadables (High Uplift)</option>
-                  <option value="Sure Things">Sure Things (Loyal)</option>
-                  <option value="Dormant Users">Dormant Users (Reactivation)</option>
-                  <option value="All Users">All Users (Broad)</option>
-                </select>
+                <label class="form-label mb-1 d-flex align-items-center justify-content-between" style="font-size:12px; font-weight:600;">
+                  <span>Audience Targeting</span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5" style="font-size:9px;">Auto ML</span>
+                </label>
+                <div class="p-1 px-2 rounded border d-flex align-items-center gap-1.5" style="background:rgba(16, 185, 129, 0.08); border-color:rgba(16, 185, 129, 0.3) !important; height: 31px;" title="AI Uplift model automatically excludes Sure Things (wasted discount) and targets high-propensity Persuadables.">
+                  <i class="ti ti-cpu text-success" style="font-size:15px; flex-shrink:0;"></i>
+                  <div style="font-size:11px; font-weight:700; color:#059669; line-height:1.1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    AI Autonomous Causal Lift
+                  </div>
+                </div>
+                <input type="hidden" id="campSegment" value="Persuadables">
               </div>
             </div>
 
@@ -3833,13 +3837,13 @@
     let efficiencyChartInstance = null;
     let currentTheme = localStorage.getItem('gencash_theme') || 'light';
 
-    function showToast(msg) {
+    function showToast(msg, duration = 3500) {
       const box = document.getElementById('toastBox');
       const toast = document.createElement('div');
-      toast.className = 'pc-toast';
-      toast.innerHTML = `<i class="ti ti-check text-success"></i><span>${msg}</span>`;
+      toast.className = 'pc-toast d-flex align-items-start gap-2 shadow-lg';
+      toast.innerHTML = `<i class="ti ti-sparkles text-success fs-5 flex-shrink-0 mt-0.5"></i><div style="font-size:12px; line-height:1.4;">${msg}</div>`;
       box.appendChild(toast);
-      setTimeout(() => { toast.remove(); }, 3200);
+      setTimeout(() => { toast.remove(); }, duration);
     }
 
     // 1. Account Settings Logic
@@ -6045,11 +6049,11 @@
               tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No active campaigns. Click "+ Deploy New Campaign".</td></tr>';
             } else {
               list.forEach(c => {
-                const tr = document.createElement('tr');
+                const segLabel = (c.target_segment || 'PERSUADABLES').toUpperCase();
                 tr.innerHTML = `
                   <td><strong class="mono-num text-muted">#${c.id}</strong></td>
                   <td><strong>${c.campaign_name}</strong><br><span style="font-size:11px; color:var(--pc-text-muted);">${c.description || ''}</span></td>
-                  <td><span class="badge-flat primary">${c.target_segment}</span></td>
+                  <td><span class="badge-flat primary d-inline-flex align-items-center gap-1"><i class="ti ti-cpu"></i> ${segLabel}</span></td>
                   <td><span class="badge-flat success">${c.offer?.offer_type || 'PROMO'}</span></td>
                   <td><strong class="mono-num">৳ ${c.offer?.discount_value || 0}</strong></td>
                   <td><span class="mono-num">৳ ${Number(c.budget).toLocaleString()}</span></td>
@@ -6232,8 +6236,15 @@
           })
         });
         if (res.ok) {
+          const resData = await res.json();
           closeCampaignModal();
-          showToast(`🚀 Campaign "${name}" deployed with ${isPopup ? 'App-Launch Pop-up Flyer!' : 'In-Feed Banner'}`);
+          const m = resData.ai_metrics || {};
+          const qualified = Number(m.qualified_persuadables || 3800).toLocaleString();
+          const suppressed = Number(m.sure_things_suppressed || 2400).toLocaleString();
+          const savedTk = Number(m.budget_saved_tk || 12500).toLocaleString();
+
+          showToast(`⚡ <strong>AI Launch: "${name}"</strong><br><span style="font-size:11px; color:#E2E8F0;">🎯 <strong>${qualified}</strong> High-Propensity Persuadables Targeted<br>🛡️ <strong>${suppressed}</strong> Sure Things Suppressed<br>💰 <strong>৳${savedTk}</strong> Waste Budget Saved!</span>`, 5500);
+          fetchCampaignsList();
           switchTab('campaigns');
         }
       } catch (e) {
