@@ -361,14 +361,14 @@ def reconcile_and_seed():
         # User 3 (Rafiqul): Engaged student, converted mobile data pack! Streak = 0, Fatigue = 0.0
         r3 = CampaignResponse(campaign_id=camp_id, user_id=3, sent_at=now - timedelta(days=3), viewed=True, clicked=True, accepted=True, converted=True, transaction_value=Decimal("399.00"))
 
-        # User 4 (Dormant / Overwhelmed): Ignored 3 consecutive promo campaigns! Streak = 3, Fatigue = 0.75 -> SLEEPING_DOG, Cool-off Active!
-        r4_1 = CampaignResponse(campaign_id=camp_id, user_id=4, sent_at=now - timedelta(days=8), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
-        r4_2 = CampaignResponse(campaign_id=camp_id, user_id=4, sent_at=now - timedelta(days=4), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
-        r4_3 = CampaignResponse(campaign_id=camp_id, user_id=4, sent_at=now - timedelta(days=1), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
+        # User 8 (Mehnaz Chowdhury - Customer): Ignored 3 consecutive promo campaigns! Streak = 3, Fatigue = 0.75 -> SLEEPING_DOG, Cool-off Active!
+        r8_1 = CampaignResponse(campaign_id=camp_id, user_id=8, sent_at=now - timedelta(days=8), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
+        r8_2 = CampaignResponse(campaign_id=camp_id, user_id=8, sent_at=now - timedelta(days=4), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
+        r8_3 = CampaignResponse(campaign_id=camp_id, user_id=8, sent_at=now - timedelta(days=1), viewed=True, clicked=False, accepted=False, converted=False, transaction_value=Decimal("0.00"))
 
-        db.add_all([r1, r2_old, r2_new, r3, r4_1, r4_2, r4_3])
+        db.add_all([r1, r2_old, r2_new, r3, r8_1, r8_2, r8_3])
         db.commit()
-        print("  ✓ Campaign Responses seeded: User 1 (Streak=0), User 2 (Streak=1), User 3 (Streak=0), User 4 (Streak=3 - Shield Active!)")
+        print("  ✓ Campaign Responses seeded: User 1 (Streak=0), User 2 (Streak=1), User 3 (Streak=0), User 8 (Streak=3 - Shield Active!)")
 
         print(f"\n🎉 Successfully created {len(all_txns)} fully reconciled transactions!")
         print("✅ 100% Solvency, 100% Double-Entry verified, No collisions, Realistic daytime timestamps!")
