@@ -1063,8 +1063,9 @@ def get_all_ai_insights(
 ):
     """List all AI insights generated across users for audit and evaluation with dual Bengali/English XAI explanations and SHAP attributions."""
     from app.ml.nbo_engine import nbo_engine
-    insights = db.query(AIInsight).order_by(AIInsight.created_at.desc()).limit(100).all()
-    user_lookup = {u.id: u for u in db.query(User).all()}
+    insights = db.query(AIInsight).order_by(AIInsight.created_at.desc()).limit(25).all()
+    user_ids = {i.user_id for i in insights if i.user_id}
+    user_lookup = {u.id: u for u in db.query(User).filter(User.id.in_(user_ids)).all()} if user_ids else {}
 
     results = []
     for i in insights:
@@ -1100,16 +1101,16 @@ def get_all_ai_insights(
             }
         })
 
-    # Always generate live dynamic NBO XAI records for active users to provide a comprehensive audit log
-    sample_users = db.query(User).limit(10).all()
+    # Generate live dynamic NBO XAI records for active users to provide a comprehensive audit log
+    sample_users = db.query(User).limit(8).all()
     for u in sample_users:
-        # Avoid duplicate user display if already in results
         if any(r.get("user_id") == u.id for r in results):
             continue
         persona = get_user_persona(u.phone, u.name)
-        txns = db.query(Transaction).filter((Transaction.sender_id == u.id) | (Transaction.receiver_id == u.id)).all()
+        txns = db.query(Transaction).filter((Transaction.sender_id == u.id) | (Transaction.receiver_id == u.id)).order_by(Transaction.id.desc()).limit(20).all()
         txn_dicts = [{"amount": float(t.amount), "category": t.transaction_type, "created_at": t.created_at} for t in txns]
-        feats = nbo_engine.compute_user_features(user_balance=float(u.balance), txns=txn_dicts if txn_dicts else None)
+        bal = float(u.wallet.balance) if getattr(u, 'wallet', None) and u.wallet.balance else 5000.0
+        feats = nbo_engine.compute_user_features(user_balance=bal, txns=txn_dicts if txn_dicts else None)
         ranked = nbo_engine.predict_next_best_offers(feats)
         top = ranked[0] if ranked else None
         if top:
