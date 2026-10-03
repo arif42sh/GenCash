@@ -2524,69 +2524,44 @@
 
       <!-- ================= 7. TRACK 04 MODEL OPERATIONS VIEW ================= -->
       <div id="tab-model" class="tab-section">
-        <!-- Enterprise Machine Learning Telemetry Header Card -->
-        <div class="row mb-3">
-          <div class="col-12">
-            <div class="card standard-card mb-0 shadow-sm" style="border-left: 4px solid var(--pc-primary);">
-              <div class="card-body py-3">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
-                  <div>
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                      <h5 class="mb-0 fw-bold" style="font-size:16px;">Enterprise ML &amp; Propensity Governance Console</h5>
-                      <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5" style="font-size:11px;">
-                        <i class="ti ti-circle-filled" style="font-size:7px;"></i> Production Online
-                      </span>
-                    </div>
-                    <p class="text-muted mb-0" style="font-size:12.5px;">
-                      Continuous RFM scoring, fatigue suppression, and causal uplift optimization running on live transaction streams.
-                    </p>
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1.5" onclick="fetchModelStatus()">
-                      <i class="ti ti-refresh"></i> Refresh Telemetry
-                    </button>
-                  </div>
+        <!-- Telemetry Header Strip -->
+        <div class="card standard-card mb-3 shadow-sm border-0" style="background: linear-gradient(135deg, rgba(70, 128, 255, 0.05) 0%, rgba(44, 168, 127, 0.04) 100%); border: 1px solid var(--pc-card-border) !important;">
+          <div class="card-body py-3 px-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <h5 class="mb-0 fw-bold" style="font-size:16px; letter-spacing:-0.2px;">Propensity &amp; Causal Inference Governance</h5>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5 d-inline-flex align-items-center gap-1" style="font-size:11px; font-weight:600;">
+                    <span style="width:6px; height:6px; background:#2CA87F; border-radius:50%; display:inline-block;"></span> Active Stream
+                  </span>
                 </div>
+                <p class="text-muted mb-0" style="font-size:12px;">
+                  Real-time Gradient Boosted Decision Tree (GBDT) scoring RFM propensity, incentive elasticity, and churn prevention.
+                </p>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-secondary px-3 py-1.5 d-flex align-items-center gap-1.5" onclick="fetchModelStatus()" style="font-size:12px; font-weight:600;">
+                  <i class="ti ti-refresh"></i> Refresh Telemetry
+                </button>
+              </div>
+            </div>
 
-                <!-- 4 Telemetry Metrics Grid inside header card -->
-                <div class="row g-2 pt-2 border-top">
-                  <div class="col-sm-6 col-lg-3">
-                    <div class="p-2 rounded bg-light border d-flex align-items-center gap-2.5">
-                      <div class="flat-icon-wrap primary" style="width:36px; height:36px; font-size:18px;"><i class="ti ti-database"></i></div>
-                      <div>
-                        <span class="text-muted d-block" style="font-size:10.5px; font-weight:600; text-transform:uppercase;">Training Transactions</span>
-                        <strong class="mono-num" style="font-size:13px;" id="modelBannerTxnCount">461,058 Live</strong>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-6 col-lg-3">
-                    <div class="p-2 rounded bg-light border d-flex align-items-center gap-2.5">
-                      <div class="flat-icon-wrap success" style="width:36px; height:36px; font-size:18px;"><i class="ti ti-users"></i></div>
-                      <div>
-                        <span class="text-muted d-block" style="font-size:10.5px; font-weight:600; text-transform:uppercase;">Active Customer Base</span>
-                        <strong class="mono-num" style="font-size:13px;" id="modelBannerUserCount">100,000 Verified</strong>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-6 col-lg-3">
-                    <div class="p-2 rounded bg-light border d-flex align-items-center gap-2.5">
-                      <div class="flat-icon-wrap warning" style="width:36px; height:36px; font-size:18px;"><i class="ti ti-currency-taka"></i></div>
-                      <div>
-                        <span class="text-muted d-block" style="font-size:10.5px; font-weight:600; text-transform:uppercase;">Gross Processed Volume</span>
-                        <strong class="mono-num" style="font-size:13px;" id="modelBannerGtvCount">৳ 146.62 Crore GTV</strong>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-6 col-lg-3">
-                    <div class="p-2 rounded bg-light border d-flex align-items-center gap-2.5">
-                      <div class="flat-icon-wrap purple" style="width:36px; height:36px; font-size:18px;"><i class="ti ti-sparkles"></i></div>
-                      <div>
-                        <span class="text-muted d-block" style="font-size:10.5px; font-weight:600; text-transform:uppercase;">Validation Metric</span>
-                        <strong class="mono-num text-primary" style="font-size:13px;" id="modelBannerRocAuc">98.0% ROC-AUC</strong>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div class="row g-3 pt-3 mt-1 border-top" style="border-color: rgba(0,0,0,0.06) !important;">
+              <div class="col-6 col-md-3">
+                <span class="text-muted d-block" style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Live Training Records</span>
+                <strong class="mono-num text-dark" style="font-size:14px; font-weight:700;" id="modelBannerTxnCount">461,058 Live</strong>
+              </div>
+              <div class="col-6 col-md-3">
+                <span class="text-muted d-block" style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Customer Scoring Universe</span>
+                <strong class="mono-num text-dark" style="font-size:14px; font-weight:700;" id="modelBannerUserCount">100,000 Verified</strong>
+              </div>
+              <div class="col-6 col-md-3">
+                <span class="text-muted d-block" style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Annualized Throughput</span>
+                <strong class="mono-num text-dark" style="font-size:14px; font-weight:700;" id="modelBannerGtvCount">৳ 146.62 Crore GTV</strong>
+              </div>
+              <div class="col-6 col-md-3">
+                <span class="text-muted d-block" style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Overall Model Fit</span>
+                <strong class="mono-num text-primary" style="font-size:14px; font-weight:700;" id="modelBannerRocAuc">98.0% ROC-AUC</strong>
               </div>
             </div>
           </div>
@@ -2595,145 +2570,246 @@
         <!-- 4 ML Performance Evaluation Cards -->
         <div class="row g-3 mb-3">
           <div class="col-xl-3 col-md-6">
-            <div class="card flat-card w-100 mb-0 shadow-sm">
-              <div class="cell-box p-3">
-                <div class="flat-icon-wrap primary"><i class="ti ti-chart-dots"></i></div>
-                <div class="cell-data">
-                  <h5 class="mono-num mb-0 fw-bold" id="modelRocAuc">0.98</h5>
-                  <span class="fw-semibold text-dark" style="font-size:12px;">ROC-AUC Score</span>
-                  <small class="text-muted d-block" style="font-size:10px;">Classification separation power</small>
+            <div class="card standard-card h-100 mb-0 shadow-sm border">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted text-uppercase fw-bold" style="font-size:11px; letter-spacing:0.4px;">ROC-AUC Score</span>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size:10px;">Separation Power</span>
                 </div>
+                <div class="d-flex align-items-baseline gap-2 mb-2">
+                  <h3 class="mono-num mb-0 fw-bold" style="font-size:24px;" id="modelRocAuc">0.98</h3>
+                  <small class="text-muted" style="font-size:11px;">(Target &gt; 0.90)</small>
+                </div>
+                <div class="progress" style="height: 4px; background: rgba(0,0,0,0.06); border-radius:99px;">
+                  <div class="progress-bar bg-primary" id="barRocAuc" style="width: 98%;"></div>
+                </div>
+                <div class="text-muted mt-2" style="font-size:11px;">Optimal cross-cohort distinction</div>
               </div>
             </div>
           </div>
 
           <div class="col-xl-3 col-md-6">
-            <div class="card flat-card w-100 mb-0 shadow-sm">
-              <div class="cell-box p-3">
-                <div class="flat-icon-wrap success"><i class="ti ti-target"></i></div>
-                <div class="cell-data">
-                  <h5 class="mono-num mb-0 fw-bold text-success" id="modelPrecision">96.4%</h5>
-                  <span class="fw-semibold text-dark" style="font-size:12px;">Precision Rating</span>
-                  <small class="text-muted d-block" style="font-size:10px;">Incentive efficiency (low waste risk)</small>
+            <div class="card standard-card h-100 mb-0 shadow-sm border">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted text-uppercase fw-bold" style="font-size:11px; letter-spacing:0.4px;">Precision Rating</span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size:10px;">Incentive Waste</span>
                 </div>
+                <div class="d-flex align-items-baseline gap-2 mb-2">
+                  <h3 class="mono-num mb-0 fw-bold text-success" style="font-size:24px;" id="modelPrecision">96.4%</h3>
+                  <small class="text-muted" style="font-size:11px;">(Waste &lt; 4%)</small>
+                </div>
+                <div class="progress" style="height: 4px; background: rgba(0,0,0,0.06); border-radius:99px;">
+                  <div class="progress-bar bg-success" id="barPrecision" style="width: 96.4%;"></div>
+                </div>
+                <div class="text-muted mt-2" style="font-size:11px;">Only high-intent users receive rewards</div>
               </div>
             </div>
           </div>
 
           <div class="col-xl-3 col-md-6">
-            <div class="card flat-card w-100 mb-0 shadow-sm">
-              <div class="cell-box p-3">
-                <div class="flat-icon-wrap warning"><i class="ti ti-activity-heartbeat"></i></div>
-                <div class="cell-data">
-                  <h5 class="mono-num mb-0 fw-bold text-warning" id="modelRecall">94.1%</h5>
-                  <span class="fw-semibold text-dark" style="font-size:12px;">Recall Rating</span>
-                  <small class="text-muted d-block" style="font-size:10px;">Capture of true high-intent converters</small>
+            <div class="card standard-card h-100 mb-0 shadow-sm border">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted text-uppercase fw-bold" style="font-size:11px; letter-spacing:0.4px;">Recall Rating</span>
+                  <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size:10px;">Opportunity Capture</span>
                 </div>
+                <div class="d-flex align-items-baseline gap-2 mb-2">
+                  <h3 class="mono-num mb-0 fw-bold text-warning" style="font-size:24px;" id="modelRecall">94.1%</h3>
+                  <small class="text-muted" style="font-size:11px;">(Target &gt; 88%)</small>
+                </div>
+                <div class="progress" style="height: 4px; background: rgba(0,0,0,0.06); border-radius:99px;">
+                  <div class="progress-bar bg-warning" id="barRecall" style="width: 94.1%;"></div>
+                </div>
+                <div class="text-muted mt-2" style="font-size:11px;">Captures 94% of true prospective converters</div>
               </div>
             </div>
           </div>
 
           <div class="col-xl-3 col-md-6">
-            <div class="card flat-card w-100 mb-0 shadow-sm">
-              <div class="cell-box p-3">
-                <div class="flat-icon-wrap purple"><i class="ti ti-award"></i></div>
-                <div class="cell-data">
-                  <h5 class="mono-num mb-0 fw-bold" style="color:var(--pc-purple);" id="modelF1Score">95.2%</h5>
-                  <span class="fw-semibold text-dark" style="font-size:12px;">F1-Score / Accuracy</span>
-                  <small class="text-muted d-block" style="font-size:10px;">Harmonic mean across train/test splits</small>
+            <div class="card standard-card h-100 mb-0 shadow-sm border">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted text-uppercase fw-bold" style="font-size:11px; letter-spacing:0.4px;">F1-Score / Harmonic Mean</span>
+                  <span class="badge border" style="font-size:10px; background:rgba(124, 58, 237, 0.1); color:#7C3AED; border-color:rgba(124, 58, 237, 0.2) !important;">Ensemble Fit</span>
                 </div>
+                <div class="d-flex align-items-baseline gap-2 mb-2">
+                  <h3 class="mono-num mb-0 fw-bold" style="font-size:24px; color:#7C3AED;" id="modelF1Score">95.2%</h3>
+                  <small class="text-muted" style="font-size:11px;">(Generalization)</small>
+                </div>
+                <div class="progress" style="height: 4px; background: rgba(0,0,0,0.06); border-radius:99px;">
+                  <div class="progress-bar" id="barF1Score" style="width: 95.2%; background:#7C3AED;"></div>
+                </div>
+                <div class="text-muted mt-2" style="font-size:11px;">Balanced across train / test validation folds</div>
               </div>
             </div>
           </div>
         </div>
 
         <div class="row g-3">
-          <!-- Left Column: Model Governance & Causal Cohort Distribution -->
+          <!-- Left Column -->
           <div class="col-xl-5 col-lg-12 d-flex flex-column gap-3">
-            <!-- Model Governance Card -->
-            <div class="card standard-card mb-0 shadow-sm">
-              <div class="card-header d-flex justify-content-between align-items-center py-2.5">
-                <h5 class="mb-0 fw-bold" style="font-size:14px;"><i class="ti ti-cpu text-primary me-1"></i> Model Architecture &amp; Governance</h5>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="modelVersionBadge">GradientBoosting v2.0</span>
+            <!-- Model Architecture & Hyperparameters -->
+            <div class="card standard-card mb-0 shadow-sm border">
+              <div class="card-header d-flex justify-content-between align-items-center py-2.5 px-3">
+                <h6 class="mb-0 fw-bold d-flex align-items-center gap-1.5" style="font-size:13.5px;">
+                  <i class="ti ti-cpu text-primary"></i> Model Architecture &amp; Hyperparameters
+                </h6>
+                <span class="badge bg-light text-dark border px-2 py-0.5" id="modelVersionBadge" style="font-size:11px; font-weight:600;">GradientBoosting v2.1</span>
               </div>
-              <div class="card-body">
-                <div class="p-2.5 rounded bg-light border mb-3" style="font-size:12px; line-height:1.5;">
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="text-muted">Algorithm:</span>
-                    <strong class="text-dark">GradientBoostingClassifier</strong>
-                  </div>
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="text-muted">Framework:</span>
-                    <span class="fw-semibold">Scikit-Learn Ensemble</span>
-                  </div>
-                  <div class="d-flex justify-content-between">
-                    <span class="text-muted">Optimization:</span>
-                    <span class="text-success fw-semibold">Causal Uplift &amp; Fatigue Suppression</span>
-                  </div>
-                  <div class="mt-2 pt-1 border-top" style="font-size:11px;">
-                    <span class="text-muted d-block mb-0.5">Hyperparameters:</span>
-                    <code class="text-primary font-code" id="modelHyperparams">n_estimators=100, max_depth=3, lr=0.08, subsample=0.85</code>
+              <div class="card-body p-3">
+                <!-- Architecture Specifications Grid -->
+                <div class="table-responsive mb-3 border rounded overflow-hidden">
+                  <table class="table table-sm table-borderless m-0" style="font-size:11.5px;">
+                    <tbody>
+                      <tr class="border-bottom">
+                        <td class="text-muted py-1.5 px-2.5" style="width:38%;">Estimator Engine</td>
+                        <td class="fw-semibold text-dark py-1.5 px-2.5">GradientBoostingClassifier (Tree Ensemble)</td>
+                      </tr>
+                      <tr class="border-bottom" style="background:var(--pc-subtle-bg);">
+                        <td class="text-muted py-1.5 px-2.5">Loss Formulation</td>
+                        <td class="fw-semibold text-dark py-1.5 px-2.5">Log-Loss (Binary Cross-Entropy)</td>
+                      </tr>
+                      <tr class="border-bottom">
+                        <td class="text-muted py-1.5 px-2.5">Calibration Status</td>
+                        <td class="fw-semibold text-success py-1.5 px-2.5" id="modelLastTrained">Live Synchronized</td>
+                      </tr>
+                      <tr>
+                        <td class="text-muted py-1.5 px-2.5">Training Vectors</td>
+                        <td class="fw-semibold text-dark py-1.5 px-2.5" id="modelDatasetSamples">8,248 Samples (6,598 Train / 1,650 Test)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Structured Hyperparameters Grid -->
+                <div class="mb-3">
+                  <span class="text-muted d-block mb-1.5 fw-bold text-uppercase" style="font-size:10.5px; letter-spacing:0.4px;">Calibrated Hyperparameters</span>
+                  <div class="row g-1.5" id="modelHyperparamsGrid">
+                    <div class="col-4">
+                      <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+                        <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">ESTIMATORS</span>
+                        <strong class="mono-num text-primary" style="font-size:12px;">100</strong>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+                        <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">LEARN RATE</span>
+                        <strong class="mono-num text-primary" style="font-size:12px;">0.08</strong>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+                        <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">MAX DEPTH</span>
+                        <strong class="mono-num text-primary" style="font-size:12px;">3</strong>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+                        <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">SUBSAMPLE</span>
+                        <strong class="mono-num text-primary" style="font-size:12px;">0.85</strong>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+                        <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">RANDOM STATE</span>
+                        <strong class="mono-num text-primary" style="font-size:12px;">42 (Seeded)</strong>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded border" style="font-size:11.5px;">
-                  <span class="text-muted"><i class="ti ti-clock"></i> Last Calibrated:</span>
-                  <strong class="mono-num text-dark" id="modelLastTrained">Oct 03, 2026 • Live Synced</strong>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded border" style="font-size:11.5px;">
-                  <span class="text-muted"><i class="ti ti-database"></i> Training Dataset:</span>
-                  <strong class="mono-num text-success" id="modelDatasetSamples">8,248 Records (6,598 Train / 1,650 Test)</strong>
-                </div>
-
-                <button class="btn btn-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2 fw-semibold"
-                  id="mainRetrainBtn" onclick="triggerModelRetrain()">
+                <!-- Retrain Trigger Action -->
+                <button class="btn btn-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2 fw-semibold" id="mainRetrainBtn" onclick="triggerModelRetrain()">
                   <i class="ti ti-refresh" id="mainRetrainIcon"></i>
-                  <span>Retrain Model with Live Transaction Data</span>
+                  <span>Trigger Model Re-Calibration</span>
                 </button>
-                <div class="form-text mt-1 text-center" style="font-size:10.5px;">
-                  Re-fits ensemble trees on live transaction vectors and updates weights in real time.
+                <div class="text-muted text-center mt-1.5" style="font-size:10.5px;">
+                  Re-fits decision trees on live transaction vectors and updates feature weights in real time.
                 </div>
               </div>
             </div>
 
-            <!-- Causal Cohort Conversion Lift Card (Balances Left & Right Column Height!) -->
-            <div class="card standard-card mb-0 shadow-sm flex-fill">
-              <div class="card-header d-flex justify-content-between align-items-center py-2.5">
-                <h5 class="mb-0 fw-bold" style="font-size:14px;"><i class="ti ti-chart-pie text-success me-1"></i> Customer Cohort Lift Distribution</h5>
-                <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size:10px;">4 Cohorts</span>
+            <!-- Customer Cohort Lift Distribution -->
+            <div class="card standard-card mb-0 shadow-sm border flex-fill">
+              <div class="card-header d-flex justify-content-between align-items-center py-2.5 px-3">
+                <h6 class="mb-0 fw-bold d-flex align-items-center gap-1.5" style="font-size:13.5px;">
+                  <i class="ti ti-chart-pie text-success"></i> Customer Cohort Lift Matrix
+                </h6>
+                <span class="badge bg-light text-dark border px-2 py-0.5" style="font-size:10.5px; font-weight:600;">4 Causal Cohorts</span>
               </div>
-              <div class="card-body d-flex flex-column justify-content-between gap-2 py-3">
-                <div class="p-2 rounded border bg-light d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong class="text-success" style="font-size:12px;">Persuadables (High Uplift)</strong>
-                    <div class="text-muted" style="font-size:10.5px;">Responds to incentives (+28.5% Conversion)</div>
+              <div class="card-body p-3 d-flex flex-column justify-content-between gap-3">
+                <!-- Visual Segmented Bar -->
+                <div>
+                  <div class="d-flex justify-content-between text-muted mb-1" style="font-size:10.5px; font-weight:600;">
+                    <span>POPULATION SHARE BREAKDOWN</span>
+                    <span>100% UNIVERSE</span>
                   </div>
-                  <span class="badge bg-success text-white px-2 py-1 mono-num">~38% Share</span>
+                  <div class="d-flex rounded overflow-hidden" style="height: 10px;">
+                    <div style="width: 38%; background: #2CA87F;" title="Persuadables: 38%"></div>
+                    <div style="width: 24%; background: #4680FF;" title="Sure Things: 24%"></div>
+                    <div style="width: 28%; background: #94A3B8;" title="Lost Causes: 28%"></div>
+                    <div style="width: 10%; background: #DC2626;" title="Sleeping Dogs: 10%"></div>
+                  </div>
                 </div>
 
-                <div class="p-2 rounded border bg-light d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong class="text-primary" style="font-size:12px;">Sure Things (Loyal Regulars)</strong>
-                    <div class="text-muted" style="font-size:10.5px;">Organic repeat transactions (Zero wasted spend)</div>
+                <!-- 4 Cohort Detail Rows -->
+                <div class="d-flex flex-column gap-2">
+                  <div class="d-flex align-items-center justify-content-between p-2 rounded border" style="background:var(--pc-subtle-bg);">
+                    <div class="d-flex align-items-center gap-2">
+                      <span style="width:8px; height:8px; border-radius:50%; background:#2CA87F; flex-shrink:0;"></span>
+                      <div>
+                        <div class="fw-bold text-dark" style="font-size:12px;">Persuadables (High Incremental Lift)</div>
+                        <div class="text-muted" style="font-size:10.5px;">Incentive responsive (+28.5% conversion uplift)</div>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <span class="badge text-white px-2 py-0.5 mono-num" style="background:#2CA87F; font-size:11px;">38% Share</span>
+                      <div class="text-success fw-bold text-uppercase" style="font-size:9.5px; letter-spacing:0.3px;">Targeted</div>
+                    </div>
                   </div>
-                  <span class="badge bg-primary text-white px-2 py-1 mono-num">~24% Share</span>
-                </div>
 
-                <div class="p-2 rounded border bg-light d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong class="text-danger" style="font-size:12px;">Sleeping Dogs (Anti-Churn Protected)</strong>
-                    <div class="text-muted" style="font-size:10.5px;">Notification suppressed to prevent uninstalls</div>
+                  <div class="d-flex align-items-center justify-content-between p-2 rounded border" style="background:var(--pc-subtle-bg);">
+                    <div class="d-flex align-items-center gap-2">
+                      <span style="width:8px; height:8px; border-radius:50%; background:#4680FF; flex-shrink:0;"></span>
+                      <div>
+                        <div class="fw-bold text-dark" style="font-size:12px;">Sure Things (Organic Regulars)</div>
+                        <div class="text-muted" style="font-size:10.5px;">Transacts naturally; incentives suppressed to save budget</div>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <span class="badge text-white px-2 py-0.5 mono-num" style="background:#4680FF; font-size:11px;">24% Share</span>
+                      <div class="text-primary fw-bold text-uppercase" style="font-size:9.5px; letter-spacing:0.3px;">Budget Saved</div>
+                    </div>
                   </div>
-                  <span class="badge bg-danger text-white px-2 py-1 mono-num">~10% Share</span>
-                </div>
 
-                <div class="p-2 rounded border bg-light d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong class="text-secondary" style="font-size:12px;">Lost Causes (Low Elasticity)</strong>
-                    <div class="text-muted" style="font-size:10.5px;">Non-responsive to promotional discounting</div>
+                  <div class="d-flex align-items-center justify-content-between p-2 rounded border" style="background:var(--pc-subtle-bg);">
+                    <div class="d-flex align-items-center gap-2">
+                      <span style="width:8px; height:8px; border-radius:50%; background:#94A3B8; flex-shrink:0;"></span>
+                      <div>
+                        <div class="fw-bold text-dark" style="font-size:12px;">Lost Causes (Zero Elasticity)</div>
+                        <div class="text-muted" style="font-size:10.5px;">Low propensity; non-responsive to promotional offers</div>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <span class="badge text-white px-2 py-0.5 mono-num" style="background:#64748B; font-size:11px;">28% Share</span>
+                      <div class="text-muted fw-bold text-uppercase" style="font-size:9.5px; letter-spacing:0.3px;">Excluded</div>
+                    </div>
                   </div>
-                  <span class="badge bg-secondary text-white px-2 py-1 mono-num">~28% Share</span>
+
+                  <div class="d-flex align-items-center justify-content-between p-2 rounded border" style="background:var(--pc-subtle-bg);">
+                    <div class="d-flex align-items-center gap-2">
+                      <span style="width:8px; height:8px; border-radius:50%; background:#DC2626; flex-shrink:0;"></span>
+                      <div>
+                        <div class="fw-bold text-dark" style="font-size:12px;">Sleeping Dogs (Anti-Churn Protected)</div>
+                        <div class="text-muted" style="font-size:10.5px;">Irritated by notifications; suppressed to prevent app churn</div>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <span class="badge text-white px-2 py-0.5 mono-num" style="background:#DC2626; font-size:11px;">10% Share</span>
+                      <div class="text-danger fw-bold text-uppercase" style="font-size:9.5px; letter-spacing:0.3px;">Protected</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2741,13 +2817,30 @@
 
           <!-- Right Column: 12 Feature Weights & Decision Importances -->
           <div class="col-xl-7 col-lg-12">
-            <div class="card standard-card mb-0 shadow-sm h-100 d-flex flex-column">
-              <div class="card-header d-flex justify-content-between align-items-center py-2.5">
-                <h5 class="mb-0 fw-bold" style="font-size:14px;"><i class="ti ti-adjustments-horizontal text-primary me-1"></i> Feature Importances &amp; Signal Weights</h5>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="featureWeightsCountBadge"><i class="ti ti-check me-1"></i>12 Active Features</span>
+            <div class="card standard-card mb-0 shadow-sm border h-100 d-flex flex-column">
+              <div class="card-header d-flex justify-content-between align-items-center py-2.5 px-3">
+                <div>
+                  <h6 class="mb-0 fw-bold d-flex align-items-center gap-1.5" style="font-size:13.5px;">
+                    <i class="ti ti-adjustments-horizontal text-primary"></i> Signal Weights &amp; Gini Importance Breakdown
+                  </h6>
+                  <span class="text-muted" style="font-size:11px;">Ensemble tree splits normalized to 100% decision variance</span>
+                </div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="featureWeightsCountBadge">
+                  <i class="ti ti-check me-1"></i>12 Active Features
+                </span>
               </div>
-              <div class="card-body flex-fill d-flex flex-column justify-content-between py-3" id="featureWeightsContainer">
-                <!-- Dynamically populated by renderModelGovernanceUI -->
+              <div class="card-body p-0 flex-fill d-flex flex-column">
+                <!-- Column Header Strip -->
+                <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom text-muted" style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; background:var(--pc-subtle-bg);">
+                  <div style="width:230px;">SIGNAL / FEATURE</div>
+                  <div class="flex-grow-1 px-3 d-none d-md-block">IMPORTANCE WEIGHT PROFILE</div>
+                  <div class="text-end" style="width:85px;">GINI SHARE</div>
+                </div>
+
+                <!-- Feature Rows Container -->
+                <div class="d-flex flex-column divide-y" id="featureWeightsContainer" style="overflow-y:auto; flex:1;">
+                  <!-- Dynamically populated via renderModelGovernanceUI -->
+                </div>
               </div>
             </div>
           </div>
@@ -5862,26 +5955,37 @@
       const rocAucVal = metrics.roc_auc != null ? metrics.roc_auc : 0.98;
       if (rEl) rEl.textContent = rocAucVal.toFixed(2);
       const bannerRoc = document.getElementById('modelBannerRocAuc');
-      if (bannerRoc) bannerRoc.textContent = `${(rocAucVal * 100).toFixed(2)}% ROC-AUC`;
+      if (bannerRoc) bannerRoc.textContent = `${(rocAucVal * 100).toFixed(1)}% ROC-AUC`;
+      const barRoc = document.getElementById('barRocAuc');
+      if (barRoc) barRoc.style.width = `${Math.min(100, rocAucVal * 100)}%`;
 
+      const pVal = metrics.precision != null ? metrics.precision : 0.964;
       const pEl = document.getElementById('modelPrecision');
-      if (pEl) pEl.textContent = `${Math.round((metrics.precision != null ? metrics.precision : 0.964) * 1000) / 10}%`;
+      if (pEl) pEl.textContent = `${Math.round(pVal * 1000) / 10}%`;
+      const barP = document.getElementById('barPrecision');
+      if (barP) barP.style.width = `${Math.min(100, pVal * 100)}%`;
 
+      const recVal = metrics.recall != null ? metrics.recall : 0.941;
       const recEl = document.getElementById('modelRecall');
-      if (recEl) recEl.textContent = `${Math.round((metrics.recall != null ? metrics.recall : 0.941) * 1000) / 10}%`;
+      if (recEl) recEl.textContent = `${Math.round(recVal * 1000) / 10}%`;
+      const barR = document.getElementById('barRecall');
+      if (barR) barR.style.width = `${Math.min(100, recVal * 100)}%`;
 
+      const f1Val = metrics.f1_score != null ? metrics.f1_score : 0.952;
       const f1El = document.getElementById('modelF1Score');
-      if (f1El) f1El.textContent = `${Math.round((metrics.f1_score != null ? metrics.f1_score : 0.952) * 1000) / 10}%`;
+      if (f1El) f1El.textContent = `${Math.round(f1Val * 1000) / 10}%`;
+      const barF = document.getElementById('barF1Score');
+      if (barF) barF.style.width = `${Math.min(100, f1Val * 100)}%`;
 
       const ltEl = document.getElementById('modelLastTrained');
       if (ltEl) {
         const d = data.last_trained ? new Date(data.last_trained) : new Date();
-        ltEl.textContent = `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} ${d.toLocaleTimeString()} • Live Sync Active`;
+        ltEl.textContent = `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Live Synchronized`;
       }
 
       const dsEl = document.getElementById('modelDatasetSamples');
       if (dsEl && data.total_samples) {
-        dsEl.textContent = `${data.total_samples.toLocaleString()} Records (${data.train_samples} Train / ${data.test_samples} Test)`;
+        dsEl.textContent = `${data.total_samples.toLocaleString()} Samples (${data.train_samples} Train / ${data.test_samples} Test)`;
       }
 
       const badge = document.getElementById('modelVersionBadge');
@@ -5890,26 +5994,58 @@
         badge.textContent = `${alg} ${data.version}`;
       }
 
-      // Update Hyperparameters
-      const hpEl = document.getElementById('modelHyperparams');
-      if (hpEl && data.hyperparameters) {
-        hpEl.textContent = Object.entries(data.hyperparameters).map(([k, v]) => `${k}=${v}`).join(', ');
+      // Update Structured Hyperparameters Grid
+      const hpGrid = document.getElementById('modelHyperparamsGrid');
+      if (hpGrid && data.hyperparameters) {
+        const hp = data.hyperparameters;
+        hpGrid.innerHTML = `
+          <div class="col-4">
+            <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+              <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">ESTIMATORS</span>
+              <strong class="mono-num text-primary" style="font-size:12px;">${hp.n_estimators || 100}</strong>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+              <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">LEARN RATE</span>
+              <strong class="mono-num text-primary" style="font-size:12px;">${hp.learning_rate || 0.08}</strong>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+              <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">MAX DEPTH</span>
+              <strong class="mono-num text-primary" style="font-size:12px;">${hp.max_depth || 3}</strong>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+              <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">SUBSAMPLE</span>
+              <strong class="mono-num text-primary" style="font-size:12px;">${hp.subsample || 0.85}</strong>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-1.5 text-center rounded border" style="background:var(--pc-subtle-bg);">
+              <span class="text-muted d-block" style="font-size:9.5px; font-weight:700;">RANDOM SEED</span>
+              <strong class="mono-num text-primary" style="font-size:12px;">${hp.random_state || 42} (Seeded)</strong>
+            </div>
+          </div>
+        `;
       }
 
-      // Complete 12 Feature Semantic Mapping (including is_operator_match)
+      // Complete 12 Feature Semantic Mapping with Institutional Domain Tags
       const featMap = {
-        'frequency_30d': { name: 'frequency_30d', desc: '30-day transaction frequency (Primary loyalty signal)', color: 'primary' },
-        'fatigue_score': { name: 'fatigue_score', desc: 'Suppresses over-notified users (Anti-churn penalty)', color: 'danger' },
-        'recency_days': { name: 'recency_days', desc: 'Days since last transaction (Inactivity detection)', color: 'primary' },
-        'is_category_match': { name: 'is_category_match', desc: 'Direct channel preference alignment', color: 'info' },
-        'offer_discount': { name: 'offer_discount', desc: 'Incentive monetary reward strength', color: 'secondary' },
-        'is_operator_match': { name: 'is_operator_match', desc: 'Telco SIM operator alignment (GP, Robi, BL, Airtel)', color: 'info' },
-        'recharge_ratio': { name: 'recharge_ratio', desc: 'Mobile reload share of activity', color: 'success' },
-        'monetary_avg': { name: 'monetary_avg', desc: 'Average ticket size in ৳ (Spending power)', color: 'secondary' },
-        'merchant_ratio': { name: 'merchant_ratio', desc: 'Retail & dining QR payments volume', color: 'secondary' },
-        'offer_min_amount': { name: 'offer_min_amount', desc: 'Spending threshold eligibility rule', color: 'secondary' },
-        'billpay_ratio': { name: 'billpay_ratio', desc: 'Utility bill payment frequency', color: 'secondary' },
-        'addmoney_ratio': { name: 'addmoney_ratio', desc: 'Inbound bank/card top-up propensity', color: 'secondary' }
+        'frequency_30d': { name: 'frequency_30d', desc: '30-day transaction frequency (Primary loyalty signal)', tag: 'RFM', barColor: 'linear-gradient(90deg, #4680FF, #2CA87F)' },
+        'fatigue_score': { name: 'fatigue_score', desc: 'Suppresses over-notified users (Anti-churn penalty)', tag: 'Retention', barColor: 'linear-gradient(90deg, #DC2626, #E58A00)' },
+        'recency_days': { name: 'recency_days', desc: 'Days since last transaction (Inactivity detection)', tag: 'RFM', barColor: 'linear-gradient(90deg, #4680FF, #00A6A6)' },
+        'is_category_match': { name: 'is_category_match', desc: 'Direct channel preference alignment', tag: 'Intent', barColor: '#00A6A6' },
+        'offer_discount': { name: 'offer_discount', desc: 'Incentive monetary reward strength', tag: 'Offer', barColor: '#7C3AED' },
+        'is_operator_match': { name: 'is_operator_match', desc: 'Telco SIM operator alignment (GP, Robi, BL, Airtel)', tag: 'Telco', barColor: '#00A6A6' },
+        'recharge_ratio': { name: 'recharge_ratio', desc: 'Mobile reload share of activity', tag: 'Channel', barColor: '#2CA87F' },
+        'monetary_avg': { name: 'monetary_avg', desc: 'Average ticket size in ৳ (Spending power)', tag: 'RFM', barColor: '#4680FF' },
+        'merchant_ratio': { name: 'merchant_ratio', desc: 'Retail & dining QR payments volume', tag: 'Channel', barColor: '#64748B' },
+        'offer_min_amount': { name: 'offer_min_amount', desc: 'Spending threshold eligibility rule', tag: 'Offer', barColor: '#64748B' },
+        'billpay_ratio': { name: 'billpay_ratio', desc: 'Utility bill payment frequency', tag: 'Channel', barColor: '#64748B' },
+        'addmoney_ratio': { name: 'addmoney_ratio', desc: 'Inbound bank/card top-up propensity', tag: 'Channel', barColor: '#64748B' }
       };
 
       const importances = data.feature_importances || {
@@ -5939,32 +6075,45 @@
         const maxVal = Math.max(...Object.values(importances), 0.25);
         let index = 1;
         for (const [key, val] of Object.entries(importances)) {
-          const meta = featMap[key] || { name: key, desc: 'Signal Feature', color: 'secondary' };
-          const pct = Math.round((val / maxVal) * 92);
+          const meta = featMap[key] || { name: key, desc: 'Signal Feature', tag: 'Signal', barColor: '#4680FF' };
+          const pct = Math.round((val / maxVal) * 94);
           const pctShare = (val * 100).toFixed(1);
-          const div = document.createElement('div');
-          div.className = 'p-1.5 px-2 rounded border bg-light mb-1.5';
-          div.style.background = 'var(--pc-subtle-bg)';
-          div.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <div class="d-flex align-items-center gap-1.5">
-                <span class="badge bg-secondary-subtle text-secondary border px-1.5 py-0.5" style="font-size:9.5px;">#${index}</span>
-                <code class="font-code fw-bold text-dark" style="font-size:11.5px;">${meta.name}</code>
-                <span class="text-muted d-none d-sm-inline" style="font-size:10.5px;">— ${meta.desc}</span>
-              </div>
-              <div class="text-end">
-                <strong class="mono-num text-${meta.color}" style="font-size:11.5px;">${pctShare}%</strong>
-                <span class="text-muted mono-num" style="font-size:10px;">(${val.toFixed(3)})</span>
+          const rankStr = index < 10 ? `0${index}` : `${index}`;
+
+          const row = document.createElement('div');
+          row.className = 'feature-weight-row d-flex align-items-center justify-content-between px-3 py-2 border-bottom';
+          row.style.transition = 'background-color 0.15s ease';
+          row.onmouseenter = () => row.style.background = 'var(--pc-subtle-bg)';
+          row.onmouseleave = () => row.style.background = 'transparent';
+
+          row.innerHTML = `
+            <div class="d-flex align-items-center gap-2" style="width: 230px; min-width: 0;">
+              <span class="mono-num text-muted" style="font-size: 11px; font-weight: 700; width: 18px;">${rankStr}</span>
+              <div class="text-truncate">
+                <div class="d-flex align-items-center gap-1.5">
+                  <span class="font-code fw-bold text-dark text-truncate" style="font-size: 11.5px;">${meta.name}</span>
+                  <span class="badge border" style="font-size: 9px; padding: 1px 4px; background: rgba(0,0,0,0.03); color: var(--pc-text-muted);">${meta.tag || 'Signal'}</span>
+                </div>
+                <div class="text-muted text-truncate" style="font-size: 10.5px;" title="${meta.desc}">${meta.desc}</div>
               </div>
             </div>
-            <div class="progress" style="height: 4px; background: rgba(0,0,0,0.06);">
-              <div class="progress-bar bg-${meta.color}" style="width: ${Math.max(4, pct)}%"></div>
+
+            <div class="flex-grow-1 px-3 d-none d-md-block">
+              <div style="height: 6px; background: rgba(0,0,0,0.06); border-radius: 99px; overflow: hidden;">
+                <div style="width: ${Math.max(3, pct)}%; height: 100%; border-radius: 99px; background: ${meta.barColor || 'linear-gradient(90deg, #4680FF, #2CA87F)'};"></div>
+              </div>
+            </div>
+
+            <div class="text-end" style="width: 85px;">
+              <div class="mono-num fw-bold text-dark" style="font-size: 12px;">${pctShare}%</div>
+              <div class="text-muted mono-num" style="font-size: 10px;">${val.toFixed(3)} Gini</div>
             </div>
           `;
-          container.appendChild(div);
+          container.appendChild(row);
           index++;
         }
       }
+    }
     }
 
     async function triggerModelRetrain() {
