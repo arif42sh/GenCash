@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, BigInteger, String, Numeric, DateTime, ForeignKey, Enum as SQLEnum
+from sqlalchemy import Column, BigInteger, String, Numeric, DateTime, ForeignKey, Boolean, Enum as SQLEnum, Text
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -28,8 +28,21 @@ class User(Base):
     phone = Column(String(20), unique=True, index=True, nullable=False)
     email = Column(String(150), nullable=True, index=True)
     password_hash = Column(String(255), nullable=False)
-    profile_image = Column(String(255), nullable=True)
+    profile_image = Column(Text, nullable=True)
     status = Column(String(20), default="ACTIVE", nullable=False)
+    nid_number = Column(String(30), nullable=True, index=True)
+    dob = Column(String(20), nullable=True)
+    kyc_status = Column(String(20), default="VERIFIED", nullable=False)
+    kyc_rejection_reason = Column(String(255), nullable=True)
+    kyc_verified_at = Column(DateTime, nullable=True)
+    failed_pin_attempts = Column(BigInteger, default=0, nullable=False)
+    is_agent = Column(Boolean, default=False, nullable=False)
+    outlet_name = Column(String(150), nullable=True)
+    agent_code = Column(String(30), nullable=True, index=True)
+    thana = Column(String(100), nullable=True)
+    district = Column(String(100), nullable=True)
+    commission_earned = Column(Numeric(15, 2), default=0.00, nullable=False)
+    minimum_float = Column(Numeric(15, 2), default=10000.00, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 

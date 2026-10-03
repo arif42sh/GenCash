@@ -5,7 +5,7 @@ import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
 
 export const SplashScreen = ({ navigation }) => {
-  const { user, isLoading } = useAuth();
+  const { user, token, isLoading } = useAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
 
@@ -25,7 +25,7 @@ export const SplashScreen = ({ navigation }) => {
   }, []);
 
   const handleContinue = () => {
-    if (user) {
+    if (user && token) {
       navigation.replace('Main');
     } else {
       navigation.replace('Login');

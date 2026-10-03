@@ -19,6 +19,7 @@ const SERVICES = [
     type: 'material',
     icon: 'receipt-text-outline',
     screen: 'MerchantPayment',
+    params: { mode: 'bill_pay' },
   },
   {
     id: 'bank_transfer',
@@ -43,6 +44,7 @@ const SERVICES = [
     type: 'ionicon',
     icon: 'bulb-outline',
     screen: 'MerchantPayment',
+    params: { mode: 'bill_pay' },
   },
   {
     id: 'movie',
@@ -51,6 +53,7 @@ const SERVICES = [
     type: 'material',
     icon: 'movie-open-outline',
     screen: 'MerchantPayment',
+    params: { mode: 'merchant' },
   },
   {
     id: 'merchant',
@@ -59,6 +62,7 @@ const SERVICES = [
     type: 'material',
     icon: 'storefront-outline',
     screen: 'MerchantPayment',
+    params: { mode: 'merchant' },
   },
 ];
 
@@ -74,7 +78,7 @@ export const ActionGrid = ({ onSelectAction }) => {
             key={item.id}
             activeOpacity={0.75}
             style={styles.tileItem}
-            onPress={() => onSelectAction && onSelectAction(item.screen)}
+            onPress={() => onSelectAction && onSelectAction(item.screen, item.params || {})}
           >
             <View style={styles.iconBox}>
               {item.type === 'material' ? (

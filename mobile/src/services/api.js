@@ -98,6 +98,16 @@ export const api = {
     return res.data;
   },
 
+  async updateProfile(updates) {
+    const res = await apiClient.put(ENDPOINTS.ME, updates);
+    return res.data;
+  },
+
+  async uploadAvatar(base64DataOrUri) {
+    const res = await apiClient.put(ENDPOINTS.ME, { avatar: base64DataOrUri });
+    return res.data;
+  },
+
   // Wallet
   async getWallet() {
     const res = await apiClient.get(ENDPOINTS.WALLET);
@@ -198,6 +208,23 @@ export const api = {
     return res.data;
   },
 
+  async getNextBestOffers() {
+    try {
+      const res = await apiClient.get(ENDPOINTS.AI_NBO);
+      return res.data;
+    } catch (e) {
+      console.warn('AI NBO fetch warning:', e);
+      return null;
+    }
+  },
+
+  async simulateCampaign(budget = 100000, audienceSize = 50000, discount = 79) {
+    const res = await apiClient.get(ENDPOINTS.AI_CAMPAIGN_SIMULATE, {
+      params: { budget, audience_size: audienceSize, discount_value: discount },
+    });
+    return res.data;
+  },
+
   // Notifications
   async getNotifications() {
     const res = await apiClient.get(ENDPOINTS.NOTIFICATIONS);
@@ -222,3 +249,6 @@ export const api = {
     }
   },
 };
+
+export default api;
+

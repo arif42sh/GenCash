@@ -107,13 +107,31 @@ npm run android
 | **Transactions** | `POST /api/transactions/payment` | Merchant QR and till payments |
 | **Transactions** | `POST /api/transactions/add-money` | Bank transfer / Card deposit simulation |
 | **Transactions** | `GET /api/transactions` | Full user transaction history with type filtering |
-| **AI Intelligence**| `GET /api/ai/recommendations` | Explainable AI insights, spending forecasts |
-| **AI Intelligence**| `POST /api/ai/feedback` | User feedback loop on recommendation |
+| **AI Intelligence**| `GET /api/ai/next-best-offers` | ML-driven Next-Best-Offer ranking with explainability (Track 04) |
+| **AI Intelligence**| `GET /api/ai/campaigns/simulate` | Uplift simulation & budget optimization engine |
+| **Admin** | `GET /simulator` | Interactive Web Dashboard for Campaign Simulation |
 | **Admin** | `GET /api/admin/dashboard` | Administrative overview of platform metrics |
 
 ---
 
-## 👥 Hackathon Team Notes
-- Phase 1 delivers complete core platform capabilities, transaction mechanics, and modular scaffolding.
-- Phase 2 will plug machine learning models directly into `backend/app/services/ai_service.py` to train dynamic recommendation algorithms on user and transaction datasets.
->>>>>>> d598cd1 (Initial commit: GenCash AI-Powered MFS platform with FastAPI backend and React Native mobile app)
+## 🧠 AI Track 04: Growth & Campaign Intelligence
+
+GenCash features an end-to-end Machine Learning pipeline tailored for MFS growth:
+1. **Synthetic Data Generator (`app/ml/synthetic_generator.py`)**:
+   - Generates realistic MFS personas (`STUDENT_YOUTH`, `URBAN_PRO`, `FAMILY_HEAD`, `DORMANT_AT_RISK`).
+   - Simulates 60-day transaction sequences and campaign engagement with offer fatigue penalties.
+2. **Next-Best-Offer & Uplift Engine (`app/ml/nbo_engine.py`)**:
+   - Trains a Gradient Boosting Propensity Classifier.
+   - Segments users into **Persuadables**, **Sure Things**, **Lost Causes**, and **Sleeping Dogs**.
+   - Ranks promotional offers and generates transparent, natural-language reasons in both **Bengali** and **English**.
+3. **Interactive Campaign Simulator (`/simulator`)**:
+   - Web-based simulator for campaign managers to optimize budget allocation and predict conversion uplift before broadcasting.
+
+---
+
+## 👥 Hackathon Submission Checklist
+- [x] Full-Stack MFS Engine (FastAPI + MySQL + React Native / Expo)
+- [x] Explainable AI / ML Next-Best-Offer with Bengali XAI
+- [x] Campaign Uplift Simulator Web Portal
+- [x] Seamless Dual-Language Support (বাংলা / English)
+- [x] Complete REST API Suite with JWT Authentication

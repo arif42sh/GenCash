@@ -59,12 +59,16 @@ export const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     const loadStoredPreferences = async () => {
       try {
-        const storedAvatar = await storage.getItem('@gencash_avatar_uri');
-        if (storedAvatar) {
-          setProfileImage(storedAvatar);
-        } else if (user?.avatar) {
+        if (user?.avatar) {
           setProfileImage(user.avatar);
+        } else if (user?.profile_image) {
+          setProfileImage(user.profile_image);
+        } else if (storedAvatar) {
+          setProfileImage(storedAvatar);
         }
+
+        if (user?.name) setEditName(user.name);
+        if (user?.email) setEditEmail(user.email);
 
         const storedBio = await storage.getItem('@gencash_biometric');
         if (storedBio !== null) setBiometricEnabled(storedBio === 'true');
@@ -112,13 +116,21 @@ export const ProfileScreen = ({ navigation }) => {
       const result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.85,
+        quality: 0.7,
+        base64: true,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        const imageUri = result.assets[0].uri;
-        setProfileImage(imageUri);
-        await updateUser({ avatar: imageUri });
+        const asset = result.assets[0];
+        const imagePayload = asset.base64
+          ? `data:image/jpeg;base64,${asset.base64}`
+          : asset.uri;
+
+        setProfileImage(asset.uri);
+        const updated = await updateUser({ avatar: imagePayload });
+        if (updated?.avatar) {
+          setProfileImage(updated.avatar);
+        }
         setActiveModal(null);
         Alert.alert(
           isBangla ? 'সফল' : 'Success',
@@ -154,13 +166,21 @@ export const ProfileScreen = ({ navigation }) => {
         mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.85,
+        quality: 0.7,
+        base64: true,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        const imageUri = result.assets[0].uri;
-        setProfileImage(imageUri);
-        await updateUser({ avatar: imageUri });
+        const asset = result.assets[0];
+        const imagePayload = asset.base64
+          ? `data:image/jpeg;base64,${asset.base64}`
+          : asset.uri;
+
+        setProfileImage(asset.uri);
+        const updated = await updateUser({ avatar: imagePayload });
+        if (updated?.avatar) {
+          setProfileImage(updated.avatar);
+        }
         setActiveModal(null);
         Alert.alert(
           isBangla ? 'সফল' : 'Success',
@@ -180,7 +200,7 @@ export const ProfileScreen = ({ navigation }) => {
 
   const handleRemovePhoto = async () => {
     setProfileImage(null);
-    await updateUser({ avatar: null });
+    await updateUser({ avatar: "" });
     setActiveModal(null);
     Alert.alert(
       isBangla ? 'ছবি রিমুভড' : 'Photo Removed',

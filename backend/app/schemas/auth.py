@@ -26,6 +26,7 @@ class UserResponse(BaseModel):
     phone: str
     email: Optional[str] = None
     profile_image: Optional[str] = None
+    avatar: Optional[str] = None
     status: str
     created_at: datetime
     updated_at: datetime
@@ -33,11 +34,20 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+    @classmethod
+    def model_validate(cls, obj, *args, **kwargs):
+        res = super().model_validate(obj, *args, **kwargs)
+        if not res.avatar and res.profile_image:
+            res.avatar = res.profile_image
+        return res
+
 
 class UserUpdateRequest(BaseModel):
     name: Optional[str] = None
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     profile_image: Optional[str] = None
+    avatar: Optional[str] = None
+    phone: Optional[str] = None
 
 
 class TokenResponse(BaseModel):

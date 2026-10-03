@@ -59,8 +59,8 @@ export const HomeScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
-  const handleActionSelect = (screenName) => {
-    navigation.navigate(screenName);
+  const handleActionSelect = (screenName, params = {}) => {
+    navigation.navigate(screenName, params);
   };
 
   const handleQuickSend = (contact) => {
@@ -99,7 +99,7 @@ export const HomeScreen = ({ navigation }) => {
         {/* Top Header: Pattern & utilities scroll naturally inside ScrollView */}
         <AppHeader
           userName={userName}
-          userAvatar={user?.avatar || null}
+          userAvatar={user?.avatar || user?.profile_image || null}
           unreadNotifCount={unreadNotifCount}
           onOpenProfile={() => navigation.navigate('Profile')}
           onOpenNotif={() => navigation.navigate('Notifications')}

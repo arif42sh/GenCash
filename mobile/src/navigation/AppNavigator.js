@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   Platform,
   BackHandler,
   Modal,
@@ -38,6 +37,7 @@ export const AppNavigator = () => {
   const [screenStack, setScreenStack] = useState(['Splash']);
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [screenParams, setScreenParams] = useState({});
 
   const switchTab = (tabName) => {
     setActiveTab(tabName);
@@ -47,7 +47,8 @@ export const AppNavigator = () => {
     }
   };
 
-  const navigate = (screenName) => {
+  const navigate = (screenName, params = {}) => {
+    setScreenParams(params || {});
     // If navigating to one of the bottom tabs, switch to that tab within Main
     if (screenName === 'Home') {
       switchTab('Home');
@@ -58,7 +59,7 @@ export const AppNavigator = () => {
       return;
     }
     if (screenName === 'AIHub' || screenName === 'AI') {
-      setShowAIModal(true);
+      switchTab('AIHub');
       return;
     }
     if (screenName === 'Profile') {
@@ -70,7 +71,8 @@ export const AppNavigator = () => {
     setCurrentScreen(screenName);
   };
 
-  const replace = (screenName) => {
+  const replace = (screenName, params = {}) => {
+    setScreenParams(params || {});
     if (screenName === 'Home' || screenName === 'Main') {
       switchTab('Home');
       return;
@@ -80,7 +82,7 @@ export const AppNavigator = () => {
       return;
     }
     if (screenName === 'AIHub' || screenName === 'AI') {
-      setShowAIModal(true);
+      switchTab('AIHub');
       return;
     }
     if (screenName === 'Profile') {
@@ -166,25 +168,25 @@ export const AppNavigator = () => {
       case 'Splash':
         return <SplashScreen navigation={navigationProp} />;
       case 'Login':
-        return <LoginScreen navigation={navigationProp} />;
+        return <LoginScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'Register':
-        return <RegisterScreen navigation={navigationProp} />;
+        return <RegisterScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'SendMoney':
-        return <SendMoneyScreen navigation={navigationProp} />;
+        return <SendMoneyScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'MobileRecharge':
-        return <MobileRechargeScreen navigation={navigationProp} />;
+        return <MobileRechargeScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'CashOut':
-        return <CashOutScreen navigation={navigationProp} />;
+        return <CashOutScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'AddMoney':
-        return <AddMoneyScreen navigation={navigationProp} />;
+        return <AddMoneyScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'MerchantPayment':
-        return <MerchantPaymentScreen navigation={navigationProp} />;
+        return <MerchantPaymentScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'Notifications':
-        return <NotificationsScreen navigation={navigationProp} />;
+        return <NotificationsScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'Settings':
-        return <SettingsScreen navigation={navigationProp} />;
+        return <SettingsScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'Support':
-        return <SupportScreen navigation={navigationProp} />;
+        return <SupportScreen navigation={navigationProp} route={{ params: screenParams }} />;
       case 'Main':
       default:
         return (
@@ -233,17 +235,17 @@ export const AppNavigator = () => {
                   <Text style={styles.centerQrText}>QR Scanner</Text>
                 </TouchableOpacity>
 
-                {/* 4. AI Hub (Coming Soon Preview Modal) */}
+                {/* 4. AI Hub */}
                 <TouchableOpacity
                   style={styles.tabItem}
-                  onPress={() => setShowAIModal(true)}
+                  onPress={() => switchTab('AIHub')}
                   activeOpacity={0.7}
                   hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                 >
                   <Ionicons
-                    name="sparkles-outline"
+                    name={activeTab === 'AIHub' ? "sparkles" : "sparkles-outline"}
                     size={26}
-                    color="#64748B"
+                    color={activeTab === 'AIHub' ? "#34D399" : "#64748B"}
                   />
                 </TouchableOpacity>
 
@@ -308,7 +310,7 @@ export const AppNavigator = () => {
     }
   };
 
-  return <SafeAreaView style={styles.safeArea}>{renderCurrentScreen()}</SafeAreaView>;
+  return <View style={styles.safeArea}>{renderCurrentScreen()}</View>;
 };
 
 const styles = StyleSheet.create({

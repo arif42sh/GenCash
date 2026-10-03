@@ -19,14 +19,22 @@ import { CustomButton } from '../components/CustomButton';
 import { ConfirmationSheet } from '../components/ConfirmationSheet';
 import { SuccessModal } from '../components/SuccessModal';
 
-const CATEGORIES = ['All', 'Grocery', 'Food & Dining', 'Electronics', 'Fashion'];
+const PAYMENT_MODES = [
+  { id: 'merchant', labelBn: 'মার্চেন্ট পেমেন্ট', labelEn: 'Merchant Pay', icon: 'cart-outline' },
+  { id: 'bill_pay', labelBn: 'ইউটিলিটি ও বিল পে', labelEn: 'Utility Bill Pay', icon: 'receipt-outline' },
+];
 
-const MERCHANTS_DIRECTORY = [
+const RETAIL_CATEGORIES = ['All', 'Grocery', 'Food & Dining', 'Electronics', 'Fashion'];
+const BILL_CATEGORIES = ['All', 'Electricity', 'Water', 'Gas', 'Internet'];
+
+const DIRECTORY_ITEMS = [
+  // Merchant Outlets
   {
     id: 1,
     name: 'Shwapno Superstore',
     phone: '01700100001',
     category: 'Grocery',
+    type: 'merchant',
     icon: 'cart-outline',
     color: '#059669',
     branches: '400+ Outlets nationwide',
@@ -36,6 +44,7 @@ const MERCHANTS_DIRECTORY = [
     name: 'Daily Shopping',
     phone: '01700100002',
     category: 'Grocery',
+    type: 'merchant',
     icon: 'basket-outline',
     color: '#0D9488',
     branches: 'PRAN-RFL Group Outlet',
@@ -45,6 +54,7 @@ const MERCHANTS_DIRECTORY = [
     name: 'Chillox Burger Hub',
     phone: '01700100003',
     category: 'Food & Dining',
+    type: 'merchant',
     icon: 'fast-food-outline',
     color: '#F59E0B',
     branches: 'Dhanmondi, Banani, Uttara',
@@ -54,6 +64,7 @@ const MERCHANTS_DIRECTORY = [
     name: 'Star Tech & Engineering',
     phone: '01700100004',
     category: 'Electronics',
+    type: 'merchant',
     icon: 'laptop-outline',
     color: '#3B82F6',
     branches: 'Official Tech Mega Store',
@@ -63,6 +74,7 @@ const MERCHANTS_DIRECTORY = [
     name: 'Yellow Fashion Hub',
     phone: '01700100005',
     category: 'Fashion',
+    type: 'merchant',
     icon: 'shirt-outline',
     color: '#EC4899',
     branches: 'BEXIMCO Lifestyle Store',
@@ -72,20 +84,90 @@ const MERCHANTS_DIRECTORY = [
     name: 'Ryans Computers',
     phone: '01700100006',
     category: 'Electronics',
+    type: 'merchant',
     icon: 'hardware-chip-outline',
     color: '#6366F1',
     branches: 'IDB Bhaban, Multiplan Center',
   },
+  // Utility & Bill Pay Biller Organizations
+  {
+    id: 7,
+    name: 'DESCO (Electricity Prepaid & Postpaid)',
+    phone: '01700200001',
+    category: 'Electricity',
+    type: 'bill_pay',
+    icon: 'bulb-outline',
+    color: '#10B981',
+    branches: 'Dhaka Electric Supply Co. Ltd',
+  },
+  {
+    id: 8,
+    name: 'DPDC (Dhaka Power Distribution)',
+    phone: '01700200002',
+    category: 'Electricity',
+    type: 'bill_pay',
+    icon: 'flash-outline',
+    color: '#F59E0B',
+    branches: 'Dhaka Power Distribution Co.',
+  },
+  {
+    id: 9,
+    name: 'Polli Bidyut (BREB)',
+    phone: '01700200003',
+    category: 'Electricity',
+    type: 'bill_pay',
+    icon: 'flash-outline',
+    color: '#059669',
+    branches: 'Bangladesh Rural Electrification Board',
+  },
+  {
+    id: 10,
+    name: 'Dhaka WASA (Water Supply)',
+    phone: '01700200004',
+    category: 'Water',
+    type: 'bill_pay',
+    icon: 'water-outline',
+    color: '#0284C7',
+    branches: 'Dhaka Water Supply & Sewerage Authority',
+  },
+  {
+    id: 11,
+    name: 'Titas Gas Transmission',
+    phone: '01700200005',
+    category: 'Gas',
+    type: 'bill_pay',
+    icon: 'flame-outline',
+    color: '#EA580C',
+    branches: 'Prepaid & Metered Gas Bill',
+  },
+  {
+    id: 12,
+    name: 'Carnival Internet Broadband',
+    phone: '01700200006',
+    category: 'Internet',
+    type: 'bill_pay',
+    icon: 'wifi-outline',
+    color: '#8B5CF6',
+    branches: 'High-speed Fiber Broadband Bill',
+  },
 ];
 
-export const MerchantPaymentScreen = ({ navigation }) => {
+export const MerchantPaymentScreen = ({ navigation, route }) => {
   const { wallet, refreshWallet } = useAuth();
   const { isBangla } = useLanguage();
+  
+  const initialMode = route?.params?.mode === 'bill_pay' ? 'bill_pay' : 'merchant';
+  const [activeMode, setActiveMode] = useState(initialMode);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [merchantPhone, setMerchantPhone] = useState('01700100001');
-  const [selectedMerchant, setSelectedMerchant] = useState(MERCHANTS_DIRECTORY[0]);
-  const [amount, setAmount] = useState('350');
-  const [note, setNote] = useState('Shopping Bill');
+  
+  // Set default selected item based on mode or params
+  const defaultItem = DIRECTORY_ITEMS.find((d) => d.type === initialMode) || DIRECTORY_ITEMS[0];
+  const [merchantPhone, setMerchantPhone] = useState(route?.params?.phone || defaultItem.phone);
+  const [selectedMerchant, setSelectedMerchant] = useState(defaultItem);
+  const [amount, setAmount] = useState(route?.params?.amount || '350');
+  const [note, setNote] = useState(
+    initialMode === 'bill_pay' ? 'Utility Bill Payment' : 'Shopping Bill'
+  );
   const [pin, setPin] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -93,20 +175,36 @@ export const MerchantPaymentScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const filteredMerchants = MERCHANTS_DIRECTORY.filter((m) => {
+  const currentCategories = activeMode === 'bill_pay' ? BILL_CATEGORIES : RETAIL_CATEGORIES;
+
+  const filteredMerchants = DIRECTORY_ITEMS.filter((m) => {
+    if (m.type !== activeMode) return false;
     if (selectedCategory === 'All') return true;
     return m.category === selectedCategory;
   });
 
+  const handleSwitchMode = (mode) => {
+    setActiveMode(mode);
+    setSelectedCategory('All');
+    const firstOfMode = DIRECTORY_ITEMS.find((d) => d.type === mode) || DIRECTORY_ITEMS[0];
+    setSelectedMerchant(firstOfMode);
+    setMerchantPhone(firstOfMode.phone);
+    setNote(mode === 'bill_pay' ? `${firstOfMode.name} বিল পরিশোধ` : `${firstOfMode.name}-এ কেনাকাটা`);
+  };
+
   const handleSelectMerchant = (m) => {
     setSelectedMerchant(m);
     setMerchantPhone(m.phone);
-    setNote(isBangla ? `${m.name}-এ কেনাকাটা` : `Shopping at ${m.name}`);
+    setNote(isBangla ? `${m.name}-এ পেমেন্ট` : `Payment for ${m.name}`);
   };
 
   const handleProceed = () => {
     if (!merchantPhone.trim()) {
-      setErrorMessage(isBangla ? 'মার্চেন্ট নম্বর বা শপ নির্বাচন করুন।' : 'Please enter merchant number or select a merchant store.');
+      setErrorMessage(
+        activeMode === 'bill_pay'
+          ? (isBangla ? 'বিল অ্যাকাউন্ট বা প্রতিষ্ঠান নির্বাচন করুন।' : 'Please enter bill account or select biller.')
+          : (isBangla ? 'মার্চেন্ট নম্বর বা শপ নির্বাচন করুন।' : 'Please enter merchant number or select a merchant store.')
+      );
       return;
     }
     const numAmount = parseFloat(amount);
@@ -156,23 +254,81 @@ export const MerchantPaymentScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={20} color="#0F4D3C" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{isBangla ? 'মার্চেন্ট পেমেন্ট' : 'Merchant Payment'}</Text>
+        <Text style={styles.headerTitle}>
+          {activeMode === 'bill_pay'
+            ? (isBangla ? 'বিল পে ও ইউটিলিটি' : 'Utility Bill Pay')
+            : (isBangla ? 'পেমেন্ট' : 'Make Payment')}
+        </Text>
         <View style={{ width: 40 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        {/* Mode Switch Tabs */}
+        <View style={styles.modeSwitchContainer}>
+          <TouchableOpacity
+            style={[styles.modeSwitchBtn, activeMode === 'merchant' && styles.modeSwitchBtnActive]}
+            onPress={() => handleSwitchMode('merchant')}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="cart-outline"
+              size={16}
+              color={activeMode === 'merchant' ? '#FFFFFF' : '#0F4D3C'}
+              style={{ marginRight: 6 }}
+            />
+            <Text style={[styles.modeSwitchText, activeMode === 'merchant' && styles.modeSwitchTextActive]}>
+              {isBangla ? 'মার্চেন্ট পেমেন্ট' : 'Merchant Pay'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.modeSwitchBtn, activeMode === 'bill_pay' && styles.modeSwitchBtnActive]}
+            onPress={() => handleSwitchMode('bill_pay')}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="receipt-outline"
+              size={16}
+              color={activeMode === 'bill_pay' ? '#FFFFFF' : '#0F4D3C'}
+              style={{ marginRight: 6 }}
+            />
+            <Text style={[styles.modeSwitchText, activeMode === 'bill_pay' && styles.modeSwitchTextActive]}>
+              {isBangla ? 'ইউটিলিটি ও বিল পে' : 'Utility Bill Pay'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* QR Scan Action Bar */}
         <TouchableOpacity
           style={styles.qrScanBanner}
           activeOpacity={0.8}
-          onPress={() => Alert.alert(isBangla ? 'QR স্ক্যান' : 'Scan QR', isBangla ? 'কাউন্টার QR কোডের দিকে ক্যামেরা তাক করুন।' : 'Point camera at merchant counter QR code.')}
+          onPress={() =>
+            Alert.alert(
+              isBangla ? 'QR ও বারকোড স্ক্যান' : 'Scan QR & Barcode',
+              activeMode === 'bill_pay'
+                ? (isBangla ? 'বিল স্লিপ বা মিটার কাগজের বারকোডে ক্যামেরা তাক করুন।' : 'Point camera at utility bill voucher barcode.')
+                : (isBangla ? 'কাউন্টার QR কোডের দিকে ক্যামেরা তাক করুন।' : 'Point camera at merchant counter QR code.')
+            )
+          }
         >
           <View style={styles.qrIconWrap}>
-            <Ionicons name="qr-code-outline" size={24} color="#0F4D3C" />
+            <Ionicons
+              name={activeMode === 'bill_pay' ? 'barcode-outline' : 'qr-code-outline'}
+              size={24}
+              color="#0F4D3C"
+            />
           </View>
           <View style={{ flex: 1, marginLeft: 12 }}>
-            <Text style={styles.qrBannerTitle}>{isBangla ? 'মার্চেন্ট কাউন্টার QR স্ক্যান করুন' : 'Scan Merchant Counter QR'}</Text>
-            <Text style={styles.qrBannerSub}>{isBangla ? 'স্বয়ংক্রিয়ভাবে মার্চেন্ট নম্বর ও তথ্য বসবে' : 'Auto-fills merchant name and Till ID instantly'}</Text>
+            <Text style={styles.qrBannerTitle}>
+              {activeMode === 'bill_pay'
+                ? (isBangla ? 'বিল স্লিপ বা মিটার বারকোড স্ক্যান করুন' : 'Scan Utility Bill Barcode')
+                : (isBangla ? 'মার্চেন্ট কাউন্টার QR স্ক্যান করুন' : 'Scan Merchant Counter QR')}
+            </Text>
+            <Text style={styles.qrBannerSub}>
+              {activeMode === 'bill_pay'
+                ? (isBangla ? 'স্বয়ংক্রিয়ভাবে বিল রেফারেন্স ও ফি বসবে' : 'Auto-fills account and bill amount')
+                : (isBangla ? 'স্বয়ংক্রিয়ভাবে মার্চেন্ট নম্বর ও তথ্য বসবে' : 'Auto-fills merchant name and Till ID')}
+            </Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color="#0F4D3C" />
         </TouchableOpacity>
@@ -184,13 +340,17 @@ export const MerchantPaymentScreen = ({ navigation }) => {
           </View>
         ) : null}
 
-        {/* Merchant Directory Section */}
+        {/* Directory Section */}
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>{isBangla ? 'জনপ্রিয় মার্চেন্ট আউটলেট' : 'Merchant Directory'}</Text>
+          <Text style={styles.sectionTitle}>
+            {activeMode === 'bill_pay'
+              ? (isBangla ? 'জনপ্রিয় ইউটিলিটি ও বিলার প্রতিষ্ঠান' : 'Utility & Biller Organizations')
+              : (isBangla ? 'জনপ্রিয় মার্চেন্ট আউটলেট' : 'Merchant Outlets')}
+          </Text>
           
           {/* Category Chips */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.catScroll}>
-            {CATEGORIES.map((cat) => (
+            {currentCategories.map((cat) => (
               <TouchableOpacity
                 key={cat}
                 style={[
@@ -211,7 +371,7 @@ export const MerchantPaymentScreen = ({ navigation }) => {
             ))}
           </ScrollView>
 
-          {/* Merchants List */}
+          {/* Directory List */}
           <View style={styles.merchantGrid}>
             {filteredMerchants.map((m) => {
               const isSelected = selectedMerchant?.id === m.id;
@@ -244,20 +404,28 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 
           {/* Payment Input Section */}
           <CustomInput
-            label={isBangla ? 'মার্চেন্ট / কাউন্টার নম্বর *' : 'Merchant / Till Number *'}
+            label={
+              activeMode === 'bill_pay'
+                ? (isBangla ? 'বিল অ্যাকাউন্ট / মিটার নম্বর *' : 'Bill Account / Meter No. *')
+                : (isBangla ? 'মার্চেন্ট / কাউন্টার নম্বর *' : 'Merchant / Till Number *')
+            }
             value={merchantPhone}
             onChangeText={(txt) => {
               setMerchantPhone(txt);
               setSelectedMerchant(null);
             }}
             placeholder="01XXXXXXXXX"
-            icon="storefront-outline"
+            icon={activeMode === 'bill_pay' ? 'receipt-outline' : 'storefront-outline'}
             keyboardType="phone-pad"
             maxLength={11}
           />
 
           <CustomInput
-            label={isBangla ? 'বিল পরিশোধ পরিমাণ (টাকা) *' : 'Bill Payment Amount (BDT) *'}
+            label={
+              activeMode === 'bill_pay'
+                ? (isBangla ? 'বিল পরিশোধ পরিমাণ (টাকা) *' : 'Bill Amount (BDT) *')
+                : (isBangla ? 'পেমেন্ট পরিমাণ (টাকা) *' : 'Payment Amount (BDT) *')
+            }
             value={amount}
             onChangeText={setAmount}
             placeholder="0.00"
@@ -270,12 +438,16 @@ export const MerchantPaymentScreen = ({ navigation }) => {
             label={isBangla ? 'রেফারেন্স / নোট (ঐচ্ছিক)' : 'Reference / Note (Optional)'}
             value={note}
             onChangeText={setNote}
-            placeholder={isBangla ? 'উদা: মার্চেন্ট কেনাকাটা' : 'e.g. Grocery payment'}
+            placeholder={activeMode === 'bill_pay' ? 'e.g. October Electricity Bill' : 'e.g. Grocery payment'}
             icon="document-text-outline"
           />
 
           <CustomButton
-            title={isBangla ? `৳${amount || 0} পরিশোধ করতে এগিয়ে যান` : `Proceed to Pay ৳${amount || 0}`}
+            title={
+              activeMode === 'bill_pay'
+                ? (isBangla ? `৳${amount || 0} বিল পরিশোধ করুন` : `Pay Bill ৳${amount || 0}`)
+                : (isBangla ? `৳${amount || 0} পরিশোধ করতে এগিয়ে যান` : `Proceed to Pay ৳${amount || 0}`)
+            }
             onPress={handleProceed}
             iconRight="arrow-forward"
             style={{ marginTop: 14 }}
@@ -285,8 +457,16 @@ export const MerchantPaymentScreen = ({ navigation }) => {
 
       <ConfirmationSheet
         visible={showConfirm}
-        title={isBangla ? 'মার্চেন্ট পেমেন্ট নিশ্চিত করুন' : 'Confirm Merchant Payment'}
-        recipientLabel={isBangla ? 'মার্চেন্ট আউটলেট' : 'Merchant Store'}
+        title={
+          activeMode === 'bill_pay'
+            ? (isBangla ? 'বিল পরিশোধ নিশ্চিত করুন' : 'Confirm Bill Payment')
+            : (isBangla ? 'পেমেন্ট নিশ্চিত করুন' : 'Confirm Payment')
+        }
+        recipientLabel={
+          activeMode === 'bill_pay'
+            ? (isBangla ? 'বিলার প্রতিষ্ঠান' : 'Biller Organization')
+            : (isBangla ? 'মার্চেন্ট আউটলেট' : 'Merchant Store')
+        }
         recipientValue={selectedMerchant?.name || merchantPhone}
         amount={amount || 0}
         fee={0}
@@ -341,6 +521,38 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: '#0F4D3C',
     fontSize: 18,
+    fontWeight: '800',
+  },
+  modeSwitchContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#E2EFE9',
+    borderRadius: 16,
+    padding: 4,
+    marginBottom: 14,
+  },
+  modeSwitchBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderRadius: 12,
+  },
+  modeSwitchBtnActive: {
+    backgroundColor: '#0F4D3C',
+    shadowColor: '#0F4D3C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  modeSwitchText: {
+    color: '#0F4D3C',
+    fontSize: 12.5,
+    fontWeight: '700',
+  },
+  modeSwitchTextActive: {
+    color: '#FFFFFF',
     fontWeight: '800',
   },
   scrollContent: {

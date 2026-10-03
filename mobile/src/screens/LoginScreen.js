@@ -15,6 +15,7 @@ import { DEMO_ACCOUNTS } from '../constants/config';
 import { CustomInput } from '../components/CustomInput';
 import { CustomButton } from '../components/CustomButton';
 import { useAuth } from '../context/AuthContext';
+import { ServerConfigModal } from '../components/ServerConfigModal';
 
 export const LoginScreen = ({ navigation }) => {
   const { login } = useAuth();
@@ -22,6 +23,7 @@ export const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('123456');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showServerModal, setShowServerModal] = useState(false);
 
   const handleLogin = async () => {
     if (!phone || !password) {
@@ -55,6 +57,18 @@ export const LoginScreen = ({ navigation }) => {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Top Header with Server Config */}
+        <View style={styles.topBar}>
+          <TouchableOpacity
+            style={styles.serverBtn}
+            onPress={() => setShowServerModal(true)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="server-outline" size={15} color={colors.textSecondary} />
+            <Text style={styles.serverBtnText}>Server IP</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Top Branding */}
         <View style={styles.header}>
           <View style={styles.iconCircle}>
@@ -159,6 +173,12 @@ export const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Server Config Modal */}
+      <ServerConfigModal
+        visible={showServerModal}
+        onClose={() => setShowServerModal(false)}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -171,6 +191,28 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 20,
     paddingTop: 40,
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 8,
+  },
+  serverBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: colors.surface,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+    alignSelf: 'flex-end',
+  },
+  serverBtnText: {
+    color: colors.textSecondary,
+    fontSize: 11,
+    fontWeight: '600',
   },
   header: {
     alignItems: 'center',

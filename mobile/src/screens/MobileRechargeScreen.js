@@ -8,10 +8,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { MOBILE_OPERATORS } from '../constants/config';
+import { OPERATOR_LOGOS } from '../assets/operatorLogos';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
@@ -170,7 +172,17 @@ export const MobileRechargeScreen = ({ navigation }) => {
                 activeOpacity={0.8}
                 onPress={() => setSelectedOperator(op)}
               >
-                <View style={[styles.operatorDot, { backgroundColor: op.color }]} />
+                <View style={styles.operatorLogoContainer}>
+                  {OPERATOR_LOGOS[op.id] ? (
+                    <Image
+                      source={OPERATOR_LOGOS[op.id]}
+                      style={styles.operatorLogo}
+                      resizeMode="contain"
+                    />
+                  ) : (
+                    <View style={[styles.operatorDot, { backgroundColor: op.color }]} />
+                  )}
+                </View>
                 <Text style={styles.operatorName}>{op.name}</Text>
                 <Text style={styles.operatorCode}>{op.code}</Text>
               </TouchableOpacity>
@@ -428,6 +440,26 @@ const styles = StyleSheet.create({
   operatorCardActive: {
     borderColor: '#0F4D3C',
     backgroundColor: '#EDF7F4',
+  },
+  operatorLogoContainer: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: '#DFEFE8',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  operatorLogo: {
+    width: 26,
+    height: 26,
   },
   operatorDot: {
     width: 10,

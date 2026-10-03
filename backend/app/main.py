@@ -61,6 +61,33 @@ app.include_router(notifications.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
 
 
+import os
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+# Mount static folder if exists
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/admin", include_in_schema=False)
+def serve_admin_portal():
+    """GenCash Platform Admin & Growth Intelligence Command Center"""
+    html_path = os.path.join(static_dir, "admin.html")
+    if os.path.exists(html_path):
+        return FileResponse(html_path)
+    return FileResponse(os.path.join(static_dir, "campaign_simulator.html"))
+
+
+@app.get("/simulator", include_in_schema=False)
+def serve_campaign_simulator():
+    """Admin Growth & Campaign Intelligence Simulator (Track 04)"""
+    html_path = os.path.join(static_dir, "campaign_simulator.html")
+    if os.path.exists(html_path):
+        return FileResponse(html_path)
+    return {"error": "Simulator dashboard not found"}
+
+
 @app.get("/")
 def root():
     return {
@@ -68,6 +95,9 @@ def root():
         "version": settings.VERSION,
         "status": "online",
         "docs": "/docs",
+        "admin": "/admin",
+        "simulator": "/simulator",
         "event": "AI Hackathon 2026 — DIU CPC × upay",
         "architecture": "INPUT -> INTELLIGENCE -> ACTION"
     }
+

@@ -124,3 +124,60 @@ class AIService:
             "action_taken": request.action_taken,
             "timestamp": datetime.utcnow().isoformat()
         }
+
+    @staticmethod
+    def get_user_next_best_offers(db: Session, user_id: int) -> Dict[str, Any]:
+        """
+        Track 04 Next-Best-Offer Engine:
+        Extracts user RFM and category propensities from DB transactions,
+        predicts conversion probabilities, applies Uplift Modeling,
+        and generates explainable attribution in Bengali & English.
+        """
+        from app.ml.nbo_engine import nbo_engine
+
+        # Fetch user's recent transactions
+        recent_txns = (
+            db.query(Transaction)
+            .filter(Transaction.sender_id == user_id)
+            .order_by(Transaction.created_at.desc())
+            .limit(30)
+            .all()
+        )
+
+        txn_dicts = []
+        for t in recent_txns:
+            txn_dicts.append({
+                "amount": float(t.amount),
+                "category": t.transaction_type,
+                "created_at": t.created_at
+            })
+
+        user_features = nbo_engine.compute_user_features(
+            user_balance=2500.0,
+            txns=txn_dicts if txn_dicts else None
+        )
+
+        ranked = nbo_engine.predict_next_best_offers(user_features)
+        top_offer = ranked[0] if ranked else None
+
+        return {
+            "user_id": user_id,
+            "user_features": user_features,
+            "top_recommended_offer": top_offer,
+            "ranked_offers": ranked,
+            "generated_at": datetime.utcnow().isoformat(),
+        }
+
+    @staticmethod
+    def simulate_campaign(
+        budget: float = 100000.0,
+        audience_size: int = 50000,
+        discount_value: float = 79.0
+    ) -> Dict[str, Any]:
+        """Track 04 Admin Campaign Simulator: Uplift & Budget ROI Analytics."""
+        from app.ml.nbo_engine import nbo_engine
+        return nbo_engine.simulate_campaign(
+            campaign_budget=budget,
+            target_audience_size=audience_size,
+            offer_discount=discount_value
+        )

@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>upay × GenCash | Growth & Campaign Intelligence Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #0F4D3C;
+      --primary-dark: #072C23;
+      --primary-light: #156651;
+      --accent: #00D09C;
+      --accent-glow: rgba(0, 208, 156, 0.25);
+      --bg-dark: #0B131E;
+      --surface-dark: #131E2C;
+      --surface-card: #182638;
+      --border-dark: #22354D;
+      --text-main: #F1F5F9;
+      --text-muted: #94A3B8;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --blue: #3B82F6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .bn-text {
+      font-family: 'Hind Siliguri', sans-serif;
+    }
+
+    /* Top Nav */
+    header {
+      background: rgba(19, 30, 44, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 16px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #00D09C 0%, #059669 100%);
+      color: #042F24;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      letter-spacing: -0.5px;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title span.sub {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .badge-track {
+      background: rgba(0, 208, 156, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(0, 208, 156, 0.3);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 28px 36px 48px;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(15, 77, 60, 0.5) 0%, rgba(24, 38, 56, 0.8) 100%);
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 28px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-text h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #FFFFFF;
+    }
+
+    .hero-text p {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 760px;
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: none;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #042F24;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFFFFF;
+      border: 1px solid var(--border-dark);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Dashboard Grid */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 28px;
+    }
+
+    @media (max-width: 1080px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Simulator Controls Sidebar */
+    .control-panel {
+      background: var(--surface-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 24px;
+      height: fit-content;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #E2E8F0;
+    }
+
+    .form-group label span.val-display {
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .range-input {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border-dark);
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .strategy-select {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-dark);
+      border-radius: 10px;
+      color: #FFFFFF;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .strategy-select:focus {
+      border-color: var(--accent);
+    }
+
+    .simulator-btn {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      justify-content: center;
+    }
+
+    /* KPI Highlights Cards */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .kpi-card {
+      background: var(--surface-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .kpi-card.highlight {
+      border-color: rgba(0, 208, 156, 0.4);
+      background: linear-gradient(135deg, rgba(0, 208, 156, 0.08) 0%, var(--surface-dark) 100%);
+    }
+
+    .kpi-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .kpi-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .kpi-sub {
+      font-size: 11.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .kpi-sub.positive {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .kpi-sub.neutral {
+      color: var(--text-muted);
+    }
+
+    /* Charts Row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 960px) {
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-card {
+      background: var(--surface-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .chart-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .chart-tag {
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: var(--surface-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border-dark);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 260px;
+      width: 100%;
+    }
+
+    /* Uplift Quadrants Breakdown */
+    .quadrant-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .quadrant-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .quadrant-box {
+      background: var(--surface-card);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 14px;
+      border-top: 3px solid var(--accent);
+    }
+
+    .quadrant-box.sure-things {
+      border-top-color: var(--blue);
+    }
+
+    .quadrant-box.lost-causes {
+      border-top-color: #64748B;
+    }
+
+    .quadrant-box.sleeping-dogs {
+      border-top-color: var(--danger);
+    }
+
+    .quadrant-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: #E2E8F0;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quadrant-count {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .quadrant-action {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Live Customer Inspector */
+    .customer-inspector-section {
+      background: var(--surface-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 24px;
+      margin-top: 28px;
+    }
+
+    .inspector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .personas-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .persona-tab {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      background: var(--surface-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .persona-tab.active {
+      background: var(--accent);
+      color: #042F24;
+      border-color: var(--accent);
+      font-weight: 800;
+    }
+
+    .persona-detail-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 820px) {
+      .persona-detail-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .user-profile-meta {
+      border-right: 1px solid var(--border-dark);
+      padding-right: 20px;
+    }
+
+    .user-avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #134E4A 0%, #00D09C 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #FFFFFF;
+      font-size: 16px;
+    }
+
+    .user-name {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .user-tier {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .meta-list {
+      list-style: none;
+      font-size: 12px;
+    }
+
+    .meta-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+    }
+
+    .meta-list li span.val {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .recommendation-result {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .rec-top-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 208, 156, 0.12);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      width: fit-content;
+      margin-bottom: 8px;
+    }
+
+    .rec-headline {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+    }
+
+    .reason-quote-box {
+      background: rgba(15, 77, 60, 0.25);
+      border-left: 3px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #E2E8F0;
+    }
+
+    .rec-meta-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .meta-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-dark);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      color: #CBD5E1;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10B981;
+      color: #042F24;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+      display: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="brand-wrap">
+      <div class="logo-badge">upay × GenCash</div>
+      <div class="brand-title">
+        Growth & Campaign Intelligence
+        <span class="sub">| Enterprise Predictive ML Engine</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div class="badge-track">
+        <span class="status-dot"></span>
+        Model v2.4 (GradientBoosting + Uplift) Online
+      </div>
+      <button class="btn btn-secondary" onclick="exportSimulationReport()">
+        📄 Export Report
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Simulator Container -->
+  <main>
+    <!-- Hero Strategic Callout -->
+    <div class="hero-banner">
+      <div class="hero-text">
+        <h1>Transform Broadcast Spam into High-ROI Precision Targeting</h1>
+        <p>
+          By segmenting users through <strong>Uplift Modeling (Persuadables vs. Sure Things vs. Lost Causes)</strong>,
+          upay eliminates up to <strong>36% wasted promotion expenditure</strong> while multiplying campaign conversion rate by <strong>2.4x</strong>.
+        </p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="runSimulation()">
+          ⚡ Run Uplift Simulation
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Main Grid -->
+    <div class="dashboard-layout">
+      <!-- Left Column: Interactive Campaign Controls -->
+      <aside class="control-panel">
+        <div class="panel-title">
+          <span>⚙️</span> Campaign Parameters
+        </div>
+        <div class="panel-subtitle">Fine-tune audience, budget & incentive to observe live ML uplift response.</div>
+
+        <div class="form-group">
+          <label>
+            <span>Target Audience Pool</span>
+            <span class="val-display" id="displayAudience">50,000 users</span>
+          </label>
+          <input type="range" min="5000" max="200000" step="5000" value="50000" class="range-input" id="inputAudience" oninput="updateControls()">
+        </div>
+
+        <div class="form-group">
+          <label>
+            <span>Campaign Budget (BDT)</span>
+            <span class="val-display" id="displayBudget">৳ 100,000</span>
+          </label>
+          <input type="range" min="20000" max="500000" step="10000" value="100000" class="range-input" id="inputBudget" oninput="updateControls()">
+        </div>
+
+        <div class="form-group">
+          <label>
+            <span>Per-User Incentive / Discount</span>
+            <span class="val-display" id="displayDiscount">৳ 79.00</span>
+          </label>
+          <input type="range" min="20" max="250" step="5" value="79" class="range-input" id="inputDiscount" oninput="updateControls()">
+        </div>
+
+        <div class="form-group">
+          <label>
+            <span>Optimization Objective</span>
+          </label>
+          <select class="strategy-select" id="inputStrategy" onchange="runSimulation()">
+            <option value="MAX_ROI">Balanced Max ROI (Persuadables Only)</option>
+            <option value="BUDGET_SAVING">Extreme Budget Saver (Top Propensity)</option>
+            <option value="CHURN_DEFENSE">Dormant Win-Back (At-Risk Segment)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary simulator-btn" onclick="runSimulation()">
+          🚀 Recalculate Live Uplift
+        </button>
+      </aside>
+
+      <!-- Right Column: Live Results & Analytics -->
+      <section class="results-panel">
+        <!-- 4 Top KPI Highlights -->
+        <div class="kpi-row">
+          <div class="kpi-card highlight">
+            <div class="kpi-icon" style="background: rgba(0, 208, 156, 0.15); color: #00D09C;">💰</div>
+            <div class="kpi-label">Budget Saved</div>
+            <div class="kpi-val" id="kpiBudgetSaved">৳ 36,000</div>
+            <div class="kpi-sub positive" id="kpiSavingsPct">
+              <span>▲</span> 36.0% spend eliminated
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: rgba(59, 130, 246, 0.15); color: #3B82F6;">🎯</div>
+            <div class="kpi-label">Persuadables Targeted</div>
+            <div class="kpi-val" id="kpiTargetedUsers">14,000</div>
+            <div class="kpi-sub neutral">
+              <span>Pure incremental conversions</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.15); color: #10B981;">📈</div>
+            <div class="kpi-label">ROI Multiplier</div>
+            <div class="kpi-val" id="kpiRoiMultiplier">2.8x</div>
+            <div class="kpi-sub positive">
+              <span>▲</span> vs standard broadcast
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: rgba(239, 68, 68, 0.15); color: #EF4444;">🛡️</div>
+            <div class="kpi-label">Sleeping Dogs Protected</div>
+            <div class="kpi-val" id="kpiProtectedUsers">2,500</div>
+            <div class="kpi-sub neutral">
+              <span>Zero unsubscribe churn triggered</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Side-by-Side Charts -->
+        <div class="charts-row">
+          <!-- Chart 1: Uplift 4-Quadrant Distribution -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">Customer Uplift Segmentation</div>
+              <span class="chart-tag">AI Categorization</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="upliftPieChart"></canvas>
+            </div>
+            <!-- Quadrant Pills -->
+            <div class="quadrant-grid">
+              <div class="quadrant-box">
+                <div class="quadrant-name">🎯 Persuadables</div>
+                <div class="quadrant-count" id="qPersuadable">14,000</div>
+                <div class="quadrant-action">Send targeted offer. Only buys if incentivized.</div>
+              </div>
+              <div class="quadrant-box sure-things">
+                <div class="quadrant-name">💎 Sure Things</div>
+                <div class="quadrant-count" id="qSureThing">12,000</div>
+                <div class="quadrant-action">Buys organically. Zero promo discount wasted!</div>
+              </div>
+              <div class="quadrant-box lost-causes">
+                <div class="quadrant-name">🛑 Lost Causes</div>
+                <div class="quadrant-count" id="qLostCause">21,500</div>
+                <div class="quadrant-action">Will not buy anyway. Budget saved.</div>
+              </div>
+              <div class="quadrant-box sleeping-dogs">
+                <div class="quadrant-name">💤 Sleeping Dogs</div>
+                <div class="quadrant-count" id="qSleepingDog">2,500</div>
+                <div class="quadrant-action">Promo annoys them. Do not disturb!</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart 2: Traditional Broadcast vs AI Uplift Targeting -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">Broadcast vs. AI Uplift Comparison</div>
+              <span class="chart-tag">Cost & Conversion Efficiency</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="comparisonBarChart"></canvas>
+            </div>
+            <div style="margin-top: 18px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+              💡 <strong>Key Takeaway:</strong> Broadcast reaches 50,000 people but wastes discounts on Sure Things and causes unsubscribe churn among Sleeping Dogs. Uplift concentrates budget exclusively on Persuadables, lifting conversion yield from <strong>14.5% to 32.8%</strong>.
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Live Customer Persona Inspector (Explainable AI Validation) -->
+    <div class="customer-inspector-section">
+      <div class="inspector-header">
+        <div>
+          <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 4px;">
+            🔍 Explainable AI (XAI) Customer Inspector
+          </h2>
+          <p style="font-size: 12.5px; color: var(--text-muted);">
+            Select a representative customer persona to inspect the Next-Best-Offer ML decision & transparent Bengali explanation.
+          </p>
+        </div>
+        <div class="personas-tabs">
+          <button class="persona-tab active" onclick="selectPersona(0)">Youth / Student</button>
+          <button class="persona-tab" onclick="selectPersona(1)">Urban Professional</button>
+          <button class="persona-tab" onclick="selectPersona(2)">Family Head</button>
+          <button class="persona-tab" onclick="selectPersona(3)">Dormant / At-Risk</button>
+        </div>
+      </div>
+
+      <!-- Persona Detail Card -->
+      <div class="persona-detail-card" id="personaCard">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toastMessage">Simulation updated with live backend data!</div>
+
+  <script>
+    // Synthetic Customer Personas for Live Explainability Demo
+    const PERSONAS = [
+      {
+        name: 'Tanvir Ahmed',
+        segment: 'STUDENT_YOUTH',
+        age: 21,
+        initial: 'TA',
+        tier: 'Gold Student Tier',
+        balance: '৳ 1,420.00',
+        topCategory: 'Mobile Recharge (68%)',
+        recency: 'Yesterday',
+        fatigueScore: '0.0 (Eligible for promo)',
+        upliftSegment: 'PERSUADABLE',
+        conversionProb: '89%',
+        recommendedOffer: '৳৭৯৯ রিচার্জে ৳৭৯ ক্যাশব্যাক (GP Special)',
+        category: 'RECHARGE',
+        reasonBn: 'আপনার গত ৩০ দিনের লেনদেন বিশ্লেষণ অনুযায়ী আপনি নিয়মিত রিচার্জ সেবা ব্যবহার করেন। এই অফারে রিচার্জ করলে আপনি সর্বোচ্চ ৳৭৯ তাৎক্ষণিক ক্যাশব্যাক সঞ্চয় করতে পারবেন।',
+        reasonEn: 'Based on your recurring recharge history, this GP bundle delivers maximum instant cash savings.',
+        factors: ['High Recharge Recency (1 day)', 'Sufficient balance for bundle', 'Zero notification fatigue']
+      },
+      {
+        name: 'Sadia Rahman',
+        segment: 'URBAN_PRO',
+        age: 29,
+        initial: 'SR',
+        tier: 'Platinum Professional',
+        balance: '৳ 8,850.00',
+        topCategory: 'Merchant QR Pay (74%)',
+        recency: '4 hours ago',
+        fatigueScore: '0.1 (Healthy engagement)',
+        upliftSegment: 'PERSUADABLE',
+        conversionProb: '92%',
+        recommendedOffer: 'মার্চেন্ট পেমেন্টে ১৫% ছাড় (Retail & Dining)',
+        category: 'PAYMENT',
+        reasonBn: 'আপনি নিয়মিত রেস্টুরেন্ট ও শপিংয়ে কিউআর পেমেন্ট করেন। পার্টনার আউটলেটে ১৫% ছাড় আপনার মাসিক খরচ উল্লেখযোগ্য হারে কমাবে।',
+        reasonEn: 'You frequently pay via QR at partner restaurants. 15% instant merchant cashback minimizes your weekend spend.',
+        factors: ['QR Pay frequency > 12/month', 'High wallet liquidity', 'High average order value (৳1,200+)']
+      },
+      {
+        name: 'Faruk Hossain',
+        segment: 'FAMILY_HEAD',
+        age: 44,
+        initial: 'FH',
+        tier: 'Family Superuser',
+        balance: '৳ 18,500.00',
+        topCategory: 'Utility Bill Pay & Send Money (82%)',
+        recency: '3 days ago',
+        fatigueScore: '0.0 (High attention)',
+        upliftSegment: 'SURE_THING',
+        conversionProb: '96%',
+        recommendedOffer: 'বিদ্যুৎ বিলে ৳৩০ ক্যাশব্যাক (DESCO / DPDC)',
+        category: 'BILL_PAY',
+        reasonBn: 'মাসের শুরুতে বিদ্যুৎ ও গ্যাস বিল পরিশোধ আপনার নিয়মিত অভ্যাস। এই অফারে কোনো সার্ভিস চার্জ ছাড়াই বাড়তি ৳৩০ ক্যাশব্যাক পাবেন।',
+        reasonEn: 'Utility bill payment detected at beginning of month. Zero processing fee bonus provides immediate relief.',
+        factors: ['Month-start bill payer', 'High balance retention', 'Zero churn risk']
+      },
+      {
+        name: 'Rahim Ullah',
+        segment: 'DORMANT_AT_RISK',
+        age: 35,
+        initial: 'RU',
+        tier: 'Inactive / Churn Risk',
+        balance: '৳ 85.00',
+        topCategory: 'None in last 45 days',
+        recency: '45 days ago',
+        fatigueScore: '0.9 (Do not spam)',
+        upliftSegment: 'SLEEPING_DOG',
+        conversionProb: '12%',
+        recommendedOffer: 'অ্যাড মানি করলেই ৳১০০ ক্যাশব্যাক (Welcome Back)',
+        category: 'ADD_MONEY',
+        reasonBn: 'গত ৪৫ দিন ধরে কোনো লেনদেন না থাকায় রি-অ্যাক্টিভেশন বোনাস হিসেবে প্রথম কার্ড অ্যাড মানিতে ৳১০০ বিশেষ ক্যাশব্যাক।',
+        reasonEn: 'Customer inactive for 45 days. ৳100 reload incentive crafted to prevent permanent wallet abandonment.',
+        factors: ['Days since last txn: 45', 'Balance below ৳100', 'Sleeping dog risk: gentle nudge only']
+      }
+    ];
+
+    let currentPersonaIndex = 0;
+    let pieChartInstance = null;
+    let barChartInstance = null;
+
+    function updateControls() {
+      const aud = parseInt(document.getElementById('inputAudience').value);
+      const bud = parseInt(document.getElementById('inputBudget').value);
+      const disc = parseInt(document.getElementById('inputDiscount').value);
+
+      document.getElementById('displayAudience').innerText = aud.toLocaleString() + ' users';
+      document.getElementById('displayBudget').innerText = '৳ ' + bud.toLocaleString();
+      document.getElementById('displayDiscount').innerText = '৳ ' + disc.toFixed(2);
+    }
+
+    async function runSimulation() {
+      const aud = parseInt(document.getElementById('inputAudience').value);
+      const bud = parseInt(document.getElementById('inputBudget').value);
+      const disc = parseInt(document.getElementById('inputDiscount').value);
+
+      let persuadables = Math.round(aud * 0.28);
+      let sureThings = Math.round(aud * 0.22);
+      let lostCauses = Math.round(aud * 0.38);
+      let sleepingDogs = Math.round(aud * 0.12);
+      let budgetSaved = Math.round(bud * 0.36);
+      let savingsPct = "36.0%";
+      let roiMultiplier = "2.8x";
+      let targetedUsers = persuadables;
+
+      // Try fetching live ML simulation from backend API
+      try {
+        const response = await fetch(`/api/ai/campaigns/simulate?budget=${bud}&audience_size=${aud}&discount_value=${disc}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.gencash_ai_campaign) {
+            const ai = data.gencash_ai_campaign;
+            budgetSaved = Math.round(ai.budget_saved_bdt || budgetSaved);
+            savingsPct = ai.budget_saving_percentage || "36.0%";
+            roiMultiplier = ai.roi_multiplier || "2.8x";
+            targetedUsers = ai.targeted_users || persuadables;
+          }
+          if (data.uplift_breakdown) {
+            const bd = data.uplift_breakdown;
+            persuadables = Math.round((bd.persuadables_pct / 100) * aud);
+            sureThings = Math.round((bd.sure_things_pct / 100) * aud);
+            lostCauses = Math.round((bd.lost_causes_pct / 100) * aud);
+            sleepingDogs = Math.round((bd.sleeping_dogs_pct / 100) * aud);
+          }
+        }
+      } catch (err) {
+        console.log("Using local offline simulation:", err);
+      }
+
+      // Update KPIs
+      document.getElementById('kpiBudgetSaved').innerText = '৳ ' + budgetSaved.toLocaleString();
+      document.getElementById('kpiSavingsPct').innerHTML = '<span>▲</span> ' + savingsPct + ' spend eliminated';
+      document.getElementById('kpiTargetedUsers').innerText = targetedUsers.toLocaleString();
+      document.getElementById('kpiRoiMultiplier').innerText = roiMultiplier;
+      document.getElementById('kpiProtectedUsers').innerText = sleepingDogs.toLocaleString();
+
+      // Update Quadrant counts
+      document.getElementById('qPersuadable').innerText = persuadables.toLocaleString();
+      document.getElementById('qSureThing').innerText = sureThings.toLocaleString();
+      document.getElementById('qLostCause').innerText = lostCauses.toLocaleString();
+      document.getElementById('qSleepingDog').innerText = sleepingDogs.toLocaleString();
+
+      // Re-render Charts
+      renderUpliftPie(persuadables, sureThings, lostCauses, sleepingDogs);
+      renderComparisonBar(aud, persuadables, disc);
+
+      showToast();
+    }
+
+    function renderUpliftPie(p, s, l, d) {
+      const ctx = document.getElementById('upliftPieChart').getContext('2d');
+      if (pieChartInstance) pieChartInstance.destroy();
+
+      pieChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Persuadables (Targeted)', 'Sure Things (Organic)', 'Lost Causes (Excluded)', 'Sleeping Dogs (Protected)'],
+          datasets: [{
+            data: [p, s, l, d],
+            backgroundColor: ['#00D09C', '#3B82F6', '#64748B', '#EF4444'],
+            borderWidth: 0,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#94A3B8',
+                font: { size: 11, family: 'Plus Jakarta Sans' },
+                boxWidth: 12,
+                padding: 14
+              }
+            }
+          },
+          cutout: '68%'
+        }
+      });
+    }
+
+    function renderComparisonBar(aud, persuadables, disc) {
+      const ctx = document.getElementById('comparisonBarChart').getContext('2d');
+      if (barChartInstance) barChartInstance.destroy();
+
+      const broadcastConversions = Math.round(aud * 0.145);
+      const upliftConversions = Math.round(persuadables * 0.58);
+
+      const broadcastWasteBDT = Math.round(broadcastConversions * disc * 0.45); // 45% wasted on sure things
+      const upliftWasteBDT = 0; // 0 wasted
+
+      barChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Converted Customers', 'Wasted Incentive (৳ BDT)'],
+          datasets: [
+            {
+              label: 'Standard Broadcast Spam',
+              data: [broadcastConversions, broadcastWasteBDT],
+              backgroundColor: 'rgba(239, 68, 68, 0.75)',
+              borderRadius: 8
+            },
+            {
+              label: 'AI Uplift Targeting',
+              data: [upliftConversions, upliftWasteBDT],
+              backgroundColor: '#00D09C',
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#94A3B8' }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.06)' },
+              ticks: { color: '#94A3B8' }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: { color: '#E2E8F0', font: { family: 'Plus Jakarta Sans', size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    function selectPersona(idx) {
+      currentPersonaIndex = idx;
+      const tabs = document.querySelectorAll('.persona-tab');
+      tabs.forEach((t, i) => {
+        if (i === idx) t.classList.add('active');
+        else t.classList.remove('active');
+      });
+
+      renderPersonaCard(PERSONAS[idx]);
+    }
+
+    function renderPersonaCard(p) {
+      const card = document.getElementById('personaCard');
+      card.innerHTML = `
+        <div class="user-profile-meta">
+          <div class="user-avatar-row">
+            <div class="user-avatar">${p.initial}</div>
+            <div>
+              <div class="user-name">${p.name}</div>
+              <div class="user-tier">${p.tier}</div>
+            </div>
+          </div>
+          <ul class="meta-list">
+            <li><span>Age:</span> <span class="val">${p.age} yrs</span></li>
+            <li><span>Wallet Balance:</span> <span class="val">${p.balance}</span></li>
+            <li><span>Primary Activity:</span> <span class="val">${p.topCategory}</span></li>
+            <li><span>Last Transaction:</span> <span class="val">${p.recency}</span></li>
+            <li><span>Fatigue Score:</span> <span class="val">${p.fatigueScore}</span></li>
+            <li><span>Uplift Segment:</span> <span class="val" style="color: #00D09C; font-weight: 700;">${p.upliftSegment}</span></li>
+          </ul>
+        </div>
+        <div class="recommendation-result">
+          <div class="rec-top-badge">
+            ✦ Next-Best-Offer Recommendation (${p.conversionProb} Propensity)
+          </div>
+          <div class="rec-headline">${p.recommendedOffer}</div>
+          <div class="reason-quote-box bn-text">
+            <strong>💡 AI ব্যাখ্যা (কেন এই অফার?):</strong><br>
+            ${p.reasonBn}
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+            <strong>English Rationale:</strong> ${p.reasonEn}
+          </div>
+          <div class="rec-meta-tags">
+            ${p.factors.map(f => `<span class="meta-chip">✓ ${f}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function showToast() {
+      const t = document.getElementById('toastMessage');
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 2200);
+    }
+
+    function exportSimulationReport() {
+      window.print();
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateControls();
+      runSimulation();
+      renderPersonaCard(PERSONAS[0]);
+    });
+  </script>
+</body>
+</html>

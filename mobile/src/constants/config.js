@@ -1,7 +1,6 @@
 import { Platform } from 'react-native';
 
-// Local IP of your PC on your Wi-Fi network: 192.168.0.207
-// This allows both PC Web and Physical Phones on the same Wi-Fi to connect directly!
+// Local IP of your PC on your network (update this when changing Wi-Fi/networks)
 const LOCAL_PC_IP = '192.168.0.207';
 
 const getBaseUrl = () => {
@@ -41,6 +40,8 @@ export const ENDPOINTS = {
   AI_INSIGHTS: '/api/ai/insights',
   AI_RECOMMENDATIONS: '/api/ai/recommendations',
   AI_FEEDBACK: '/api/ai/feedback',
+  AI_NBO: '/api/ai/next-best-offers',
+  AI_CAMPAIGN_SIMULATE: '/api/ai/campaigns/simulate',
 
   // Notifications
   NOTIFICATIONS: '/api/notifications',
@@ -71,9 +72,9 @@ export const DEMO_ACCOUNTS = [
 ];
 
 export const MOBILE_OPERATORS = [
-  { id: 'GP', name: 'Grameenphone', code: '017 / 013', color: '#0078FF', logo: 'cellular' },
-  { id: 'ROBI', name: 'Robi', code: '018', color: '#E40000', logo: 'flash' },
-  { id: 'BL', name: 'Banglalink', code: '019 / 014', color: '#FF7700', logo: 'flame' },
-  { id: 'AIRTEL', name: 'Airtel', code: '016', color: '#ED1B24', logo: 'heart' },
-  { id: 'TT', name: 'Teletalk', code: '015', color: '#009944', logo: 'leaf' },
+  { id: 'GP', name: 'Grameenphone', code: '017 / 013', color: '#0078FF', logo: 'cellular', logoAsset: 'gp' },
+  { id: 'ROBI', name: 'Robi', code: '018', color: '#E40000', logo: 'flash', logoAsset: 'robi' },
+  { id: 'BL', name: 'Banglalink', code: '019 / 014', color: '#FF7700', logo: 'flame', logoAsset: 'banglalink' },
+  { id: 'AIRTEL', name: 'Airtel', code: '016', color: '#ED1B24', logo: 'heart', logoAsset: 'airtel' },
+  { id: 'TT', name: 'Teletalk', code: '015', color: '#009944', logo: 'leaf', logoAsset: 'teletalk' },
 ];

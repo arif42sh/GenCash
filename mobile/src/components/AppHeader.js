@@ -68,7 +68,8 @@ export default function AppHeader({
 
       {/* 2. Tier 1: Top Utility Action Bar (Positioned at the very top edge) */}
       <View style={styles.topUtilityRow}>
-        <View style={{ flex: 1 }} /> {/* Spacer pushing controls to the far right */}
+        {/* Spacer pushing controls to the far right */}
+        <View style={{ flex: 1 }} />
 
         {/* Language Switch Capsule (ENG | বাং) */}
         <TouchableOpacity

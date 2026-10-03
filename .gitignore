@@ -29,3 +29,10 @@ ENV/
 Thumbs.db
 .vscode/
 .idea/
+
+# Dynamic User Uploads
+backend/app/static/uploads/avatars/*
+!backend/app/static/uploads/avatars/.gitkeep
+admin/uploads/avatars/*
+!admin/uploads/avatars/.gitkeep
+

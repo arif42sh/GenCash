@@ -66,7 +66,20 @@ export const AIHubScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerTitleRow}>
-          <Ionicons name="sparkles" size={24} color="#C084FC" />
+          <TouchableOpacity
+            onPress={() => {
+              if (navigation && navigation.goBack) {
+                navigation.goBack();
+              } else if (navigation && navigation.navigate) {
+                navigation.navigate('Home');
+              }
+            }}
+            style={{ marginRight: 10, padding: 4 }}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Ionicons name="sparkles" size={22} color="#C084FC" />
           <Text style={styles.headerTitle}>AI Intelligence Hub</Text>
         </View>
         <Text style={styles.headerSubtitle}>
