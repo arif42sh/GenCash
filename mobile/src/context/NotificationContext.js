@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { api } from '../services/api';
 import { storage } from '../services/storage';
 
@@ -83,6 +83,7 @@ export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readIds, setReadIds] = useState(new Set());
+  const readIdsRef = useRef(new Set());
 
   // Load persisted read IDs on initial mount
   useEffect(() => {
@@ -92,7 +93,9 @@ export const NotificationProvider = ({ children }) => {
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed)) {
-            setReadIds(new Set(parsed.map(String)));
+            const loaded = new Set(parsed.map(String));
+            readIdsRef.current = loaded;
+            setReadIds(loaded);
           }
         }
       } catch (e) {
@@ -113,17 +116,7 @@ export const NotificationProvider = ({ children }) => {
   const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
-      let currentReadIds = readIds;
-      try {
-        const stored = await storage.getItem(READ_STORAGE_KEY);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) {
-            currentReadIds = new Set(parsed.map(String));
-            setReadIds(currentReadIds);
-          }
-        }
-      } catch (e) {}
+      const currentReadIds = readIdsRef.current;
 
       let serverNotifs = null;
       try {
@@ -164,7 +157,7 @@ export const NotificationProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [readIds]);
+  }, []);
 
   useEffect(() => {
     fetchNotifications();
@@ -177,15 +170,13 @@ export const NotificationProvider = ({ children }) => {
   const markNotificationRead = useCallback(
     async (id) => {
       const strId = String(id);
+      readIdsRef.current.add(strId);
+      persistReadIds(readIdsRef.current);
+      setReadIds(new Set(readIdsRef.current));
+
       setNotifications((prev) =>
         prev.map((n) => (n.id === strId ? { ...n, is_read: true } : n))
       );
-      setReadIds((prev) => {
-        const next = new Set(prev);
-        next.add(strId);
-        persistReadIds(next);
-        return next;
-      });
 
       if (!strId.startsWith('mock_')) {
         try {
@@ -197,18 +188,17 @@ export const NotificationProvider = ({ children }) => {
   );
 
   const markAllNotificationsRead = useCallback(async () => {
-    const allIds = notifications.map((n) => String(n.id));
-    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
-    setReadIds((prev) => {
-      const next = new Set([...prev, ...allIds]);
-      persistReadIds(next);
-      return next;
+    setNotifications((prev) => {
+      prev.forEach((n) => readIdsRef.current.add(String(n.id)));
+      persistReadIds(readIdsRef.current);
+      setReadIds(new Set(readIdsRef.current));
+      return prev.map((n) => ({ ...n, is_read: true }));
     });
 
     try {
       await api.markAllNotificationsRead();
     } catch (e) {}
-  }, [notifications]);
+  }, []);
 
   return (
     <NotificationContext.Provider
