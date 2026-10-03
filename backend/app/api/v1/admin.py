@@ -1359,6 +1359,7 @@ def broadcast_notification(
         "success": True,
         "dispatched_count": count,
         "fatigue_shielded_count": shielded_count,
+        "best_time_to_send_window": "04:00 PM - 07:00 PM (Nationwide Peak Engagement Window)",
         "message": msg
     }
 @router.post("/system/seed-100k-data")

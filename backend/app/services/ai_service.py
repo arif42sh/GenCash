@@ -200,11 +200,20 @@ class AIService:
             "message_bn": "টানা ৩+ অফারে সাড়া না দেওয়ায় গ্রাহককে বিরক্তি থেকে বাঁচাতে এআই পুশ নোটিফিকেশন সাময়িক স্থগিত করেছে।" if is_cooloff_active else "গ্রাহক সন্তুষ্ট ও নিয়মিত সম্পৃক্ত রয়েছেন।"
         }
 
+        btts = nbo_engine.compute_best_time_to_send(txn_dicts if txn_dicts else None)
+        spending_anomaly = nbo_engine.detect_spending_anomaly(
+            txns=txn_dicts if txn_dicts else None,
+            active_offers=None,
+            preferred_merchants=user_features.get("preferred_merchants", [])
+        )
+
         return {
             "user_id": user_id,
             "user_name": user.name if user else "Customer",
             "user_features": user_features,
             "fatigue_shield": fatigue_shield,
+            "best_time_to_send": btts,
+            "spending_anomaly": spending_anomaly,
             "top_recommended_offer": top_offer,
             "ranked_offers": ranked,
             "generated_at": datetime.utcnow().isoformat(),

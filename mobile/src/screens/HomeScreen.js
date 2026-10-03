@@ -40,6 +40,7 @@ export const HomeScreen = ({ navigation }) => {
   const [showUserQR, setShowUserQR] = useState(false);
   const [showLaunchOfferModal, setShowLaunchOfferModal] = useState(false);
   const [launchOffer, setLaunchOffer] = useState(null);
+  const [spendingAnomaly, setSpendingAnomaly] = useState(null);
   const [openAllOffersTrigger, setOpenAllOffersTrigger] = useState(0);
 
   const loadDashboardData = useCallback(async () => {
@@ -50,6 +51,12 @@ export const HomeScreen = ({ navigation }) => {
       const notifData = await api.getNotifications();
       const unread = Array.isArray(notifData) ? notifData.filter((n) => !n.is_read).length : 0;
       setUnreadNotifCount(unread);
+
+      // Load dynamic Spending Anomaly Offer Pipeline
+      const nboRes = await api.getNextBestOffers();
+      if (nboRes?.spending_anomaly) {
+        setSpendingAnomaly(nboRes.spending_anomaly);
+      }
     } catch (e) {
       console.warn('Dashboard data fetch error:', e);
     }
@@ -228,32 +235,68 @@ export const HomeScreen = ({ navigation }) => {
         {/* 3. Other Services (7 Professional Mint Icons Grid) */}
         <ActionGrid onSelectAction={handleActionSelect} />
 
-        {/* 4. Dedicated Financial Insight Card */}
+        {/* 4. Dedicated Financial Insight Card -> Dynamic Spending Anomaly Offer Pipeline */}
         <TouchableOpacity
           activeOpacity={0.88}
           style={styles.aiInsightCard}
-          onPress={() => navigation.navigate('AIHub')}
+          onPress={() => {
+            const offer = spendingAnomaly?.recommended_offer;
+            if (offer?.target_screen) {
+              navigation.navigate(offer.target_screen, offer.target_params || {});
+            } else {
+              navigation.navigate('AIHub');
+            }
+          }}
         >
           <View style={styles.aiInsightHeader}>
-            <View style={styles.aiBadgePill}>
-              <Ionicons name="trending-up" size={13} color="#064E3B" style={{ marginRight: 4 }} />
-              <Text style={styles.aiBadgeText}>{isBangla ? 'ফিন্যান্সিয়াল ইনসাইট' : 'Financial Insight'}</Text>
+            <View style={[styles.aiBadgePill, spendingAnomaly?.has_anomaly && styles.aiBadgeAlertPill]}>
+              <Ionicons
+                name={spendingAnomaly?.has_anomaly ? "warning-outline" : "trending-up"}
+                size={13}
+                color={spendingAnomaly?.has_anomaly ? "#DC2626" : "#064E3B"}
+                style={{ marginRight: 4 }}
+              />
+              <Text style={[styles.aiBadgeText, spendingAnomaly?.has_anomaly && styles.aiBadgeAlertText]}>
+                {spendingAnomaly?.has_anomaly
+                  ? (isBangla ? 'খরচের এনোমালি' : 'Spending Anomaly')
+                  : (isBangla ? 'ফিন্যান্সিয়াল ইনসাইট' : 'Financial Insight')}
+              </Text>
             </View>
-            <View style={styles.aiConfidencePill}>
-              <Text style={styles.aiConfidenceText}>{isBangla ? 'সাপ্তাহিক আপডেট' : 'Weekly Analysis'}</Text>
+            <View style={[styles.aiConfidencePill, spendingAnomaly?.has_anomaly && styles.aiConfidenceAlertPill]}>
+              <Text style={[styles.aiConfidenceText, spendingAnomaly?.has_anomaly && styles.aiConfidenceAlertText]}>
+                {spendingAnomaly?.has_anomaly
+                  ? (isBangla ? `+${spendingAnomaly.increase_pct}% বৃদ্ধি` : `+${spendingAnomaly.increase_pct}% Surge`)
+                  : (isBangla ? 'সাপ্তাহিক বিশ্লেষণ' : 'Weekly Analysis')}
+              </Text>
             </View>
           </View>
 
-          <Text style={styles.aiInsightTitle}>{isBangla ? 'খরচের সতর্কতা পাওয়া গেছে' : 'Spending Anomaly Detected'}</Text>
+          <Text style={styles.aiInsightTitle}>
+            {spendingAnomaly
+              ? (isBangla ? spendingAnomaly.title_bn : spendingAnomaly.title_en)
+              : (isBangla ? 'খরচের সতর্কতা পাওয়া গেছে' : 'Spending Anomaly Detected')}
+          </Text>
           <Text style={styles.aiInsightSub}>
-            {isBangla
-              ? 'এই সপ্তাহে আপনার কেনাকাটা ও খাবার খরচ সাধারণের তুলনায় ১৮% বেশি।'
-              : 'Your food & dining expenses are 18% higher than usual this week.'}
+            {spendingAnomaly
+              ? (isBangla ? spendingAnomaly.description_bn : spendingAnomaly.description_en)
+              : (isBangla
+                  ? 'এই সপ্তাহে আপনার কেনাকাটা ও খাবার খরচ সাধারণের তুলনায় বেশি।'
+                  : 'Your food & dining expenses are higher than usual this week.')}
           </Text>
 
           <View style={styles.aiInsightFooter}>
-            <Text style={styles.aiInsightActionText}>{isBangla ? 'বাজেট ইনসাইট দেখুন' : 'Review Budget Insights'}</Text>
-            <Ionicons name="arrow-forward" size={14} color="#064E3B" />
+            <Text style={[styles.aiInsightActionText, spendingAnomaly?.has_anomaly && { color: '#B91C1C' }]}>
+              {spendingAnomaly?.recommended_offer
+                ? (isBangla
+                    ? spendingAnomaly.recommended_offer.action_label_bn
+                    : spendingAnomaly.recommended_offer.action_label_en)
+                : (isBangla ? 'বাজেট ইনসাইট দেখুন' : 'Review Budget Insights')}
+            </Text>
+            <Ionicons
+              name="arrow-forward"
+              size={14}
+              color={spendingAnomaly?.has_anomaly ? "#B91C1C" : "#064E3B"}
+            />
           </View>
         </TouchableOpacity>
 
@@ -380,10 +423,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  aiBadgeAlertPill: {
+    backgroundColor: '#FEE2E2',
+  },
   aiBadgeText: {
     color: '#064E3B',
     fontSize: 11,
     fontWeight: '800',
+  },
+  aiBadgeAlertText: {
+    color: '#991B1B',
   },
   aiConfidencePill: {
     backgroundColor: '#FEF3C7',
@@ -391,10 +440,16 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 10,
   },
+  aiConfidenceAlertPill: {
+    backgroundColor: '#FEE2E2',
+  },
   aiConfidenceText: {
     color: '#92400E',
     fontSize: 10,
     fontWeight: '700',
+  },
+  aiConfidenceAlertText: {
+    color: '#B91C1C',
   },
   aiInsightTitle: {
     fontSize: 15.5,

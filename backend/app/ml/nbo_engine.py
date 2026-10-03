@@ -72,6 +72,12 @@ def get_category_propensity(cat_str: Any, stats_or_features: Dict[str, Any]) -> 
     return 0.0
 
 
+def to_bn_digits(num_or_str: Any) -> str:
+    """Converts English digits in numbers/strings into authentic Bengali digits."""
+    bn_map = {'0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'}
+    return "".join(bn_map.get(c, c) for c in str(num_or_str))
+
+
 class NBOIntelligenceEngine:
     def __init__(self):
         self.model: Optional[GradientBoostingClassifier] = None
@@ -283,6 +289,7 @@ class NBOIntelligenceEngine:
                 "billpay_count": 0,
                 "merchant_count": 0,
                 "addmoney_count": 0,
+                "best_time_to_send": self.compute_best_time_to_send(None),
             }
 
         total_txns = len(txns)
@@ -352,6 +359,7 @@ class NBOIntelligenceEngine:
 
         from collections import Counter
         top_merchants = [m for m, _ in Counter(merchants).most_common(3)]
+        btts_meta = self.compute_best_time_to_send(txns)
 
         return {
             "recency_days": recency_days,
@@ -368,6 +376,268 @@ class NBOIntelligenceEngine:
             "billpay_count": billpay_count,
             "merchant_count": merchant_count,
             "addmoney_count": addmoney_count,
+            "best_time_to_send": btts_meta,
+        }
+
+    def compute_best_time_to_send(
+        self,
+        txns: Optional[List[Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
+        """
+        Track 04 Feature 5: Best-Time-To-Send (BTTS) Intelligence Engine.
+        Analyzes historical transaction timestamps to pinpoint the user's peak engagement window.
+        Maximizes push open and conversion rates while avoiding busy hours.
+        """
+        valid_hours = []
+        if txns:
+            for t in txns:
+                dt = t.get("created_at") or t.get("transaction_time")
+                if dt:
+                    if isinstance(dt, str):
+                        try:
+                            dt = datetime.fromisoformat(dt.replace("Z", "+00:00"))
+                        except Exception:
+                            continue
+                    if hasattr(dt, "hour"):
+                        valid_hours.append(dt.hour)
+
+        if valid_hours:
+            from collections import Counter
+            hour_counts = Counter(valid_hours)
+            peak_hour, peak_count = hour_counts.most_common(1)[0]
+            total_events = len(valid_hours)
+            confidence = round(min(0.95, max(0.65, (peak_count / total_events) + 0.45)), 2)
+        else:
+            # Default nationwide peak MFS engagement window (19:00 / 07:00 PM evening)
+            peak_hour = 19
+            confidence = 0.65
+            total_events = 0
+
+        # Engagement window: +/- 1 hour around peak engagement hour
+        start_hour = (peak_hour - 1) % 24
+        end_hour = (peak_hour + 1) % 24
+
+        def to_12h(h: int, m: int = 0) -> str:
+            period = "AM" if h < 12 else "PM"
+            h12 = h % 12
+            h12 = 12 if h12 == 0 else h12
+            return f"{h12:02d}:{m:02d} {period}"
+
+        def get_period_bn(h: int) -> str:
+            if 5 <= h < 12:
+                return "সকাল"
+            elif 12 <= h < 16:
+                return "দুপুর"
+            elif 16 <= h < 18:
+                return "বিকেল"
+            elif 18 <= h < 23:
+                return "সন্ধ্যা"
+            else:
+                return "রাত"
+
+        period_bn = get_period_bn(peak_hour)
+        h12 = peak_hour % 12
+        h12 = 12 if h12 == 0 else h12
+        optimal_time_12h = to_12h(peak_hour, 0)
+        optimal_time_bn = f"{period_bn} {to_bn_digits(f'{h12:02d}')}:০০"
+        window_12h = f"{to_12h(start_hour, 0)} - {to_12h(end_hour, 0)}"
+
+        start_period_bn = get_period_bn(start_hour)
+        start_h12 = start_hour % 12 or 12
+        end_period_bn = get_period_bn(end_hour)
+        end_h12 = end_hour % 12 or 12
+        window_bn = f"{start_period_bn} {to_bn_digits(f'{start_h12:02d}')}:০০ - {end_period_bn} {to_bn_digits(f'{end_h12:02d}')}:০০"
+
+        now_hour = datetime.utcnow().hour
+        is_active_now = (now_hour in [start_hour, peak_hour, end_hour])
+
+        if total_events > 0:
+            reason_bn = f"বিগত {to_bn_digits(total_events)}টি ট্রানজেকশনের তথ্য অনুযায়ী গ্রাহক {optimal_time_bn}-এ ({optimal_time_12h}) অ্যাপে সর্বাধিক সক্রিয় থাকেন। ব্যস্ত সময়ের বদলে এই পিক উইন্ডোতে অফার ডেলিভারি দিলে ওপেন রেট সর্বোচ্চ হয়।"
+            reason_en = f"User demonstrates peak engagement at {optimal_time_12h} based on {total_events} historical transactions. Delivering notifications during this window ({window_12h}) maximizes open and click-through rates."
+        else:
+            reason_bn = "সাধারণ গ্রাহকদের সান্ধ্যকালীন পিক এঙ্গেজমেন্ট আওয়ার (সন্ধ্যা ০৭:০০) অনুযায়ী নোটিফিকেশন ডেলিভারি উইন্ডো নির্ধারণ করা হয়েছে।"
+            reason_en = "Scheduled for peak nationwide evening engagement hours (07:00 PM) to ensure optimal promotional response."
+
+        return {
+            "peak_hour_24h": peak_hour,
+            "optimal_time_12h": optimal_time_12h,
+            "optimal_time_bn": optimal_time_bn,
+            "engagement_window": window_12h,
+            "engagement_window_bn": window_bn,
+            "confidence": confidence,
+            "historical_events_analyzed": total_events,
+            "reason_bn": reason_bn,
+            "reason_en": reason_en,
+            "is_active_now": is_active_now,
+        }
+
+    def detect_spending_anomaly(
+        self,
+        txns: Optional[List[Dict[str, Any]]] = None,
+        active_offers: Optional[List[Dict[str, Any]]] = None,
+        preferred_merchants: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Track 04 Feature 6: Spending Anomaly -> Offer Pipeline Engine.
+        Analyzes rolling 7-day spending vs baseline weekly average by category.
+        If a category expenditure spike (e.g. Food & Dining / Retail) exceeds >= 15%,
+        it dynamically converts that financial stress into a partner merchant discount offer!
+        """
+        offers = active_offers or CAMPAIGN_OFFERS
+        preferred = [str(m).lower() for m in (preferred_merchants or [])]
+
+        # Match partner merchant offer based on customer merchant affinities
+        matching_offer = None
+        for off in offers:
+            if normalize_category(off.get("category", "")) == "MERCHANT_PAY":
+                m_name = str(off.get("merchant_name", "")).lower()
+                if preferred and any(p in m_name or m_name in p for p in preferred):
+                    matching_offer = off
+                    break
+        if not matching_offer:
+            for off in offers:
+                if normalize_category(off.get("category", "")) == "MERCHANT_PAY":
+                    matching_offer = off
+                    break
+
+        if not matching_offer:
+            matching_offer = {
+                "offer_id": "off_merchant_discount",
+                "title": "চিলক্স বার্গার ও ফুড আউটলেটে ১৫% ইনস্ট্যান্ট ছাড়",
+                "category": "MERCHANT_PAY",
+                "merchant_name": "Chillox Burger Hub",
+                "min_amount": 800.0,
+                "discount_value": 120.0,
+            }
+
+        # Determine merchant phone and parameters for mobile pipeline routing
+        m_name = matching_offer.get("merchant_name", "Chillox Burger Hub")
+        if "chillox" in m_name.lower():
+            phone = "01700100003"
+        elif "shwapno" in m_name.lower():
+            phone = "01700100001"
+        elif "unimart" in m_name.lower() or "daily" in m_name.lower():
+            phone = "01700100002"
+        else:
+            phone = "01700100003"
+
+        pipeline_offer = {
+            "offer_id": matching_offer["offer_id"],
+            "title": matching_offer["title"],
+            "merchant_name": m_name,
+            "merchant_phone": phone,
+            "discount_value": float(matching_offer.get("discount_value", 120.0)),
+            "discount_text": f"৳{int(matching_offer.get('discount_value', 120))} ক্যাশব্যাক",
+            "min_amount": float(matching_offer.get("min_amount", 800.0)),
+            "action_label_bn": f"{m_name}-এ ক্যাশব্যাক নিন",
+            "action_label_en": f"Claim Offer at {m_name}",
+            "target_screen": "MerchantPayment",
+            "target_params": {
+                "mode": "merchant",
+                "phone": phone,
+                "merchant_name": m_name,
+                "amount": str(int(matching_offer.get("min_amount", 800.0))),
+                "offer_id": matching_offer["offer_id"],
+            }
+        }
+
+        if not txns:
+            return {
+                "has_anomaly": False,
+                "category": "MERCHANT_PAY",
+                "category_label_bn": "খাবার ও রিটেল কেনাকাটা",
+                "category_label_en": "Food & Retail Shopping",
+                "increase_pct": 0.0,
+                "current_7d_spend": 0.0,
+                "baseline_weekly_spend": 0.0,
+                "title_bn": "বাজেট ইনসাইট ও লাইফস্টাইল অফার",
+                "title_en": "Budget Insight & Lifestyle Offers",
+                "description_bn": "আপনার সাপ্তাহিক ব্যয় স্বাভাবিক রয়েছে। নিয়মিত কেনাকাটায় সাশ্রয় করতে পার্টনার আউটলেটের এক্সক্লুসিভ ক্যাশব্যাক উপভোগ করুন।",
+                "description_en": "Your weekly spending is within safe budget limits. Save more with partner merchant discounts.",
+                "recommended_offer": pipeline_offer,
+            }
+
+        # Analyze transactions by timestamps
+        dates = []
+        for t in txns:
+            dt = t.get("created_at") or t.get("transaction_time")
+            if dt:
+                if isinstance(dt, str):
+                    try:
+                        dt = datetime.fromisoformat(dt.replace("Z", "+00:00"))
+                    except Exception:
+                        continue
+                if hasattr(dt, "tzinfo") and dt.tzinfo is not None:
+                    dt = dt.replace(tzinfo=None)
+                dates.append(dt)
+
+        if not dates:
+            anchor_dt = datetime.utcnow()
+        else:
+            anchor_dt = max(dates)
+
+        last_7d_merchant_spend = 0.0
+        older_merchant_spend = 0.0
+        older_span_days = 21.0
+
+        for t in txns:
+            cat = normalize_category(t.get("category", t.get("transaction_type", "")))
+            if cat == "MERCHANT_PAY":
+                amt = float(t.get("amount", 0.0))
+                dt = t.get("created_at") or t.get("transaction_time")
+                if dt:
+                    if isinstance(dt, str):
+                        try:
+                            dt = datetime.fromisoformat(dt.replace("Z", "+00:00"))
+                        except Exception:
+                            dt = anchor_dt
+                    if hasattr(dt, "tzinfo") and dt.tzinfo is not None:
+                        dt = dt.replace(tzinfo=None)
+                    age_seconds = (anchor_dt - dt).total_seconds()
+                    if age_seconds <= 7 * 86400:
+                        last_7d_merchant_spend += amt
+                    else:
+                        older_merchant_spend += amt
+
+        # Baseline calculation
+        baseline_weekly_merchant = older_merchant_spend / max(1.0, (older_span_days / 7.0))
+        if baseline_weekly_merchant <= 0 and last_7d_merchant_spend > 0:
+            # Baseline estimation if no older merchant txns present
+            baseline_weekly_merchant = round(last_7d_merchant_spend * 0.70, 2)
+
+        if baseline_weekly_merchant > 0 and last_7d_merchant_spend > baseline_weekly_merchant:
+            increase_pct = round(((last_7d_merchant_spend - baseline_weekly_merchant) / baseline_weekly_merchant) * 100.0, 1)
+        else:
+            increase_pct = 0.0
+
+        # Anomaly threshold: >= 15% increase
+        has_anomaly = (increase_pct >= 15.0)
+        display_pct = min(180.0, increase_pct) if has_anomaly else 0.0
+
+        if has_anomaly:
+            title_bn = "খরচের সতর্কতা ও সাশ্রয়ী সমাধান"
+            title_en = "Spending Anomaly & Savings Pipeline"
+            description_bn = f"এই সপ্তাহে আপনার কেনাকাটা ও খাবার খরচ সাধারণের তুলনায় {to_bn_digits(display_pct)}% বেশি। খরচ কমাতে {m_name}-এর স্পেশাল ক্যাশব্যাক নিন!"
+            description_en = f"Your food & dining expenses are {display_pct}% higher than usual this week. Convert this surge into instant savings at {m_name}!"
+        else:
+            title_bn = "বাজেট ইনসাইট ও লাইফস্টাইল অফার"
+            title_en = "Budget Insight & Lifestyle Offers"
+            description_bn = f"আপনার সাপ্তাহিক কেনাকাটা ব্যয় স্বাভাবিক রয়েছে। আরও সাশ্রয় করতে {m_name}-এ বিশেষ ক্যাশব্যাক অফার উপভোগ করুন।"
+            description_en = f"Your weekly spending is within safe budget limits. Explore exclusive discounts at {m_name} for extra savings."
+
+        return {
+            "has_anomaly": has_anomaly,
+            "category": "MERCHANT_PAY",
+            "category_label_bn": "খাবার ও রিটেল কেনাকাটা",
+            "category_label_en": "Food & Retail Shopping",
+            "increase_pct": display_pct,
+            "current_7d_spend": round(last_7d_merchant_spend, 2),
+            "baseline_weekly_spend": round(baseline_weekly_merchant, 2),
+            "title_bn": title_bn,
+            "title_en": title_en,
+            "description_bn": description_bn,
+            "description_en": description_en,
+            "recommended_offer": pipeline_offer,
         }
 
     def predict_next_best_offers(

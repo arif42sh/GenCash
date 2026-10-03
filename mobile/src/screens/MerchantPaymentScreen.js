@@ -161,12 +161,19 @@ export const MerchantPaymentScreen = ({ navigation, route }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   
   // Set default selected item based on mode or params
-  const defaultItem = DIRECTORY_ITEMS.find((d) => d.type === initialMode) || DIRECTORY_ITEMS[0];
+  const matchedItem = route?.params?.phone
+    ? DIRECTORY_ITEMS.find((d) => d.phone === route.params.phone)
+    : (route?.params?.merchant_name
+        ? DIRECTORY_ITEMS.find((d) => d.name.toLowerCase().includes(route.params.merchant_name.toLowerCase()))
+        : null);
+  const defaultItem = matchedItem || DIRECTORY_ITEMS.find((d) => d.type === initialMode) || DIRECTORY_ITEMS[0];
   const [merchantPhone, setMerchantPhone] = useState(route?.params?.phone || defaultItem.phone);
   const [selectedMerchant, setSelectedMerchant] = useState(defaultItem);
   const [amount, setAmount] = useState(route?.params?.amount || '350');
   const [note, setNote] = useState(
-    initialMode === 'bill_pay' ? 'Utility Bill Payment' : 'Shopping Bill'
+    initialMode === 'bill_pay'
+      ? 'Utility Bill Payment'
+      : (defaultItem ? `${defaultItem.name}-এ কেনাকাটা` : 'Shopping Bill')
   );
   const [pin, setPin] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
