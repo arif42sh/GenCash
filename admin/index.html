@@ -260,45 +260,56 @@
 
     /* Flat Able M-Header */
     .m-header {
-      padding: 10px 10px 18px;
+      padding: 12px 10px 16px;
       display: flex;
       align-items: center;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .b-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
       text-decoration: none;
       width: 100%;
+      cursor: pointer;
     }
 
-    .logo-badge {
-      background: linear-gradient(135deg, #4680FF 0%, #2F63D6 100%);
-      color: #FFFFFF;
-      font-weight: 800;
-      font-size: 16px;
-      padding: 7px 11px;
-      border-radius: 9px;
-      box-shadow: 0 4px 12px rgba(70, 128, 255, 0.35);
-      flex-shrink: 0;
+    .brand-logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
     }
 
-    .logo-text {
-      font-size: 17px;
-      font-weight: 800;
-      color: #FFFFFF;
-      letter-spacing: -0.2px;
-      line-height: 1.15;
+    .gencash-brand-svg {
+      transition: transform 0.2s ease, filter 0.2s ease;
+      filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.18));
+    }
+
+    .b-brand:hover .gencash-brand-svg {
+      transform: translateY(-1px) scale(1.02);
+      filter: drop-shadow(0 4px 14px rgba(16, 185, 129, 0.4));
+    }
+
+    .mfs-pill {
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10B981;
+      border: 1px solid rgba(16, 185, 129, 0.32);
+      border-radius: 4px;
+      padding: 2px 6px;
+      letter-spacing: 0.6px;
+      line-height: 1.2;
     }
 
     .logo-sub {
-      font-size: 10px;
-      color: var(--pc-sidebar-caption);
+      font-size: 10.5px;
+      color: #94A3B8;
       display: block;
       font-weight: 500;
+      letter-spacing: 0.3px;
     }
 
     /* Flat Able User Profile Card (https://html.phoenixcoded.net/flatable/dashboard/index.html) */
@@ -1215,11 +1226,17 @@
       <!-- MFS Brand Header -->
       <div class="m-header">
         <a href="#!" class="b-brand" onclick="switchTab('dashboard')">
-          <div class="logo-badge"><i class="ti ti-flame"></i></div>
-          <div>
-            <div class="logo-text">GenCash <span style="font-size:12px; font-weight:700; color:#4680FF;">MFS</span>
-            </div>
-            <span class="logo-sub">Fintech AI Operations</span>
+          <div class="brand-logo-wrap">
+            <div class="d-flex align-items-center gap-2">
+              <svg class="gencash-brand-svg" viewBox="0 0 899 168" width="138" height="26" fill="none" style="display:block;">
+                <!-- Dynamic Connecting Wave Loop in Mint Accent -->
+                <path fill="#10B981" fill-rule="evenodd" d="M310,36 L307,32 L295,20 L288,15 L274,8 L259,4 L251,3 L233,3 L225,4 L216,6 L204,10 L192,16 L184,21 L174,29 L167,36 L165,40 L161,44 L160,47 L155,53 L147,67 L145,73 L142,76 L140,76 L141,79 L132,97 L123,111 L118,115 L109,125 L104,128 L95,132 L90,133 L79,133 L79,160 L97,159 L113,154 L124,148 L135,139 L143,130 L156,110 L161,100 L163,94 L168,86 L172,76 L178,65 L182,61 L183,58 L187,53 L193,47 L204,39 L219,32 L235,29 L247,29 L255,30 L264,33 L266,35 L272,37 L277,41 L284,48 L287,53 L289,54 L299,47 L309,42 L311,40 Z" />
+                <!-- Primary Brand Text ("G", "nCash") in Pure Crisp White -->
+                <path fill="#FFFFFF" fill-rule="evenodd" d="M739,47 L731,49 L720,53 L709,63 L706,69 L704,77 L704,85 L705,90 L710,99 L714,103 L725,109 L738,112 L744,115 L753,117 L758,121 L759,124 L758,126 L754,130 L751,131 L739,131 L732,128 L728,124 L726,120 L723,118 L712,124 L707,128 L703,129 L701,131 L701,135 L706,142 L712,148 L725,155 L735,157 L754,157 L764,155 L774,150 L781,144 L786,135 L788,128 L788,119 L787,114 L785,109 L776,99 L761,92 L745,89 L737,85 L734,82 L734,77 L738,73 L742,72 L752,73 L755,75 L763,83 L783,72 L785,70 L785,68 L781,62 L778,59 L777,59 L773,55 L766,51 L750,47 Z M590,65 L582,78 L579,88 L577,102 L579,116 L583,129 L588,137 L595,145 L602,150 L612,155 L621,157 L637,157 L645,155 L654,150 L658,146 L660,148 L660,154 L662,155 L687,155 L689,153 L689,51 L687,50 L660,51 L660,56 L658,58 L656,57 L652,53 L648,51 L634,47 L625,47 L609,51 L603,54 L596,59 Z M629,74 L637,74 L649,79 L656,87 L659,93 L660,97 L660,107 L658,114 L655,119 L648,126 L644,128 L636,130 L629,130 L622,128 L618,126 L610,118 L607,109 L607,95 L610,87 L617,79 Z M415,57 L414,57 L410,53 L406,51 L400,50 L397,48 L392,47 L381,47 L377,48 L365,53 L361,57 L359,58 L357,56 L356,50 L330,50 L328,52 L329,69 L329,125 L328,151 L329,154 L331,155 L356,155 L358,153 L358,90 L360,85 L366,78 L372,74 L379,73 L386,74 L392,78 L395,81 L398,89 L398,153 L400,155 L425,155 L427,154 L428,89 L427,81 L423,68 L421,64 Z M191,60 L185,68 L183,73 L180,76 L177,82 L177,84 L172,92 L169,101 L165,107 L165,110 L169,118 L170,123 L172,127 L177,133 L177,135 L180,139 L183,141 L192,151 L199,156 L208,161 L213,163 L223,165 L225,167 L262,167 L264,165 L271,164 L277,162 L292,154 L296,151 L309,138 L311,133 L314,130 L314,127 L292,115 L290,113 L286,113 L283,119 L274,128 L264,134 L251,137 L237,137 L224,134 L214,128 L204,118 L198,108 L194,95 L193,84 L195,71 L199,59 L208,46 L206,46 L201,50 Z M800,10 L801,155 L828,154 L829,151 L828,96 L829,90 L833,82 L837,78 L844,74 L856,74 L860,76 L866,81 L870,93 L870,154 L872,155 L898,154 L898,77 L895,73 L894,67 L891,62 L881,53 L871,49 L862,47 L854,47 L846,49 L836,53 L830,59 L828,57 L828,10 Z M505,10 L493,12 L483,15 L473,20 L467,24 L456,34 L448,45 L447,49 L444,53 L441,61 L438,77 L438,91 L441,107 L444,114 L447,118 L449,124 L453,128 L455,132 L463,140 L476,149 L491,155 L503,157 L520,157 L535,154 L548,148 L551,145 L554,144 L560,139 L568,130 L571,125 L570,120 L567,119 L549,108 L546,108 L543,113 L536,120 L527,125 L518,128 L504,128 L497,126 L487,121 L482,117 L475,109 L471,101 L468,90 L468,77 L470,68 L476,57 L487,46 L496,41 L509,39 L514,39 L515,40 L521,40 L528,42 L535,46 L547,59 L549,59 L570,46 L572,43 L565,33 L559,27 L554,23 L544,17 L534,13 L518,10 Z M314,39 L312,37 L311,34 L306,28 L298,20 L285,11 L270,5 L254,2 L252,0 L233,0 L231,2 L217,4 L206,7 L195,12 L185,18 L177,24 L164,37 L162,41 L158,45 L146,65 L146,67 L144,69 L143,73 L141,75 L78,76 L79,103 L120,103 L122,106 L120,108 L117,115 L109,123 L98,129 L90,131 L80,132 L72,131 L61,128 L49,121 L39,110 L33,98 L32,93 L32,72 L33,67 L40,53 L49,44 L53,41 L69,34 L89,34 L93,35 L107,42 L117,53 L120,54 L125,51 L128,48 L139,41 L142,40 L144,37 L139,30 L130,21 L120,14 L108,8 L90,4 L70,4 L63,5 L51,8 L37,15 L25,24 L20,29 L13,38 L6,51 L4,57 L3,65 L2,68 L0,70 L0,96 L2,98 L5,112 L7,117 L14,129 L28,144 L36,150 L45,155 L57,159 L61,159 L65,161 L72,162 L87,162 L95,161 L113,156 L126,149 L131,145 L142,134 L146,129 L147,126 L151,122 L153,117 L157,112 L160,104 L166,94 L169,86 L179,67 L182,64 L183,61 L187,56 L197,46 L204,41 L216,35 L228,32 L235,31 L247,31 L254,32 L262,34 L273,40 L284,51 L286,55 L289,56 L296,52 L301,48 L306,46 L312,42 Z M311,36 L312,40 L309,43 L299,48 L294,52 L288,55 L283,48 L272,38 L266,36 L264,34 L255,31 L247,30 L235,30 L219,33 L204,40 L193,48 L184,58 L183,61 L179,65 L173,76 L169,86 L164,94 L162,100 L157,110 L149,123 L144,130 L128,146 L124,149 L113,155 L97,160 L81,161 L78,158 L78,135 L81,132 L90,132 L95,131 L104,127 L109,124 L115,117 L122,111 L131,97 L140,78 L143,75 L146,67 L154,53 L159,47 L160,44 L164,40 L166,36 L180,23 L192,15 L204,9 L216,5 L225,3 L233,2 L251,2 L259,3 L274,7 L288,14 L295,19 L308,32 Z" />
++              </svg>
++              <span class="mfs-pill">MFS</span>
+             </div>
+             <span class="logo-sub">Fintech AI Operations</span>
           </div>
         </a>
       </div>
