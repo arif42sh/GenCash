@@ -31,7 +31,7 @@ const getTimeGreeting = (isBangla) => {
 export default function AppHeader({
   userName = 'Tanvir',
   userAvatar = null,
-  unreadNotifCount = 3,
+  unreadNotifCount = 0,
   onOpenProfile,
   onOpenNotif,
   onOpenSettings,
@@ -108,11 +108,13 @@ export default function AppHeader({
             style={styles.iconCircle}
           >
             <Ionicons name="notifications-outline" size={18} color="#0F4D3C" />
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>
-                {String(unreadNotifCount > 0 ? unreadNotifCount : 3)}
-              </Text>
-            </View>
+            {Number(unreadNotifCount) > 0 ? (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>
+                  {unreadNotifCount > 9 ? '9+' : String(unreadNotifCount)}
+                </Text>
+              </View>
+            ) : null}
           </TouchableOpacity>
 
           {/* Settings Gear */}
@@ -247,20 +249,23 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: -2,
-    right: -2,
+    top: -3,
+    right: -3,
     backgroundColor: '#EF4444',
     borderRadius: 8,
     paddingHorizontal: 4,
-    minWidth: 15,
+    height: 16,
+    minWidth: 16,
+    justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: '#FFFFFF',
   },
   badgeText: {
-    color: '#FFF',
+    color: '#FFFFFF',
     fontSize: 9,
-    fontWeight: 'bold',
+    fontWeight: '800',
+    lineHeight: 11,
   },
   profileRow: {
     flexDirection: 'row',

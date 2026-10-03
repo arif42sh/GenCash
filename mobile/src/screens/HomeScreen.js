@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useNotifications } from '../context/NotificationContext';
 import { api } from '../services/api';
 import AppHeader from '../components/AppHeader';
 import { BalanceCard } from '../components/BalanceCard';
@@ -34,8 +35,8 @@ const RECENT_CONTACTS = [
 
 export const HomeScreen = ({ navigation }) => {
   const { user, wallet, refreshWallet } = useAuth();
+  const { unreadCount, fetchNotifications: refreshNotifications } = useNotifications();
   const [refreshing, setRefreshing] = useState(false);
-  const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [showUserQR, setShowUserQR] = useState(false);
   const [showLaunchOfferModal, setShowLaunchOfferModal] = useState(false);
@@ -46,11 +47,7 @@ export const HomeScreen = ({ navigation }) => {
   const loadDashboardData = useCallback(async () => {
     try {
       await refreshWallet();
-
-      // Load notifications count
-      const notifData = await api.getNotifications();
-      const unread = Array.isArray(notifData) ? notifData.filter((n) => !n.is_read).length : 0;
-      setUnreadNotifCount(unread);
+      await refreshNotifications();
 
       // Load dynamic Spending Anomaly Offer Pipeline
       const nboRes = await api.getNextBestOffers();
@@ -60,7 +57,7 @@ export const HomeScreen = ({ navigation }) => {
     } catch (e) {
       console.warn('Dashboard data fetch error:', e);
     }
-  }, [refreshWallet]);
+  }, [refreshWallet, refreshNotifications]);
 
   useEffect(() => {
     loadDashboardData();
@@ -189,7 +186,7 @@ export const HomeScreen = ({ navigation }) => {
         <AppHeader
           userName={userName}
           userAvatar={user?.avatar || user?.profile_image || null}
-          unreadNotifCount={unreadNotifCount}
+          unreadNotifCount={unreadCount}
           onOpenProfile={() => navigation.navigate('Profile')}
           onOpenNotif={() => navigation.navigate('Notifications')}
           onOpenSettings={() => navigation.navigate('Settings')}
