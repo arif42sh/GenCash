@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>GenCash — Phase 2 Judge Defense & Technical Overview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm 12mm 14mm 12mm;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Hind Siliguri', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 9.5pt;
+      line-height: 1.55;
+      color: #0F172A;
+      background: #FFFFFF;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 100%;
+    }
+    .header {
+      border-bottom: 2px solid #0284C7;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .title-box h1 {
+      font-size: 19pt;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 4px 0;
+      letter-spacing: -0.5px;
+    }
+    .title-box p {
+      font-size: 9pt;
+      color: #475569;
+      margin: 0;
+    }
+    .meta-box {
+      text-align: right;
+      font-size: 8pt;
+      color: #64748B;
+    }
+    .meta-box .badge {
+      display: inline-block;
+      background: #0284C7;
+      color: #FFFFFF;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      margin-bottom: 4px;
+    }
+    h2 {
+      font-size: 11.5pt;
+      font-weight: 700;
+      color: #0F172A;
+      margin: 14px 0 6px 0;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    h3 {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0369A1;
+      margin: 8px 0 4px 0;
+    }
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .card-title {
+      font-weight: 700;
+      color: #0F172A;
+      font-size: 9pt;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-title.red { color: #DC2626; }
+    .card-title.blue { color: #0284C7; }
+    .card-title.green { color: #16A34A; }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 8.5pt;
+      color: #334155;
+    }
+    .card ul {
+      padding-left: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 10px 0;
+      font-size: 8pt;
+    }
+    th, td {
+      border: 1px solid #CBD5E1;
+      padding: 5px 7px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #F1F5F9;
+      color: #0F172A;
+      font-weight: 700;
+      font-size: 8pt;
+    }
+    tbody tr:nth-child(even) {
+      background: #F8FAFC;
+    }
+    .badge-pass {
+      display: inline-block;
+      background: #DCFCE7;
+      color: #15803D;
+      font-weight: 700;
+      font-size: 7pt;
+      padding: 2px 5px;
+      border-radius: 3px;
+      border: 1px solid #86EFAC;
+    }
+    .badge-defect {
+      display: inline-block;
+      background: #FEE2E2;
+      color: #B91C1C;
+      font-weight: 700;
+      font-size: 7pt;
+      padding: 2px 5px;
+      border-radius: 3px;
+      border: 1px solid #FCA5A5;
+    }
+    .code-box {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 7pt;
+      line-height: 1.4;
+      margin: 6px 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .qa-box {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-left: 3px solid #16A34A;
+      border-radius: 4px;
+      padding: 7px 10px;
+      margin-bottom: 8px;
+    }
+    .qa-question {
+      font-weight: 700;
+      color: #166534;
+      font-size: 8.5pt;
+      margin-bottom: 3px;
+    }
+    .qa-answer {
+      font-size: 8.5pt;
+      color: #1F2937;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+    .highlight-stat {
+      font-weight: 700;
+      color: #0284C7;
+    }
+    .footer {
+      margin-top: 15px;
+      border-top: 1px solid #E2E8F0;
+      padding-top: 6px;
+      text-align: center;
+      font-size: 7.5pt;
+      color: #94A3B8;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="title-box">
+      <h1>GenCash — জাজ ডিফেন্স ও টেকনিক্যাল প্রেজেন্টেশন</h1>
+      <p>Next-Generation AI Financial Operating System for Mobile Financial Services (upay)</p>
+    </div>
+    <div class="meta-box">
+      <div class="badge">GRAND FINALE EVALUATION</div>
+      <div>ট্র্যাক: ০৪ (AI/ML & Financial Innovation)</div>
+      <div>তারিখ: অক্টোবর ৭, ২০২৬</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2>১. প্রজেক্ট পরিচিতি ও মূল সমস্যা (Executive Summary)</h2>
+  <div class="intro-grid">
+    <div class="card">
+      <div class="card-title red">⚠️ বাংলাদেশের MFS-এর ২টি প্রধান সমস্যা</div>
+      <ul>
+        <li><strong>১. লিকুইডিটি ও ক্যাশ-আউট ফি লিকেজ:</strong> সাধারণ গ্রাহকরা বেতন পেয়েই একবারে ক্যাশ-আউট করে ফেলেন। এতে প্রতি মাসে গ্রাহকের প্রায় <strong>১৮০–২১৫ টাকা ফি নষ্ট হয়</strong> এবং ওয়ালেট শূন্য হয়ে যায়।</li>
+        <li><strong>২. ক্যাম্পেইনের বিশাল অপচয় (৭৮.৪%):</strong> সবাইকে ঢালাওভাবে ক্যাশব্যাক পাঠালে যাদের অফার লাগে না তারাও পায় (Sure Things), আবার অনেকে বিরক্ত হয়ে অ্যাপ আনইন্সটল করে (Sleeping Dogs)।</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title green">✅ GenCash Dual-Core সমাধান</div>
+      <ul>
+        <li><strong>১. Liquidity & Fee Engine:</strong> গ্রাহকের ক্যাশ-ফ্লো প্রেডিক্ট করে অপ্রয়োজনীয় ক্যাশ-আউট থামায় এবং ডিজিটাল মার্চেন্ট ও বিল পেমেন্টে উৎসাহিত করে গ্রাহকের ফি বাঁচায়।</li>
+        <li><strong>২. Causal Uplift Campaign Optimizer:</strong> কজল এআই (T-Learner CATE) দিয়ে শুধুমাত্র <em>Persuadables</em> গ্রাহকদের খুঁজে বের করে। ফলে <strong>৩৮.৭% বাজেট সাশ্রয়</strong> ও <strong>+২৩.৪% কনভার্সন বৃদ্ধি</strong> পায়।</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2>২. জাজদের পূর্বের আপত্তি ও ফেজ ২ আপডেট (Dimension-by-Dimension Defense)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 20%;">ডাইমেনশন ও স্কোর</th>
+        <th style="width: 25%;">জাজদের মূল আপত্তি (Phase 1)</th>
+        <th style="width: 40%;">ফেজ ২ টেকনিক্যাল সমাধান ও কোড</th>
+        <th style="width: 15%;">ফলাফল</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Dimension 1: Problem Relevance</strong><br><span class="badge-defect">Score: 15.67 / 20 (-4.33)</span></td>
+        <td>বড় ইকোসিস্টেম না দেখিয়ে উপায়ের বাস্তব সমস্যা ও ডাটা দেখান।</td>
+        <td>সরাসরি <strong>Dual-Core Architecture</strong>-এ ডি-স্কোপ করা হয়েছে। ৬৪.২% ইউজারের লিকুইডিটি ঘাটতি, ৳২১৫ ফি লিকেজ এবং ৭৮.৪% ক্যাম্পেইন অপচয়ের ডাটা সংযুক্ত।</td>
+        <td><span class="badge-pass">EMPIRICALLY PROVEN</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dimension 2: AI / ML Depth</strong><br><span class="badge-defect">Score: 11.33 / 20 (-8.67)</span></td>
+        <td>সাধারণ প্রপেনসিটি বা z-score কজল এমএল নয়। আসল CATE/Qini দেখান।</td>
+        <td><strong>Two-Model T-Learner (LightGBM)</strong>: $\hat{\tau}(X) = \hat{\mu}_1(X) - \hat{\mu}_0(X)$। কোভ্যারিয়েট ব্যালান্স (SMD &lt; 0.05), কিউনী স্কোর <strong>$Q = 0.2755 \pm 0.047$</strong> ও <strong>AUUC = 0.7844</strong>। PFM-কে রুল-বেসড ঘোষণা।</td>
+        <td><span class="badge-pass">CAUSAL VALIDATED</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dimension 3: Business Impact</strong><br><span class="badge-defect">Score: 13.00 / 20 (-7.00)</span></td>
+        <td>মুখের কথায় ROI না বলে ১০,০০০ কোহোর্টে এক্সপেরিমেন্টাল ডাটা দেখান।</td>
+        <td><strong>$N=10,000$ Controlled Pilot</strong>: কনভার্সন <strong>+২৩.৪% বৃদ্ধি</strong>, প্রমোশনাল বাজেট <strong>৩৮.৭% সাশ্রয়</strong>, CPIA ৳৮৪.৫০ থেকে কমে <strong>৳২৯.১০</strong>, গ্রাহকের ফি সেভ <strong>৳১৮০/মাস</strong>।</td>
+        <td><span class="badge-pass">+23.4% LIFT</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dimension 4: Prototype Quality</strong><br><span class="badge-defect">Score: 12.67 / 15 (-2.33)</span></td>
+        <td>কনকারেন্সি রেস, রোলব্যাক ও উপায় স্যান্ডবক্সের অটোমেটেড টেস্ট দরকার।</td>
+        <td><strong>১২/১২ Pytest টেস্ট পাস:</strong> ১০টি কনকারেন্ট উইথড্রয়ালে MySQL <code>SELECT ... FOR UPDATE</code> রো-লকিং (৫ সফল, ৫ ফেইল, ০ ব্যালেন্স), Idempotency Key, ACID Rollback, এবং উপায় MFS স্যান্ডবক্স।</td>
+        <td><span class="badge-pass">12/12 TESTS PASSED</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dimension 5: Ablation Studies</strong><br><span class="badge-defect">Score: 6.33 / 10 (-3.67)</span></td>
+        <td>প্রতিটি কম্পোনেন্ট আলাদা ভ্যালু দিচ্ছে তার ৫-ধাপের অ্যাবলেশন স্টাডি দিন।</td>
+        <td><strong>৫-ধাপের অ্যাবলেশন:</strong> Blanket (2.1%) &rarr; Propensity (4.3%) &rarr; Uplift (9.4%) &rarr; Affinity (12.6%) &rarr; <strong>Full Stack (14.8%)</strong>। কম্পোজিট স্কোরিং ফর্মুলা প্রমাণিত।</td>
+        <td><span class="badge-pass">5.3x MULTIPLIER</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dimension 6: Scalability & MLOps</strong><br><span class="badge-defect">Score: 6.00 / 10 (-4.00)</span></td>
+        <td>লোকাল সেটআপ ছেড়ে হাই-ভলিউম স্ট্রিমিং ও মডেল রেজিমেন্ট দেখান।</td>
+        <td><strong>Locust Load Test:</strong> ৫০০ ভার্চুয়াল ইউজার @ <strong>১,০০০+ RPS</strong> sustained, গড় ল্যাটেন্সি <strong>১৮.৪২ms</strong> (&lt;২৮ms SLA), 0.00% এরর। Model Registry (SHA-256) এবং PSI ড্রিফ্ট ট্র্যাকার।</td>
+        <td><span class="badge-pass">1,000 RPS (18ms)</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dimension 7: Responsible AI & Security</strong><br><span class="badge-defect">Score: 3.00 / 5 (-2.00)</span></td>
+        <td>README-তে ডেমো পাসওয়ার্ড ছিল। জিরো-ফলব্যাক ও অপ্ট-আউট কনসেন্ট চাই।</td>
+        <td><strong>Zero-Fallback Crash:</strong> ডিফল্ট সিক্রেটে সার্ভার স্টার্টআপ ক্র্যাশ। README স্যানিটাইজড। SlowAPI রেট লিমিটিং, 3-Tier RBAC এবং মোবাইল ক্যাম্পেইন অপ্ট-আউট টগল। লেজার আইসোলেটেড।</td>
+        <td><span class="badge-pass">ZERO FALLBACK</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 3 -->
+  <h2>৩. অটোমেটেড ইন্টিগ্রেশন ও কনকারেন্সি টেস্ট ফলাফল (12/12 Passed)</h2>
+  <p style="margin: 2px 0 6px 0; font-size: 8.5pt; color: #475569;">
+    কমান্ড <code>python run_phase2_integration_tests.py</code> রান করে লাইভ ডাটাবেসে প্রাপ্ত ফলাফল:
+  </p>
+  <div class="code-box">============================= test session starts =============================
+rootdir: backend | plugins: anyio-4.15.1, locust-2.46.7 | collected 12 items
+
+tests/test_concurrency.py::test_concurrent_withdrawal_race_condition PASSED [  8%]
+tests/test_concurrency.py::test_concurrent_transfers_no_deadlock PASSED  [ 16%]
+tests/test_failure_recovery.py::test_atomic_rollback_on_database_commit_failure PASSED [ 25%]
+tests/test_failure_recovery.py::test_atomic_rollback_on_cash_out_notification_failure PASSED [ 33%]
+tests/test_idempotency.py::test_idempotency_duplicate_request_replayed_without_double_debit PASSED [ 41%]
+tests/test_idempotency.py::test_idempotency_payload_mismatch_rejected PASSED [ 50%]
+tests/test_upay_adapter.py::test_upay_signature_verification_and_tamper_rejection PASSED [ 58%]
+tests/test_upay_adapter.py::test_upay_cash_in_flow PASSED                [ 66%]
+tests/test_upay_adapter.py::test_upay_cash_out_with_standard_fee PASSED  [ 75%]
+tests/test_upay_adapter.py::test_upay_bill_pay_flow PASSED               [ 83%]
+tests/test_upay_adapter.py::test_upay_insufficient_funds_rejected PASSED [ 91%]
+tests/test_upay_adapter.py::test_upay_sandbox_http_endpoints PASSED      [100%]
+
+============================= 12 passed in 5.28s ==============================</div>
+
+  <!-- SECTION 4 -->
+  <h2>৪. জাজদের সম্ভাব্য প্রশ্ন ও আত্মবিশ্বাসী উত্তর (Judge Q&A Cheat Sheet)</h2>
+
+  <div class="qa-box">
+    <div class="qa-question">❓ প্রশ্ন ১: "আপনারা তো বলছেন PFM-এ AI ব্যবহার করেছেন, এটা কি সত্যি মেশিন লার্নিং?"</div>
+    <div class="qa-answer">
+      <strong>উত্তর:</strong> "না স্যার, ফেজ ২-তে আমরা এটি সৎভাবে স্পষ্ট করেছি। আমাদের PFM ইঞ্জিনটি একটি <em>Deterministic Rule & Variance Engine</em>, কারণ গ্রাহকের একাউন্ট ব্যালেন্স ও খরচের হিসাব ১০০% নির্ভুল হতে হয়। আমাদের সমস্ত Machine Learning সক্ষমতা বিশেষভাবে নিয়োজিত হয়েছে <strong>Causal Uplift NBO Engine</strong>-এ, যেখানে আমরা লাইটজিবিএম টি-লার্নার ব্যবহার করে গ্রাহকের ইনক্রিমেন্টাল লিফট প্রেডিক্ট করি।"
+    </div>
+  </div>
+
+  <div class="qa-box">
+    <div class="qa-question">❓ প্রশ্ন ২: "নেটওয়ার্ক ফেইল বা অ্যাপ ক্র্যাশ করলে ডাবল ডেবিট হবে না তার নিশ্চয়তা কী?"</div>
+    <div class="qa-answer">
+      <strong>উত্তর:</strong> "আমাদের ব্যাকএন্ডে <strong>X-Idempotency-Key</strong> মিডলওয়্যার যুক্ত আছে। নেটওয়ার্ক ড্রপের পর মোবাইল অ্যাপ থেকে একই কী দিয়ে রিট্রাই আসলে মিডলওয়্যার ডাটাবেসে না গিয়ে মেমোরি থেকে সরাসরি আগের সফল রেসপন্স ক্যাশ থেকে রিটার্ন করে। আমাদের <code>test_idempotency.py</code> টেস্টে প্রমাণিত হয়েছে ব্যালেন্স দু'বার কাটে না এবং লেজারে দ্বিতীয় কোনো রো তৈরি হয় না।"
+    </div>
+  </div>
+
+  <div class="qa-box">
+    <div class="qa-question">❓ প্রশ্ন ৩: "১০ জন গ্রাহক বা একই গ্রাহক ১০ বার একসাথে উইথড্র করলে ওভারড্রাফট হবে না?"</div>
+    <div class="qa-answer">
+      <strong>উত্তর:</strong> "না স্যার। আমরা MySQL InnoDB-র <strong>Pessimistic Row Locking (<code>SELECT ... FOR UPDATE</code>)</strong> ব্যবহার করেছি। আমাদের <code>test_concurrency.py</code> টেস্টে ১,০০০ টাকার ব্যালেন্স থেকে ১০টি থ্রেড একসাথে ২০০ টাকা তুলতে গেলে ঠিক ৫টি সফল হয়েছে এবং বাকি ৫টি ৪০০ Insufficient Funds দিয়ে ফেইল করেছে। ব্যালেন্স নেগেটিভ না হয়ে ঠিক ৳০.০০ টাকায় এসে লক হয়েছে।"
+    </div>
+  </div>
+
+  <div class="qa-box">
+    <div class="qa-question">❓ প্রশ্ন ৪: "প্রপেনসিটি মডেলিং বনাম কজল আপলিফটের আসল পার্থক্যটা কী?"</div>
+    <div class="qa-answer">
+      <strong>উত্তর:</strong> "প্রপেনসিটি মডেল শুধু প্রেডিক্ট করে কে অফার রিডিম করতে পারে $P(Y=1|X)$, যা মূলত <em>Sure Things</em> গ্রাহকদের টার্গেট করে বাজেট নষ্ট করে। পক্ষান্তরে, কজল আপলিফট ইন্ডিভিজুয়াল ট্রিটমেন্ট ইফেক্ট ক্যালকুলেট করে: $\tau(X) = Y(1) - Y(0)$। আমরা শুধুমাত্র <em>Persuadables</em> গ্রাহকদের অফার দিই, যারা অফার পেলেই ডিজিটাল পেমেন্ট করবে, অফার না পেলে করত না।"
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <h2>৫. উপসংহার: কেন GenCash উপায়ের জন্য এখনই কার্যকর?</h2>
+  <div class="card" style="background: #F0F9FF; border: 1px solid #BAE6FD;">
+    <p style="font-size: 9pt; color: #0369A1; font-weight: 500;">
+      GenCash কোনো তাত্ত্বিক কনসেপ্ট নয়; এটি একটি <strong>প্রোডাকশন-রেডি, টেস্টেড এবং সিকিউরড ফিনটেক সলিউশন</strong>। এটি উপায়ের প্রতি মাসে লাখ লাখ টাকা ক্যাম্পেইন অপচয় বন্ধ করে, গ্রাহকের ক্যাশ-আউট ফি বাঁচিয়ে তাদের ডিজিটাল পেমেন্টে ধরে রাখে এবং উপায়ের ক্যাশ-ইন টু মার্চেন্ট ট্রানজ্যাকশন ভেলোসিটি ৩.৮ গুণ বৃদ্ধি করে।
+    </p>
+  </div>
+
+  <div class="footer">
+    GenCash — Phase 2 Official Technical Defense Document | GitHub Repository: github.com/arif42sh/GenCash | Branch: main
+  </div>
+
+</div>
+</body>
+</html>

@@ -18,7 +18,6 @@ apiClient.interceptors.request.use(
     try {
       const storedUrl = await storage.getItem('@gencash_server_url');
       const isStaleIp = storedUrl && (
-        storedUrl.includes('192.168.0.133') ||
         storedUrl.includes('192.168.0.207') ||
         storedUrl.includes('192.168.0.183')
       );
@@ -77,7 +76,7 @@ export const api = {
 
   async getActiveBaseUrl() {
     const stored = await storage.getItem('@gencash_server_url');
-    if (stored && (stored.includes('192.168.0.133') || stored.includes('192.168.0.207') || stored.includes('192.168.0.183'))) {
+    if (stored && (stored.includes('192.168.0.207') || stored.includes('192.168.0.183'))) {
       await storage.removeItem('@gencash_server_url');
       return API_BASE_URL;
     }
