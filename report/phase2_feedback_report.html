@@ -583,7 +583,7 @@
     <div class="action-box">
       <strong>Phase 2 Implementation Deliverables:</strong>
       <ul>
-        <li><strong>Formal Ablation Study:</strong>
+        <li><strong>Formal 5-Stage Ablation Study:</strong>
           <table>
             <thead>
               <tr>
@@ -602,6 +602,11 @@
               <tr><td><strong>5. Full GenCash Stack</strong></td><td><strong>14.8%</strong></td><td><strong>+12.7%</strong></td><td><strong>8.2%</strong></td><td><strong>5.3x</strong></td></tr>
             </tbody>
           </table>
+          <div style="margin-top: 6px; padding: 6px 8px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 7.5pt;">
+            <strong>Stage 5 Composite Scoring Formula:</strong><br>
+            <code>Final_Score<sub>i,k</sub> = &tau;&#770;<sub>i</sub>(X) &times; Affinity<sub>i,k</sub> &times; (1 - Fatigue_Penalty<sub>i</sub>)</code><br>
+            <span style="color: #64748B;">Validated via <code>backend/run_ablation_experiments.py</code> | Visual chart: <code>report/dimension5_ablation_study.png</code></span>
+          </div>
         </li>
       </ul>
     </div>
