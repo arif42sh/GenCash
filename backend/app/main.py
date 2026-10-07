@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base, SessionLocal, check_and_add_offer_columns
 import app.models  # load all models
+from app.core.idempotency import IdempotencyMiddleware
 from app.api.v1 import (
     auth,
     users,
@@ -15,6 +16,7 @@ from app.api.v1 import (
     notifications,
     admin,
     predict,
+    upay,
 )
 from seed_data import seed_initial_data
 
@@ -60,6 +62,9 @@ limiter = Limiter(key_func=get_remote_address, default_limits=[settings.RATE_LIM
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+# Enterprise Distributed Idempotency Middleware (X-Idempotency-Key)
+app.add_middleware(IdempotencyMiddleware)
+
 # CORS configuration for Mobile App (Expo) and Web Panel
 app.add_middleware(
     CORSMiddleware,
@@ -80,6 +85,8 @@ app.include_router(notifications.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
 app.include_router(predict.router, prefix=settings.API_V1_STR)
 app.include_router(predict.router)  # Direct /v1/predict/uplift-nbo SLA microservice endpoint
+app.include_router(upay.router, prefix=settings.API_V1_STR)  # /api/mfs/*
+app.include_router(upay.router, prefix="/api/v1")            # /api/v1/mfs/* standard MFS format
 
 
 import os

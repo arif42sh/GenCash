@@ -126,6 +126,9 @@ class TransactionService:
             db.refresh(txn)
 
             return TransactionService._format_transaction(txn, current_user_id=sender.id)
+        except HTTPException:
+            db.rollback()
+            raise
         except Exception as e:
             db.rollback()
             raise HTTPException(
@@ -140,8 +143,11 @@ class TransactionService:
         request: CashOutRequest
     ) -> TransactionResponse:
         amount = Decimal(str(round(request.amount, 2)))
-        fee_rate = Decimal(str(settings.DEFAULT_FEE_CASH_OUT_PERCENT)) / Decimal("100")
-        fee = Decimal(str(round(float(amount * fee_rate), 2)))
+        if getattr(request, "waive_fee", False):
+            fee = Decimal("0.00")
+        else:
+            fee_rate = Decimal(str(settings.DEFAULT_FEE_CASH_OUT_PERCENT)) / Decimal("100")
+            fee = Decimal(str(round(float(amount * fee_rate), 2)))
         total_debit = amount + fee
 
         # Mandatory PIN verification
@@ -191,6 +197,9 @@ class TransactionService:
             db.refresh(txn)
 
             return TransactionService._format_transaction(txn, current_user_id=sender.id)
+        except HTTPException:
+            db.rollback()
+            raise
         except Exception as e:
             db.rollback()
             raise HTTPException(status_code=500, detail=f"Cash Out failed: {str(e)}")

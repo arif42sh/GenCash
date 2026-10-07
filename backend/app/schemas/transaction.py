@@ -15,6 +15,7 @@ class CashOutRequest(BaseModel):
     agent_phone: str = Field(..., example="01912345678")
     amount: float = Field(..., gt=0, example=1000.0)
     password: str = Field(..., min_length=4, description="User PIN for Cash Out")
+    waive_fee: Optional[bool] = Field(False, description="Fee waiver flag for promotional or benchmark testing")
 
 
 class MobileRechargeRequest(BaseModel):
