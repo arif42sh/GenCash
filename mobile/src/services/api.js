@@ -17,8 +17,19 @@ apiClient.interceptors.request.use(
   async (config) => {
     try {
       const storedUrl = await storage.getItem('@gencash_server_url');
-      if (storedUrl) {
+      const isStaleIp = storedUrl && (
+        storedUrl.includes('192.168.0.133') ||
+        storedUrl.includes('192.168.0.207') ||
+        storedUrl.includes('192.168.0.183')
+      );
+      if (storedUrl && !isStaleIp) {
         config.baseURL = storedUrl;
+      } else {
+        if (isStaleIp) {
+          // Clear stale offline IP
+          await storage.removeItem('@gencash_server_url');
+        }
+        config.baseURL = API_BASE_URL;
       }
       const token = await storage.getItem('@gencash_token');
       if (token) {
@@ -66,7 +77,11 @@ export const api = {
 
   async getActiveBaseUrl() {
     const stored = await storage.getItem('@gencash_server_url');
-    return stored || currentBaseUrl;
+    if (stored && (stored.includes('192.168.0.133') || stored.includes('192.168.0.207') || stored.includes('192.168.0.183'))) {
+      await storage.removeItem('@gencash_server_url');
+      return API_BASE_URL;
+    }
+    return stored || currentBaseUrl || API_BASE_URL;
   },
 
   // Auth

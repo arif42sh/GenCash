@@ -397,7 +397,7 @@ export const AddMoneyScreen = ({ navigation }) => {
                   <Text style={styles.modalFieldLabel}>{isBangla ? 'নাম' : 'Holder Name'}</Text>
                   <TextInput
                     style={styles.modalInput}
-                    placeholder="Tanvir Ahmed"
+                    placeholder="Arif Shahriar"
                     value={holderName}
                     onChangeText={setHolderName}
                   />

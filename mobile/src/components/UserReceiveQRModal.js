@@ -20,7 +20,7 @@ export const UserReceiveQRModal = ({ visible, onClose }) => {
   const [requestAmount, setRequestAmount] = useState('');
   const [showAmountInput, setShowAmountInput] = useState(false);
 
-  const userName = user?.name || 'Tanvir Ahmed';
+  const userName = user?.name || 'Arif Shahriar';
   const userPhone = user?.phone || '01711111111';
 
   const handleShare = async () => {

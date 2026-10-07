@@ -1,0 +1,93 @@
+{
+  "registry_name": "GenCash-MFS-Model-Registry",
+  "organization": "upay / GenCash AI Core",
+  "active_production_version": "v1.1.0",
+  "models": {
+    "v1.0.0": {
+      "model_id": "gencash-uplift-v1.0.0",
+      "version": "v1.0.0",
+      "artifact_file": "model_v1.0.0_uplift.joblib",
+      "sha256_checksum": "1e8fd0889690ff7231c4110da76bc69dc35b3ac6996d3967bd75c7a5ff7fa636",
+      "pkl_artifact_file": "model_v1.0.0_uplift.pkl",
+      "pkl_sha256_checksum": "2046d6906f88494cd786852e9e531ac8b6fda8d9303497d8d75ea182996f67b5",
+      "algorithm": "Two-Model (T-Learner) LightGBM",
+      "hyperparameters": {
+        "objective": "binary",
+        "metric": "binary_logloss",
+        "boosting_type": "gbdt",
+        "learning_rate": 0.04,
+        "num_leaves": 31,
+        "max_depth": 5,
+        "subsample": 0.85,
+        "colsample_bytree": 0.85,
+        "random_state": 42,
+        "verbose": -1,
+        "n_estimators": 130
+      },
+      "validation_metrics": {
+        "qini_coefficient": 0.27,
+        "auuc": 0.7972
+      },
+      "features": [
+        "recency_days",
+        "frequency_30d",
+        "monetary_avg",
+        "wallet_balance",
+        "recharge_ratio",
+        "billpay_ratio",
+        "merchant_ratio",
+        "fatigue_score",
+        "discount_sensitivity",
+        "operator_match"
+      ],
+      "training_samples": 15000,
+      "status": "ARCHIVED",
+      "registered_at": "2026-10-07T04:50:22.073695+00:00",
+      "artifact_size_bytes": 253014,
+      "archived_at": "2026-10-07T04:58:51.554784+00:00"
+    },
+    "v1.1.0": {
+      "model_id": "gencash-uplift-v1.1.0",
+      "version": "v1.1.0",
+      "artifact_file": "model_v1.1.0_uplift.joblib",
+      "sha256_checksum": "8bf51dc8b10272b603cc3ebcd75f25b565e9dad371933b4eee3fc87691294c1e",
+      "pkl_artifact_file": "model_v1.1.0_uplift.pkl",
+      "pkl_sha256_checksum": "625568acf30f6d976088e2ab7b1cfe4fc524a831a9e37fce9e76dd1541ef0b56",
+      "algorithm": "Two-Model (T-Learner) LightGBM",
+      "hyperparameters": {
+        "objective": "binary",
+        "metric": "binary_logloss",
+        "boosting_type": "gbdt",
+        "learning_rate": 0.04,
+        "num_leaves": 31,
+        "max_depth": 5,
+        "subsample": 0.85,
+        "colsample_bytree": 0.85,
+        "random_state": 42,
+        "verbose": -1,
+        "n_estimators": 130
+      },
+      "validation_metrics": {
+        "qini_coefficient": 0.2716,
+        "auuc": 0.7982,
+        "retrained_on_drift": true
+      },
+      "features": [
+        "recency_days",
+        "frequency_30d",
+        "monetary_avg",
+        "wallet_balance",
+        "recharge_ratio",
+        "billpay_ratio",
+        "merchant_ratio",
+        "fatigue_score",
+        "discount_sensitivity",
+        "operator_match"
+      ],
+      "training_samples": 12000,
+      "status": "PRODUCTION",
+      "registered_at": "2026-10-07T04:58:51.554784+00:00",
+      "artifact_size_bytes": 241329
+    }
+  }
+}

@@ -36,3 +36,7 @@ backend/app/static/uploads/avatars/*
 admin/uploads/avatars/*
 !admin/uploads/avatars/.gitkeep
 
+# Scratch Screencaps
+phone_screen*.png
+
+

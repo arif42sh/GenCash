@@ -9,7 +9,7 @@ export const ServerConfigModal = ({ visible, onClose, onUpdated }) => {
 
   useEffect(() => {
     if (visible) {
-      api.getActiveBaseUrl().then((url) => setServerUrl(url || 'http://192.168.0.183:8000'));
+      api.getActiveBaseUrl().then((url) => setServerUrl(url || 'http://10.249.129.201:8000'));
     }
   }, [visible]);
 
@@ -45,7 +45,7 @@ export const ServerConfigModal = ({ visible, onClose, onUpdated }) => {
               style={styles.input}
               value={serverUrl}
               onChangeText={setServerUrl}
-              placeholder="http://192.168.0.207:8000"
+              placeholder="http://10.249.129.201:8000"
               placeholderTextColor={colors.textMuted}
               autoCapitalize="none"
               autoCorrect={false}
@@ -56,9 +56,9 @@ export const ServerConfigModal = ({ visible, onClose, onUpdated }) => {
           <View style={styles.presetsRow}>
             <TouchableOpacity
               style={styles.presetChip}
-              onPress={() => setPreset('http://192.168.0.183:8000')}
+              onPress={() => setPreset('http://10.249.129.201:8000')}
             >
-              <Text style={styles.presetText}>Local PC (192.168.0.183)</Text>
+              <Text style={styles.presetText}>Local PC (10.249.129.201)</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.presetChip}

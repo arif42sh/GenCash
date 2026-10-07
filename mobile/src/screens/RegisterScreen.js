@@ -96,7 +96,7 @@ export const RegisterScreen = ({ navigation }) => {
             label="Full Name *"
             value={name}
             onChangeText={setName}
-            placeholder="e.g. Tanvir Ahmed"
+            placeholder="e.g. Arif Shahriar"
             icon="person-outline"
           />
 

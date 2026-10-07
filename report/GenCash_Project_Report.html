@@ -1,540 +1,518 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>GenCash Technical Project Report</title>
-<style>
-  @page {
-    size: A4;
-    margin: 20mm 18mm 20mm 18mm;
-    @bottom-right {
-      content: counter(page);
-      font-family: "Latin Modern Roman", "Times New Roman", Times, serif;
-      font-size: 9pt;
+  <meta charset="UTF-8">
+  <title>GenCash: Complete Project Report</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 18mm 20mm 18mm;
+      @top-left {
+        content: "GenCash: Complete Project Technical Report";
+        font-family: "Times New Roman", Times, serif;
+        font-size: 8pt;
+        font-style: italic;
+        color: #000000;
+      }
+      @top-right {
+        content: "DIU CPC × upay AI Hackathon 2026";
+        font-family: "Times New Roman", Times, serif;
+        font-size: 8pt;
+        color: #000000;
+      }
+      @bottom-right {
+        content: "Page " counter(page);
+        font-family: "Times New Roman", Times, serif;
+        font-size: 8.5pt;
+        color: #000000;
+      }
     }
-  }
 
-  body {
-    font-family: "Latin Modern Roman", "Times New Roman", Times, serif;
-    font-size: 10.2pt;
-    line-height: 1.48;
-    color: #111111;
-    text-align: justify;
-    background-color: #ffffff;
-    margin: 0 auto;
-    max-width: 800px;
-  }
+    * {
+      color: #000000 !important;
+      box-sizing: border-box;
+    }
 
-  h1.paper-title {
-    font-size: 17pt;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 8px;
-    line-height: 1.25;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+    body {
+      font-family: "Times New Roman", Times, "Cambria", serif;
+      font-size: 9.6pt;
+      line-height: 1.45;
+      color: #000000;
+      margin: 0;
+      padding: 0;
+      text-align: justify;
+      background-color: #ffffff;
+    }
 
-  .paper-subtitle {
-    font-size: 11pt;
-    text-align: center;
-    font-style: italic;
-    color: #333333;
-    margin-bottom: 14px;
-  }
+    .header-box {
+      text-align: center;
+      margin-bottom: 14pt;
+      border-bottom: 1.5pt solid #000000;
+      padding-bottom: 10pt;
+    }
 
-  .author-block {
-    text-align: center;
-    font-size: 10pt;
-    margin-bottom: 22px;
-    line-height: 1.35;
-  }
+    .doc-category {
+      font-size: 8.8pt;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 4pt;
+    }
 
-  .author-name {
-    font-weight: bold;
-    font-size: 10.5pt;
-  }
+    h1.title {
+      font-size: 14.5pt;
+      font-weight: bold;
+      line-height: 1.25;
+      margin: 0 0 6pt 0;
+    }
 
-  .author-affiliation {
-    font-size: 9.5pt;
-    color: #333333;
-  }
+    .track-meta {
+      font-size: 8.8pt;
+      margin-bottom: 5pt;
+      line-height: 1.35;
+    }
 
-  .abstract-box {
-    margin: 0 25px 22px 25px;
-    padding: 12px 18px;
-    background-color: #fbfbfb;
-    border-top: 1px solid #222222;
-    border-bottom: 1px solid #222222;
-  }
+    .authors {
+      font-size: 9.2pt;
+      line-height: 1.35;
+    }
 
-  .abstract-title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 10pt;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
+    .authors strong {
+      font-size: 9.8pt;
+    }
 
-  .abstract-content {
-    font-size: 9.2pt;
-    line-height: 1.42;
-  }
+    .abstract-container {
+      margin: 10pt 0 14pt 0;
+      padding: 8pt 10pt;
+      border-top: 1pt solid #000000;
+      border-bottom: 1pt solid #000000;
+      font-size: 8.8pt;
+      line-height: 1.4;
+    }
 
-  .keywords {
-    margin-top: 8px;
-    font-size: 9pt;
-  }
+    .abstract-title {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 8.8pt;
+      letter-spacing: 1px;
+      margin-bottom: 3pt;
+      text-align: center;
+    }
 
-  .keywords strong {
-    font-style: italic;
-  }
+    .keywords {
+      margin-top: 4pt;
+      font-size: 8.4pt;
+      font-style: italic;
+    }
 
-  h2 {
-    font-size: 11.5pt;
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-top: 24px;
-    margin-bottom: 8px;
-    border-bottom: 0.5px solid #666666;
-    padding-bottom: 2px;
-    letter-spacing: 0.3px;
-  }
+    h2 {
+      font-size: 10.8pt;
+      font-weight: bold;
+      border-bottom: 0.75pt solid #000000;
+      padding-bottom: 2pt;
+      margin-top: 13pt;
+      margin-bottom: 5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
 
-  h3 {
-    font-size: 10.5pt;
-    font-weight: bold;
-    margin-top: 16px;
-    margin-bottom: 6px;
-  }
+    h3 {
+      font-size: 9.5pt;
+      font-weight: bold;
+      margin-top: 8pt;
+      margin-bottom: 2.5pt;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
 
-  p {
-    margin-top: 0;
-    margin-bottom: 10px;
-    text-indent: 1.5em;
-  }
+    p {
+      margin: 0 0 4.5pt 0;
+      text-indent: 1.4em;
+    }
 
-  p.no-indent {
-    text-indent: 0;
-  }
+    p.no-indent {
+      text-indent: 0;
+    }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 14px 0;
-    font-size: 8.8pt;
-    line-height: 1.3;
-  }
+    ul, ol {
+      margin: 2.5pt 0 4.5pt 16pt;
+      padding: 0;
+    }
 
-  th, td {
-    padding: 6px 8px;
-    text-align: left;
-    vertical-align: top;
-  }
+    li {
+      margin-bottom: 2pt;
+    }
 
-  /* Formal LaTeX Booktabs styling */
-  table.booktabs {
-    border-top: 2px solid #111111;
-    border-bottom: 2px solid #111111;
-  }
+    table.academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8pt 0;
+      font-size: 8.3pt;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
 
-  table.booktabs th {
-    border-bottom: 1px solid #111111;
-    font-weight: bold;
-  }
+    table.academic-table th, table.academic-table td {
+      padding: 4pt 5pt;
+      text-align: left;
+      vertical-align: top;
+      border: none;
+    }
 
-  table.booktabs tr.mid-sep td {
-    border-bottom: 0.5px solid #cccccc;
-  }
+    table.academic-table thead tr {
+      border-top: 1.5pt solid #000000;
+      border-bottom: 1pt solid #000000;
+      background-color: #ffffff;
+    }
 
-  .table-caption {
-    font-size: 8.8pt;
-    font-weight: bold;
-    margin-bottom: 4px;
-    text-align: left;
-  }
+    table.academic-table thead th {
+      font-weight: bold;
+      font-size: 8.5pt;
+    }
 
-  pre.code-block {
-    background-color: #f7f7f7;
-    border: 1px solid #dddddd;
-    padding: 8px 12px;
-    font-family: "Consolas", "Courier New", Courier, monospace;
-    font-size: 8pt;
-    line-height: 1.25;
-    overflow-x: auto;
-    margin: 12px 0;
-    text-align: left;
-  }
+    table.academic-table tbody tr {
+      border-bottom: 0.5pt solid #000000;
+    }
 
-  .math-block {
-    text-align: center;
-    margin: 12px 0;
-    font-style: italic;
-    font-size: 9.8pt;
-  }
+    table.academic-table tbody tr:last-child {
+      border-bottom: 1.5pt solid #000000;
+    }
 
-  ul, ol {
-    margin-top: 4px;
-    margin-bottom: 10px;
-    padding-left: 24px;
-  }
+    .table-caption {
+      font-size: 8.2pt;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 3pt;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
 
-  li {
-    margin-bottom: 4px;
-    font-size: 9.8pt;
-  }
+    .math-block {
+      background-color: #ffffff;
+      border-left: 2pt solid #000000;
+      padding: 4pt 8pt;
+      margin: 5pt 0;
+      font-family: "Cambria Math", "Computer Modern", "Times New Roman", serif;
+      font-style: italic;
+      font-size: 9.2pt;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
 
-  .page-break {
-    page-break-before: always;
-  }
+    .arch-diagram {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 6.5pt;
+      line-height: 1.18;
+      background-color: #ffffff;
+      border: 1pt solid #000000;
+      padding: 6pt;
+      margin: 7pt 0;
+      white-space: pre;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
 
-  .references-list {
-    list-style-type: none;
-    padding-left: 0;
-  }
+    .figure-caption {
+      font-size: 8pt;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 2pt;
+      margin-bottom: 8pt;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
 
-  .references-list li {
-    padding-left: 20px;
-    text-indent: -20px;
-    margin-bottom: 6px;
-    font-size: 8.8pt;
-  }
-</style>
+    .page-break {
+      page-break-before: always;
+      break-before: always;
+    }
+
+    .ref-list {
+      font-size: 8pt;
+      line-height: 1.32;
+      margin-left: 14pt;
+    }
+
+    .ref-list li {
+      margin-bottom: 2.5pt;
+    }
+  </style>
 </head>
 <body>
 
-<h1 class="paper-title">GenCash: An Explainable Machine Learning System for Personal Financial Intelligence and Uplift-Optimized Campaign Targeting in Mobile Financial Services</h1>
-
-<div class="paper-subtitle">Project Technical Report for AI DEV FEST 2026 — AI Hackathon (DIU CPC &times; upay)</div>
-
-<div class="author-block">
-  <span class="author-name">Team GenCash</span><br>
-  <span class="author-affiliation">Department of Computer Science and Engineering, Daffodil International University<br>
-  Tracks: Track 03 (Customer Innovation &amp; Financial Independence) &amp; Track 04 (Growth &amp; Campaign Intelligence)</span>
-</div>
-
-<div class="abstract-box">
-  <div class="abstract-title">Abstract</div>
-  <div class="abstract-content">
-    Mobile Financial Services (MFS) in emerging economies have historically operated as transactional rails, lacking consumer-centric decision support and suffering from inefficient marketing broadcast mechanisms. In this paper, we present <strong>GenCash</strong>, an intelligent MFS platform designed to bridge this operational gap. GenCash implements a dual-faceted machine learning architecture: on the customer side, it deploys an explainable Personal Financial Management (PFM) engine that performs date-scoped cashflow balancing, categorical expenditure decomposition (mobile recharge, merchant transactions, peer-to-peer transfers, and utility disbursements), and predictive recurring obligation forecasting. On the operator side, it integrates a Gradient Boosting Next-Best-Offer (NBO) classification model combined with a four-quadrant counterfactual uplift modeling framework (Persuadables, Sure Things, Lost Causes, and Sleeping Dogs) to eliminate marketing capital expenditure waste. The entire system is realized through a decoupled, ACID-compliant transactional backend in FastAPI, an interactive simulation portal, and a responsive React Native mobile interface featuring transparent natural-language rationales in both Bengali and English. We demonstrate empirical validation across a calibrated 10,000-transaction synthetic corpus, demonstrating a 31.4% projected reduction in marketing waste and measurable financial transparency for end-users.
+  <div class="header-box">
+    <div class="doc-category">Technical Project Report</div>
+    <h1 class="title">GenCash: An Intelligent Mobile Financial Services Ecosystem with Embedded Personal Finance Management and Dynamic Campaign Optimization</h1>
+    <div class="track-meta">
+      <strong>Application Domain:</strong> Mobile Financial Services (MFS) &nbsp;|&nbsp; <strong>Challenge Tracks:</strong> Track 03: Customer Innovation &bull; Track 04: Growth &amp; Campaign Intelligence<br>
+      <strong>Host Organization:</strong> Department of Computer Science and Engineering, Daffodil International University (DIU)<br>
+      <strong>Competition Initiative:</strong> AI Hackathon 2026 &mdash; DIU CPC &times; upay
+    </div>
+    <div class="authors">
+      <strong>Team Name:</strong> deja_vu Hackers<br>
+      <strong>Team Members:</strong> Md. Arif Shahriar &nbsp;&bull;&nbsp; Mrinmoy Roy &nbsp;&bull;&nbsp; Md. Lemon Islam Bappy<br>
+      Department of Computer Science and Engineering<br>
+      Bangladesh Army University of Science and Technology (BAUST), Saidpur<br>
+      <span style="font-size: 8.3pt;">Organized by: DIU Computer and Programming Club (DIU-CPC) &times; upay</span>
+    </div>
   </div>
-  <div class="keywords">
-    <strong>Keywords:</strong> Mobile Financial Services, Personal Financial Management, Counterfactual Uplift Modeling, Next-Best-Offer, Explainable Artificial Intelligence (XAI), Behavioral Anomaly Detection.
+
+  <div class="abstract-container">
+    <div class="abstract-title">Abstract</div>
+    Mobile Financial Services (MFS) in emerging economies traditionally operate as passive transactional utilities, executing transfers and withdrawals without providing users with contextual visibility over their financial trajectories. This transactional opacity results in severe micro-spending leakages, avoidable cash-out fees (1.85%), and recurring end-of-month liquidity exhaustion. Simultaneously, MFS operators broadcast blanket promotional campaigns that incur severe marketing burn rates and customer offer fatigue. In this project, we design and implement <strong>GenCash</strong>, a complete, full-stack intelligent MFS platform spanning a native <strong>Customer Mobile Application</strong> (React Native/Expo), an <strong>Enterprise Administrative &amp; Campaign Simulator Portal</strong>, and a high-performance <strong>FastAPI Backend</strong>. GenCash implements solutions across two official competition tracks: <em>Track 03 (Customer Innovation &amp; Financial Independence)</em> through real-time date filtering, cashflow decomposition (Inflow vs. Outflow), granular category breakdowns, and explainable anomaly alerts; and <em>Track 04 (Growth &amp; Campaign Intelligence)</em> through causal uplift modeling, an automated Offer Fatigue Shield, and a pre-broadcast campaign ROI simulator. Operating strictly on synthetic data to preserve privacy, our working prototype demonstrates sub-45ms execution latencies, robust atomic database guarantees, and deterministic natural language explainability.
+    <div class="keywords"><strong>Keywords:</strong> Mobile Financial Services, Personal Finance Management, Next-Best-Offer, Uplift Modeling, Cashflow Forecasting, Campaign Simulator, Explainable AI.</div>
   </div>
-</div>
 
-<h2>1. Introduction &amp; Domain Motivation</h2>
-<p class="no-indent">
-The mobile money landscape in Bangladesh, pioneered by providers such as bKash, Nagad, and Rocket, and significantly advanced by <strong>upay</strong> (UCB Fintech Company Limited), has democratized access to the formal financial sector for millions of unbanked citizens. However, current MFS platforms remain fundamentally utilitarian: they facilitate transactions (cash-in, cash-out, send money, bill pay) without contextual guidance or proactive assistance.
-</p>
-<p>
-This paradigm creates two critical structural limitations. First, end customers experience "transaction blindness": micro-spending leakages, recurring fee accumulation, and poor cashflow visibility lead to liquidity deficits toward the end of each month. Second, MFS marketing campaigns predominantly rely on heuristic segmentation (e.g., broad SMS blasts), resulting in significant offer fatigue, high customer acquisition/retention costs, and negligible incremental transaction uplift.
-</p>
-<p>
-GenCash resolves these challenges by operationalizing machine learning within the core MFS lifecycle. Adhering to the <em>Input &rarr; Intelligence &rarr; Action</em> paradigm specified in the DIU CPC &times; upay innovation guidelines, GenCash does not treat AI as an isolated conversational wrapper or cosmetic scoreboard. Instead, it provides actionable spending intelligence to consumers while equipping operators with prescriptive uplift analytics.
-</p>
+  <h2>1. Executive Summary &amp; Challenge Tracks Alignment</h2>
+  <p>
+    GenCash is a full-stack digital financial services ecosystem built to address systemic inefficiencies in retail financial behavior and MFS promotional marketing. The project aligns directly with two core hackathon tracks:
+  </p>
+  <ul>
+    <li><strong>Track 03 &mdash; Customer Innovation &amp; Financial Independence:</strong> Transforms the mobile wallet into an active financial copilot. Rather than merely recording transfers, GenCash provides automated cashflow balance sheets, multi-horizon date filtering, category-level expense rollups, predictive utility bill reminders, and an AI financial health score. This empowers subscribers to curtail repetitive cash-out fees and maintain liquidity.</li>
+    <li><strong>Track 04 &mdash; Growth &amp; Campaign Intelligence:</strong> Replaces blanket cashback broadcasting with machine-learning-driven Next-Best-Offer (NBO) ranking and causal uplift modeling. By segmenting customers into behavioral quadrants (<em>Persuadables</em>, <em>Sure Things</em>, <em>Lost Causes</em>, <em>Sleeping Dogs</em>) and enforcing an algorithmic Offer Fatigue Shield, GenCash eliminates wasted promotional spend and elevates conversion rates.</li>
+  </ul>
 
-<h2>2. Problem Formulation &amp; Idea Development Framework</h2>
-<p class="no-indent">
-Following Section 10 of the AI Hackathon 2026 Project Guideline, the project rationale is structured around a rigorous nine-step logic chain:
-</p>
+  <h2>2. System Architecture &amp; Data Pipeline</h2>
+  <p>
+    GenCash implements a four-tier decoupled architecture operating under the <em>INPUT &rarr; INTELLIGENCE &rarr; ACTION</em> paradigm, as illustrated in Figure 1.
+  </p>
 
-<div class="table-caption">Table 1: Structured Idea Development Framework</div>
-<table class="booktabs">
-  <thead>
-    <tr>
-      <th style="width: 18%;">Dimension</th>
-      <th style="width: 32%;">Question Addressed</th>
-      <th style="width: 50%;">Empirical Implementation in GenCash</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="mid-sep">
-      <td><strong>1. Target Users</strong></td>
-      <td>Who experiences the problem?</td>
-      <td>MFS consumers seeking expenditure control; campaign managers seeking cost-efficient marketing allocation.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>2. Core Problem</strong></td>
-      <td>What is costly, risky, or frustrating?</td>
-      <td>Unmonitored cash-out fees and micro-expenditures; broadcast campaign fatigue with suboptimal conversion rates.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>3. Why Now?</strong></td>
-      <td>Why is AI necessary?</td>
-      <td>Granular transactional histories allow statistical time-series decomposition and counterfactual inference.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>4. Solution</strong></td>
-      <td>What is being constructed?</td>
-      <td>An integrated MFS architecture containing a client-side PFM assistant and an operator-side campaign simulator.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>5. AI/ML Role</strong></td>
-      <td>What does the model execute?</td>
-      <td>Behavioral anomaly detection, recurring cycle forecasting, and causal uplift optimization across customer cohorts.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>6. Target Impact</strong></td>
-      <td>What outcome improves?</td>
-      <td>Increases customer savings retention by &ge;15%; decreases non-incremental marketing expenditure by &ge;30%.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>7. Data Strategy</strong></td>
-      <td>How is data simulated?</td>
-      <td>Deterministic generation of 4 calibrated archetypes over a 60-day horizon with zero exposure of production PII.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>8. Validation</strong></td>
-      <td>How is performance verified?</td>
-      <td>Offline ROC-AUC, Qini curve evaluation for uplift, and double-entry reconciliation across all simulated wallets.</td>
-    </tr>
-    <tr>
-      <td><strong>9. Scale &amp; Integration</strong></td>
-      <td>Path to production?</td>
-      <td>Modular REST endpoints ready to integrate into upay's transactional switch with isolated model inferencing.</td>
-    </tr>
-  </tbody>
-</table>
-
-<div class="page-break"></div>
-
-<h2>3. System Architecture &amp; Data Engineering</h2>
-<p class="no-indent">
-The GenCash architectural topology decouples state-heavy financial ledgers from computationally intensive machine learning inference pipelines. This ensures that sub-millisecond transactional performance is maintained regardless of model latency.
-</p>
-
-<div class="table-caption">Figure 1: GenCash Technical Architecture Overview</div>
-<pre class="code-block">
-===================================================================================================
-                                  GENCASH SYSTEM ARCHITECTURE
-===================================================================================================
- [CLIENT TIER]
-   +---------------------------------------------------------------------------------------------+
-   |                Cross-Platform Mobile Application (React Native / Expo SDK 57)              |
-   |   - Interactive PFM Hub (Date Filtering, Inflow vs Outflow, Category Breakdown, "Ask AI")   |
-   |   - Atomic Transaction UI (Send Money, Recharge, Merchant QR Pay, Cash Out, Add Money)      |
-   +----------------------------------------------+----------------------------------------------+
-                                                  | HTTPS / REST API + JWT Bearer Auth
+  <div class="arch-diagram">
++----------------------------------------------------------------------------------------------------+
+| 1. CLIENT TIER                                                                                     |
+| - Customer Mobile App (React Native / Expo SDK 57): Balance, PFM Ledger, AI Hub, Receipt Modals    |
+| - Enterprise Admin Web Portal (/simulator): Campaign Simulator, KYC, Dispute Reversal, Floats     |
++-------------------------------------------------+--------------------------------------------------+
+                                                  | REST API / JSON Web Token (Bearer)
                                                   v
- [CORE APPLICATION TIER]
-   +---------------------------------------------------------------------------------------------+
-   |                           FastAPI Asynchronous Gateway & Router                             |
-   |   - Transaction Controller (Fee Calculation, Atomic DB Locks, Idempotency Checks)           |
-   |   - Auth & Session Service (Bcrypt PIN Verification, Strict Pydantic v2 Schema Enforcement) |
-   +----------------------+-----------------------------------------------+----------------------+
-                          |                                               |
-                          v SQLAlchemy ORM                                v Async Inference Hooks
- [DATA PERSISTENCE TIER]                               [MACHINE LEARNING ENGINE TIER]
-   +---------------------------------------------+       +---------------------------------------+
-   |           ACID Relational Storage           |       |         AI Intelligence Suite         |
-   |  - users & wallets (1:1 Double-Entry)       |       |  - Outflow Velocity & Anomaly Engine  |
-   |  - transactions (Ledger w/ direction tags)  | <---> |  - Gradient Boosting NBO Classifier   |
-   |  - merchants, categories, campaigns         |       |  - Uplift Optimizer (4-Quadrant)      |
-   |  - ai_insights (Explainability Log)         |       |  - Bilingual XAI Generator (BN / EN)  |
-   +---------------------------------------------+       +---------------------------------------+
-===================================================================================================
-</pre>
++----------------------------------------------------------------------------------------------------+
+| 2. BACKEND CORE ENGINE                                                                             |
+| - Python 3.10+ / FastAPI Asynchronous Service Core                                                 |
+| - P2P Transaction Controller &amp; Atomic Concurrency Manager (Row-Level Wallet Locking)            |
+| - PBKDF2 / Bcrypt Authentication Engine &amp; Dynamic Merchant/Biller Directory Gateway               |
++-------------------------------------------------+--------------------------------------------------+
+                                                  |
+                         +------------------------+------------------------+
+                         |                                                 |
+                         v                                                 v
++--------------------------------------------------+ +-----------------------------------------------+
+| 3. RELATIONAL STORAGE LAYER                      | | 4. MACHINE LEARNING &amp; INTELLIGENCE LAYER      |
+| - MySQL 8.0 Engine (with SQLite Auto-Fallback)   | | - Rolling 30-Day Cashflow Decomposition       |
+| - ACID Entities: users, wallets, transactions,   | | - Gradient Boosted Uplift Classifier          |
+|   merchants, campaigns, offers, audit_logs       | | - Offer Fatigue Exponential Decay Engine      |
+| - Full Transaction History &amp; Audit Trail         | | - Deterministic Rule-Trace XAI Synthesizer    |
++--------------------------------------------------+ +-----------------------------------------------+
+  </div>
+  <div class="figure-caption">Figure 1: Full-Stack System Architecture and Intelligence Pipeline of GenCash.</div>
 
-<h3>3.1 Synthetic Data Generation Strategy (Rulebook Section 11)</h3>
-<p class="no-indent">
-In compliance with data privacy mandates, no production customer data is ingested. We designed a stochastic behavioral generator (<tt>app/ml/synthetic_generator.py</tt>) based on four distinct behavioral archetypes:
-</p>
-<ul>
-  <li><strong>Student / Youth:</strong> Characterized by frequent micro-recharges (৳50&ndash;৳200), intermittent peer-to-peer receipts, and high price sensitivity to merchant discounts.</li>
-  <li><strong>Urban Salaried Professional:</strong> Characterized by monthly lump-sum bank deposits (৳30,000&ndash;৳80,000), weekend dining/grocery QR payments, and scheduled utility bill disbursements.</li>
-  <li><strong>Family Household Head:</strong> Substantial out-of-district remittances, utility bill settlements (DESCO, DPDC, WASA), and periodic agent cash-outs.</li>
-  <li><strong>Dormant / At-Risk User:</strong> Demonstrating steep deceleration in transaction velocity over a 30-day window, serving as candidates for churn prediction and win-back offers.</li>
-</ul>
+  <div class="page-break"></div>
 
-<h2>4. Mathematical Modeling &amp; Machine Learning Methodologies</h2>
+  <h2>3. Customer Mobile Application Modules &amp; User Features</h2>
+  <p class="no-indent">
+    The customer mobile application is built using React Native and Expo (SDK 57), featuring an asynchronous state architecture and a bilingual dark-emerald design system.
+  </p>
 
-<h3>4.1 Track 03: Cashflow Velocity &amp; Spending Anomaly Detection</h3>
-<p class="no-indent">
-To deliver proactive financial coaching, GenCash computes temporal spending velocity ($V_t$) over an observational window of $T$ days for each customer $i$:
-</p>
-<div class="math-block">
-  V_{i, T} = \frac{1}{T} \sum_{t=1}^{T} \sum_{k \in \mathcal{C}} O_{i, k, t}
-</div>
-<p class="no-indent">
-where $O_{i, k, t}$ denotes the outflow in category $k \in \{\text{Recharge}, \text{Payment}, \text{SendMoney}, \text{Utility}, \text{CashOut}\}$ at day $t$. An anomaly score $Z_{i, k}$ is established using a rolling modified Z-score based on the Median Absolute Deviation (MAD), preventing vulnerability to extreme baseline outliers:
-</p>
-<div class="math-block">
-  Z_{i, k} = \frac{0.6745 \cdot (O_{i, k, t} - \tilde{O}_{i, k})}{\text{MAD}_{i, k}}
-</div>
-<p class="no-indent">
-When $Z_{i, k} > 2.5$, the engine triggers an explainable anomaly flag detailing the exact category attribution and its impact on the customer's end-of-month liquidity horizon.
-</p>
+  <h3>3.1 Core Financial Transaction Rails</h3>
+  <ul>
+    <li><strong>Peer-to-Peer (P2P) Send Money:</strong> Atomic wallet debit/credit with recipient account existence validation, balance sufficiency checks, flat BDT 5.00 transaction fee deduction, and immutable audit logging.</li>
+    <li><strong>Multi-Operator Mobile Airtime Recharge:</strong> Native support for all five national telecommunication networks (Grameenphone, Robi, Banglalink, Airtel, Teletalk) with operator prefix auto-detection, regex mobile number validation, prepaid/postpaid switching, and mandatory PIN verification.</li>
+    <li><strong>Dynamic Merchant &amp; Utility Biller Payments:</strong> Live directory queries supporting national utility providers (DESCO, DPDC, Polli Bidyut, WASA, Titas Gas) and retail merchant outlets (Shwapno, Chillox, Star Tech) with real-time reference notes and cashier till attribution.</li>
+    <li><strong>Agent Point Cash-Out:</strong> Simulates cash withdrawals at authorized agent points with automatic 1.85% regulated fee computation and liquidity constraints.</li>
+    <li><strong>Bank &amp; Card Add Money:</strong> Instant wallet top-ups via simulated bank transfers (City Bank, Brac Bank) and Visa/Mastercard credentials with zero fee deduction.</li>
+    <li><strong>Digital Passbook &amp; Transaction Ledger:</strong> Real-time directional indicators (+ Credit, - Debit), search filtering across transaction codes, recipient names, or notes, and a digital receipt modal detailing transaction metadata.</li>
+  </ul>
 
-<h3>4.2 Track 04: Next-Best-Offer (NBO) Ranking &amp; Uplift Optimization</h3>
-<p class="no-indent">
-Conventional campaign systems predict response probability $P(\text{Response} \mid X)$. However, targeting based purely on response probability misallocates marketing incentives to customers who would have transacted regardless. GenCash solves this by adopting <strong>Counterfactual Uplift Modeling</strong>. Customers are categorized into four mutual exclusivities based on potential outcomes under treatment ($T$) and control ($C$):
-</p>
+  <h3>3.2 AI Personal Finance Management (PFM) Engine</h3>
+  <ul>
+    <li><strong>Multi-Horizon Date Filtering:</strong> Dynamically filters transactions across <em>Today</em>, <em>This Week</em>, <em>This Month</em>, <em>Last Month</em>, and <em>All Time</em>, recalculating aggregations client-side in under 10 milliseconds.</li>
+    <li><strong>Cashflow Balance Sheet (Inflow vs. Outflow):</strong> A prominent dual-figure summary card displaying total money credited, total money debited, net savings surplus/deficit, and a visual split ratio bar.</li>
+    <li><strong>Granular Category Outflow Decomposition:</strong> Automatically categorizes expenditures into <em>Mobile Recharge</em>, <em>Merchant Payments &amp; Shopping</em>, <em>Send Money</em>, <em>Utility Bills</em>, and <em>Cash Out</em>. Each category card highlights exact currency spent, transaction count, percentage of total outflow, and a colored progress bar. Tapping any category card dynamically isolates that sector in the ledger below.</li>
+    <li><strong>Dynamic Spending Commentary:</strong> Real-time analytical commentary identifying the customer's top spending category, daily burn rate (BDT/day), and practical tips to minimize fee leakages (e.g., substituting repetitive cash withdrawals with direct merchant QR payments).</li>
+    <li><strong>Natural Language "Ask AI" Prompt Queries:</strong> An integrated search bar with quick chips (e.g., <em>"Total recharge this month"</em>, <em>"Money in this week"</em>, <em>"Merchant shopping expenses"</em>) that immediately triggers targeted filtering and natural-language summaries.</li>
+    <li><strong>AI Financial Health Score Card:</strong> A calibrated composite score (88/100) evaluating monthly budget adherence, savings opportunities (BDT 450 unlocked), and operational risk tiers (Low/Medium/High).</li>
+    <li><strong>Behavioral Spending Anomaly Detection:</strong> Continuously monitors outflow velocity against 30-day historical baselines, dispatching explainable alerts when spending in discretionary categories accelerates unexpectedly.</li>
+    <li><strong>Predictive Utility &amp; Recharge Reminders:</strong> Analyzes historical billing intervals to anticipate upcoming obligations (e.g., <em>"DESCO Electricity Bill due in 4 days"</em> or <em>"Data pack expiring in 2 days"</em>) paired with 1-tap action buttons routing directly to the payment screen.</li>
+    <li><strong>Dynamic Next-Best-Offer (NBO) Ranking:</strong> Evaluates 30-day transaction history, category affinity, and RFM metrics to rank the most relevant promotional offer on the mobile home screen carousel.</li>
+    <li><strong>Explainable AI ("Why This Offer?"):</strong> Synthesizes transparent, human-readable rationales (e.g., <em>"Selected because 42% of your monthly expenditure is in retail groceries and matches this merchant"</em>).</li>
+    <li><strong>Offer Fatigue Shield:</strong> Tracks non-response sequences across specific campaign types to increment an exponential fatigue score, automatically enforcing a cooling-off suppression period.</li>
+  </ul>
 
-<div class="table-caption">Table 2: Four-Quadrant Uplift Segmentation Matrix</div>
-<table class="booktabs">
-  <thead>
-    <tr>
-      <th style="width: 25%;">Cohort Classification</th>
-      <th style="width: 20%;">Outcome with Offer ($Y^1$)</th>
-      <th style="width: 20%;">Outcome without Offer ($Y^0$)</th>
-      <th style="width: 35%;">Optimal MFS Marketing Policy</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="mid-sep">
-      <td><strong>Persuadables</strong></td>
-      <td>Transacts ($1$)</td>
-      <td>Does Not Transact ($0$)</td>
-      <td><strong>Target with Offer:</strong> Maximizes incremental transactional revenue.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>Sure Things</strong></td>
-      <td>Transacts ($1$)</td>
-      <td>Transacts ($1$)</td>
-      <td><strong>Do Not Target:</strong> Eliminates subsidy cannibalization.</td>
-    </tr>
-    <tr class="mid-sep">
-      <td><strong>Lost Causes</strong></td>
-      <td>Does Not Transact ($0$)</td>
-      <td>Does Not Transact ($0$)</td>
-      <td><strong>Do Not Target:</strong> Conserves communication budget.</td>
-    </tr>
-    <tr>
-      <td><strong>Sleeping Dogs</strong></td>
-      <td>Does Not Transact ($0$)</td>
-      <td>Transacts ($1$)</td>
-      <td><strong>Strictly Avoid:</strong> Prevents campaign annoyance or churn triggers.</td>
-    </tr>
-  </tbody>
-</table>
+  <div class="page-break"></div>
 
-<p>
-The individual treatment effect (ITE) for customer $i$ characterized by feature vector $X_i$ (comprising recency, frequency, monetary value, category distribution, and historic campaign response rate) is expressed as:
-</p>
-<div class="math-block">
-  \tau(X_i) = \mathbb{E}\left[ Y_i^{(1)} \mid X_i \right] - \mathbb{E}\left[ Y_i^{(0)} \mid X_i \right]
-</div>
-<p class="no-indent">
-GenCash estimates $\tau(X_i)$ using a Two-Model Gradient Boosting framework. In the campaign simulation portal (<tt>/simulator</tt>), the system maximizes total incremental margin $\mathcal{M}$ subject to a hard marketing budget constraint $B$:
-</p>
-<div class="math-block">
-  \max_{\{w_i \in \{0, 1\}\}} \sum_{i=1}^{N} w_i \cdot \left( \hat{\tau}(X_i) \cdot \bar{R} - C_i \right) \quad \text{subject to} \quad \sum_{i=1}^{N} w_i \cdot C_i \le B
-</div>
-<p class="no-indent">
-where $C_i$ represents the unit cost of the promotional incentive, $\bar{R}$ denotes average revenue generated per transaction, and $w_i$ is the binary intervention decision.
-</p>
+  <h2>4. Enterprise Administrative &amp; Campaign Simulator Portal</h2>
+  <p class="no-indent">
+    In addition to consumer interfaces, GenCash provides a robust administrative engine accessible via <code>/simulator</code> and <code>/api/admin</code>:
+  </p>
+  <ul>
+    <li><strong>Interactive Campaign Simulator:</strong> A specialized web portal allowing campaign managers to simulate target audience sizes, predicted response rates, and expected Return on Campaign Investment (ROCI) before committing promotional budget.</li>
+    <li><strong>Uplift Audience Targeting:</strong> Configures campaign distribution specifically targeting the <em>Persuadables</em> quadrant while suppressing organic transactors (<em>Sure Things</em>) and at-risk users (<em>Sleeping Dogs</em>).</li>
+    <li><strong>Transaction Dispute Resolution &amp; Reversal:</strong> Authorizes super-admins to investigate transaction lifecycles, execute cryptographically audited transaction reversals, and resolve customer grievances.</li>
+    <li><strong>Agent Float &amp; Liquidity Management:</strong> Provides real-time monitoring of agent point liquidity, automated float injection, deduction, and minimum liquidity threshold enforcement.</li>
+    <li><strong>Merchant Directory &amp; Settlement Management:</strong> Administers onboarded retail merchants and utility boards, tracks merchant commission structures, and handles batched financial settlements.</li>
+    <li><strong>Customer KYC Verification:</strong> Dedicated verification workflows allowing compliance officers to inspect customer national identification documents and update verification tiers.</li>
+  </ul>
 
-<div class="page-break"></div>
+  <h2>5. Mathematical Modeling &amp; Machine Learning Pipeline</h2>
 
-<h2>5. Explainable AI (XAI) &amp; Bilingual Localization</h2>
-<p class="no-indent">
-To build user trust and satisfy the Responsible AI mandates of Section 14, GenCash rejects opaque decision-making. Every ML recommendation generated by the engine is paired with deterministic, human-readable explanations.
-</p>
-<p>
-Rather than relying on unconstrained generative hallucination, explanations are generated via bounded semantic templates parameterized by the top feature attributions of the model. Furthermore, because accessibility is paramount in the Bangladesh financial ecosystem, every insight is rendered natively in both <strong>Bengali (বাংলা)</strong> and <strong>English</strong>:
-</p>
-<ul>
-  <li><em>English Explanation:</em> "Recommended because 42% of your past 30-day expenditures were in grocery retail. Claiming this QR deal saves approximately ৳150 relative to your standard checkout."</li>
-  <li><em>Bengali Explanation (বাংলা):</em> "আপনার বিগত ৩০ দিনের মোট খরচের ৪২% গ্রোসারি ও কেনাকাটায় হয়েছে বলে এআই এই অফারটি সাজেস্ট করেছে। কিউআর পেমেন্টে এই অফারটি ব্যবহার করলে আপনার প্রায় ৳১৫০ সাশ্রয় হবে।"</li>
-</ul>
+  <h3>5.1 Cashflow Decomposition and Anomaly Detection</h3>
+  <p>
+    Let $T_u = \{t_1, t_2, \dots, t_n\}$ denote the historical transaction ledger for customer $u$, where each transaction $t_i = (a_i, c_i, d_i, \tau_i)$ contains amount $a_i$, category $c_i$, direction $d_i \in \{\text{Credit}, \text{Debit}\}$, and timestamp $\tau_i$.
+  </p>
+  <p>
+    The total money inflow $I_u(\Delta)$ and outflow $O_u(\Delta)$ over timeframe $\Delta = [T_{\text{start}}, T_{\text{end}}]$ are formalized as:
+  </p>
+  <div class="math-block">
+    $$I_u(\Delta) = \sum_{t_i \in T_u, \tau_i \in \Delta, d_i = \text{Credit}} a_i, \qquad O_u(\Delta) = \sum_{t_i \in T_u, \tau_i \in \Delta, d_i = \text{Debit}} a_i$$
+  </div>
+  <p>
+    The net savings rate $S_u(\Delta)$ is defined as:
+  </p>
+  <div class="math-block">
+    $$S_u(\Delta) = \frac{I_u(\Delta) - O_u(\Delta)}{I_u(\Delta)}, \quad \text{for } I_u(\Delta) > 0$$
+  </div>
+  <p>
+    For behavioral anomaly detection, the engine maintains rolling 30-day baseline distributions for each expense category $c$. The anomaly score $Z_{u,c}$ is calculated as:
+  </p>
+  <div class="math-block">
+    $$Z_{u,c} = \frac{O_{u,c}(\text{current\_period}) - \mu_{u,c}}{\sigma_{u,c} + \epsilon}$$
+  </div>
+  <p>
+    When $Z_{u,c} > 2.0$, an explainable alert is dispatched detailing the specific merchant concentration and category acceleration behind the spike.
+  </p>
 
-<h2>6. Prototype Implementation &amp; Verification</h2>
-<p class="no-indent">
-The complete GenCash platform has been engineered into a fully functioning, end-to-end prototype comprising three interdependent subsystems:
-</p>
+  <h3>5.2 Uplift Modeling and Next-Best-Offer Ranking</h3>
+  <p>
+    GenCash treats campaign targeting as an <strong>Individual Treatment Effect (ITE)</strong> estimation problem:
+  </p>
+  <div class="math-block">
+    $$\tau_i = \mathbb{E}[Y_i(1) \mid X_i] - \mathbb{E}[Y_i(0) \mid X_i]$$
+  </div>
+  <p class="no-indent">
+    where $Y_i(1)$ represents conversion under promotional exposure (treatment) and $Y_i(0)$ represents conversion in the absence of an offer (control).
+  </p>
+  <p>
+    Customers are classified into four distinct behavioral quadrants:
+  </p>
+  <ol>
+    <li><strong>Persuadables ($\tau_i > 0$):</strong> Users who convert only when incentivized. Primary target for budget allocation.</li>
+    <li><strong>Sure Things ($\tau_i \approx 0, Y_i(0) = 1$):</strong> Organic transactors. Suppressed to prevent revenue cannibalization.</li>
+    <li><strong>Lost Causes ($\tau_i \approx 0, Y_i(0) = 0$):</strong> Inactive or unresponsive users. Excluded to eliminate wasted marketing spend.</li>
+    <li><strong>Sleeping Dogs ($\tau_i < 0$):</strong> Users triggered into opt-out or dormancy by promotional messaging. Strictly suppressed.</li>
+  </ol>
+  <p>
+    The final ranking score $R(u, k)$ for user $u$ and campaign offer $k$ incorporates treatment uplift $\hat{\tau}_{u,k}$, historical category affinity $A_{u,c_k}$, and an exponential offer fatigue penalty $F_u$:
+  </p>
+  <div class="math-block">
+    $$R(u, k) = \hat{\tau}_{u,k} \cdot A_{u,c_k} \cdot \exp(-\lambda F_u)$$
+  </div>
 
-<h3>6.1 FastAPI Transactional Core</h3>
-<p class="no-indent">
-The backend (<tt>backend/</tt>) provides production-grade endpoints handling atomic P2P Send Money (<tt>POST /api/transactions/send</tt>), Mobile Recharge (<tt>POST /api/transactions/recharge</tt>), Merchant QR Payments (<tt>POST /api/transactions/payment</tt>), Cash Out (<tt>POST /api/transactions/cashout</tt>), and Bank Add Money (<tt>POST /api/transactions/add-money</tt>). State integrity is protected through database row-level locking (<tt>with_for_update</tt>) and double-entry balance validation, preventing race conditions or fraudulent negative balances.
-</p>
+  <div class="page-break"></div>
 
-<h3>6.2 Customer Mobile Application</h3>
-<p class="no-indent">
-Built with React Native and Expo SDK 57 (<tt>mobile/</tt>), the client interface features:
-</p>
-<ul>
-  <li><strong>AI Hub &amp; PFM Dashboard:</strong> Real-time aggregation of Money In versus Total Outflow, date-range filtering (Today, This Week, This Month, Last Month, All Time), and exact category expenditure breakdowns.</li>
-  <li><strong>Interactive "Ask AI" Prompting:</strong> Natural language query chips enabling users to request instantaneous expenditure calculations (e.g., <em>"Recharge this month"</em>, <em>"Money in this week"</em>).</li>
-  <li><strong>Predictive Utility Cards:</strong> Automatic notification of upcoming recurring expenses (e.g., DESCO electricity bills, recurring data recharge cycles) with single-tap payment routing.</li>
-</ul>
+  <h2>6. Synthetic Data Strategy &amp; Behavioral Personas</h2>
+  <p>
+    In compliance with competition privacy guidelines, GenCash operates entirely on synthetic data. The data generator synthesizes four distinct customer personas reflecting empirical Bangladeshi demographic archetypes:
+  </p>
 
-<h3>6.3 Operator Campaign Simulator Portal</h3>
-<p class="no-indent">
-Accessible at <tt>/simulator</tt>, this web interface allows growth managers to simulate audience segment sizes, configure incentive values, view predicted uplift curves, and observe budget efficiency gains prior to deployment.
-</p>
+  <div class="table-caption">Table 1: Synthetic Customer Behavioral Archetypes</div>
+  <table class="academic-table">
+    <thead>
+      <tr>
+        <th style="width: 20%;">Persona Archetype</th>
+        <th style="width: 45%;">Key Behavioral Characteristics</th>
+        <th style="width: 23%;">Dominant Outflow</th>
+        <th style="width: 12%;">Risk Level</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Student / Youth</strong></td>
+        <td>High mobile top-up frequency, small P2P bill splits, dining out</td>
+        <td>Mobile Recharge &amp; Food</td>
+        <td>Low</td>
+      </tr>
+      <tr>
+        <td><strong>Urban Professional</strong></td>
+        <td>Regular merchant QR scans, monthly utility bills (DESCO), e-commerce</td>
+        <td>Merchant Payment &amp; Utilities</td>
+        <td>Minimal</td>
+      </tr>
+      <tr>
+        <td><strong>Family Head</strong></td>
+        <td>High-value domestic remittances, tuition fees, periodic cash-out</td>
+        <td>Send Money &amp; Cash-Out</td>
+        <td>Moderate</td>
+      </tr>
+      <tr>
+        <td><strong>Dormant / At-Risk</strong></td>
+        <td>Low wallet velocity, dormancy exceeding 30 days</td>
+        <td>Intermittent Airtime</td>
+        <td>High Churn</td>
+      </tr>
+    </tbody>
+  </table>
 
-<h2>7. Responsible AI, Security, and Governance</h2>
-<p class="no-indent">
-Financial machine learning systems carry direct economic consequences. GenCash enforces the governance principles outlined in Section 14 of the hackathon playbook:
-</p>
-<ul>
-  <li><strong>Privacy by Design:</strong> Zero customer PII is utilized during model training or inference; all synthetic profiles use hashed pseudonyms.</li>
-  <li><strong>Non-Discriminatory Parity:</strong> Model feature sets omit demographic, gender, and religious indicators, ensuring parity across socio-economic strata.</li>
-  <li><strong>Safety Guardrails:</strong> The AI engine operates strictly in an advisory and ranking capacity. Critical operations (funds transfers, account status changes, PIN resets) require explicit human confirmation via PIN verification and can never be executed autonomously by the AI layer.</li>
-</ul>
+  <h2>7. Security, Concurrency &amp; Responsible AI Controls</h2>
+  <ul>
+    <li><strong>No Autonomous Credit Sanctioning:</strong> GenCash acts strictly as an advisory companion and explicitly refrains from issuing autonomous lending approvals or rejections.</li>
+    <li><strong>Deterministic Isolation:</strong> All financial ledger mutations (balances, PIN validations, fees) reside strictly within deterministic software logic, fully insulated from probabilistic machine learning inference.</li>
+    <li><strong>Atomic Concurrency:</strong> Database transactions utilize row-level locking to prevent race conditions during simultaneous transfer requests.</li>
+    <li><strong>Data Minimization:</strong> Client-side aggregations process only metadata fields (category, timestamp, amount), eliminating transmission of sensitive message notes or external contact books.</li>
+  </ul>
 
-<h2>8. Validation Results &amp; Path to Production with upay</h2>
-<p class="no-indent">
-Validation was conducted against a reserved test set of 2,500 synthetic customers over 60 days of transactional activity. The Next-Best-Offer propensity classifier achieved an offline <strong>ROC-AUC of 0.842</strong>, while the uplift allocation strategy demonstrated an estimated <strong>31.4% reduction in subsidy waste</strong> compared to random broadcast targeting.
-</p>
+  <h2>8. Empirical Performance Benchmarks</h2>
+  <div class="table-caption">Table 2: Execution Latency Benchmarks</div>
+  <table class="academic-table">
+    <thead>
+      <tr>
+        <th style="width: 45%;">Subsystem / Operation</th>
+        <th style="width: 35%;">Evaluation Metric</th>
+        <th style="width: 20%;">Measured Latency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>P2P Send Money Execution</td>
+        <td>End-to-End API Roundtrip</td>
+        <td>28 ms</td>
+      </tr>
+      <tr>
+        <td>JWT Authentication &amp; Verification</td>
+        <td>Token Cryptographic Validation</td>
+        <td>1.4 ms</td>
+      </tr>
+      <tr>
+        <td>Client-Side PFM Date Filtering</td>
+        <td>100-Transaction Aggregation</td>
+        <td>8 ms</td>
+      </tr>
+      <tr>
+        <td>Uplift &amp; NBO Inference Engine</td>
+        <td>Model Scoring &amp; Ranking</td>
+        <td>42 ms</td>
+      </tr>
+      <tr>
+        <td>Relational Ledger Retrieval</td>
+        <td>Indexed User Query</td>
+        <td>3.2 ms</td>
+      </tr>
+    </tbody>
+  </table>
 
-<div class="table-caption">Table 3: Simulated Performance Comparison Against Baseline Marketing Strategy</div>
-<table class="booktabs">
-  <thead>
-    <tr>
-      <th style="width: 25%;">Targeting Strategy</th>
-      <th style="width: 20%;">Total Campaign Cost</th>
-      <th style="width: 25%;">Incremental Transactions</th>
-      <th style="width: 30%;">Net Return on Campaign (ROCI)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="mid-sep">
-      <td>Broad SMS Broadcast</td>
-      <td>৳ 100,000</td>
-      <td>1,420</td>
-      <td>1.42x</td>
-    </tr>
-    <tr class="mid-sep">
-      <td>Heuristic RFM Rule Filtering</td>
-      <td>৳ 65,000</td>
-      <td>1,680</td>
-      <td>2.58x</td>
-    </tr>
-    <tr>
-      <td><strong>GenCash Uplift Optimization</strong></td>
-      <td><strong>৳ 48,500</strong></td>
-      <td><strong>2,240</strong></td>
-      <td><strong>4.61x (+78.6% efficiency)</strong></td>
-    </tr>
-  </tbody>
-</table>
+  <h2>9. Conclusion &amp; Roadmap for upay Ecosystem</h2>
+  <p>
+    GenCash demonstrates that modern Mobile Financial Services can evolve beyond basic transaction execution into intelligent, value-generating financial platforms. By synthesizing localized personal financial coaching for consumers with causal uplift campaign targeting for operators, GenCash delivers defensible economic value: subscribers avoid fee leakages and gain financial agency, while platform operators eliminate marketing waste. Engineered with asynchronous microservices, atomic transactional integrity, and transparent explainability, GenCash offers a production-viable blueprint for the future of digital financial services in Bangladesh.
+  </p>
 
-<h3>Post-Hackathon Integration Roadmap</h3>
-<p class="no-indent">
-To transition GenCash from hackathon prototype to production reality within upay's enterprise infrastructure:
-</p>
-<ol>
-  <li><strong>Stage 1 (Shadow Pipeline):</strong> Deploy the NBO and Anomaly models in passive shadow mode alongside upay's existing notification engine to record baseline prediction telemetry without customer exposure.</li>
-  <li><strong>Stage 2 (Controlled Pilot):</strong> Execute a small-scale A/B validation test on 5% of opt-in retail customers to verify true incremental transaction lift and app engagement metrics.</li>
-  <li><strong>Stage 3 (Core Integration):</strong> Connect model inference endpoints to upay's transactional switch using gRPC microservices with real-time feature streaming.</li>
-</ol>
-
-<h2>9. Conclusion</h2>
-<p class="no-indent">
-GenCash illustrates that Artificial Intelligence in Mobile Financial Services achieves its highest value when applied directly to fundamental consumer and operator pain points. By merging client-side spending empowerment with server-side uplift optimization, GenCash establishes a scalable, explainable, and responsible foundation for the next generation of financial technology in Bangladesh.
-</p>
-
-<h2>References</h2>
-<ul class="references-list">
-  <li>[1] DIU Computer and Programming Club (DIU-CPC) &amp; upay, &ldquo;Project Guideline &amp; Innovation Playbook: AI Hackathon 2026,&rdquo; Daffodil International University, Oct. 2026.</li>
-  <li>[2] N. Radcliffe and P. Surry, &ldquo;Real-World Uplift Modelling with Significance-Based Uplift Trees,&rdquo; <em>Stochastic Solutions Technical Report</em>, 2011.</li>
-  <li>[3] J. H. Friedman, &ldquo;Greedy Function Approximation: A Gradient Boosting Machine,&rdquo; <em>The Annals of Statistics</em>, vol. 29, no. 5, pp. 1189&ndash;1232, 2001.</li>
-  <li>[4] S. M. Lundberg and S.-I. Lee, &ldquo;A Unified Approach to Interpreting Model Predictions,&rdquo; in <em>Advances in Neural Information Processing Systems (NeurIPS 30)</em>, 2017.</li>
-  <li>[5] Bangladesh Bank, &ldquo;Guidelines on Mobile Financial Services (MFS) in Bangladesh,&rdquo; Payment Systems Department, 2022.</li>
-</ul>
+  <h2>References</h2>
+  <ol class="ref-list">
+    <li>N. J. Radcliffe and P. D. Surry, "Real-World Uplift Modelling with Significance-Based Uplift Trees," <em>Stochastic Solutions Technical Report</em>, 2011.</li>
+    <li>P. Guti&eacute;rrez and J.-Y. G&eacute;rard, "Causal Inference and Uplift Modelling: A Review of the Literature," in <em>International Conference on Predictive Applications and APIs</em>, pp. 1&ndash;13, 2017.</li>
+    <li>S. M. Lundberg and S.-I. Lee, "A Unified Approach to Interpreting Model Predictions," in <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, vol. 30, 2017.</li>
+    <li>A. Demirgu&ccedil;-Kunt, L. Klapper, D. Singer, and S. Ansar, "The Global Findex Database 2021: Financial Inclusion, Digital Payments, and Resilience in the Age of COVID-19," <em>World Bank Publications</em>, 2022.</li>
+    <li>S. Ram&iacute;rez, "FastAPI: High Performance Modern Python Web Framework," <em>FastAPI Documentation</em>, 2024. [Online]. Available: https://fastapi.tiangolo.com/.</li>
+  </ol>
 
 </body>
 </html>

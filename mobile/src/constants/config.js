@@ -1,15 +1,11 @@
 import { Platform } from 'react-native';
 
-// Local IP of your PC on your network (update this when changing Wi-Fi/networks)
-const LOCAL_PC_IP = '192.168.0.207';
+// Local IP of your PC on your network (for pure Wi-Fi mode)
+const LOCAL_PC_IP = '10.249.129.201';
 
 const getBaseUrl = () => {
-  if (Platform.OS === 'web') {
-    // If testing in PC browser, localhost works directly
-    return 'http://127.0.0.1:8000';
-  }
-  // For Physical Android Phone (Expo Go) or Emulators over Wi-Fi
-  return `http://${LOCAL_PC_IP}:8000`;
+  // When connected via USB with ADB Reverse (or on Web/Emulator), 127.0.0.1:8000 has 0ms latency and bypasses Windows Firewall completely
+  return 'http://127.0.0.1:8000';
 };
 
 export const API_BASE_URL = getBaseUrl();
@@ -49,7 +45,7 @@ export const ENDPOINTS = {
 
 export const DEMO_ACCOUNTS = [
   {
-    name: "Tanvir Ahmed",
+    name: "Arif Shahriar",
     phone: "01711111111",
     pin: "123456",
     role: "Regular Customer",

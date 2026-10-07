@@ -37,12 +37,32 @@ export const AuthProvider = ({ children }) => {
 
       if (storedToken && storedUser) {
         let currentUser = JSON.parse(storedUser);
+        if (currentUser.name === 'Tanvir Ahmed') {
+          currentUser.name = 'Arif Shahriar';
+          await storage.setItem('@gencash_user', JSON.stringify(currentUser));
+        }
         if (storedAvatar) {
           currentUser.avatar = storedAvatar;
         }
         currentUser = formatUserWithAvatar(currentUser, baseUrl);
         setUser(currentUser);
         setToken(storedToken);
+
+        // If it was a mock token from offline mode, auto-upgrade to real token from backend
+        if (storedToken === 'mock_demo_jwt_token') {
+          try {
+            const liveRes = await api.login('01711111111', '123456');
+            if (liveRes?.access_token) {
+              setToken(liveRes.access_token);
+              await storage.setItem('@gencash_token', liveRes.access_token);
+              const liveUser = formatUserWithAvatar(liveRes.user, baseUrl);
+              setUser(liveUser);
+              await storage.setItem('@gencash_user', JSON.stringify(liveUser));
+              await fetchWalletData();
+              return;
+            }
+          } catch (e) {}
+        }
 
         // Refresh wallet & profile in background
         await fetchWalletData();
@@ -79,9 +99,9 @@ export const AuthProvider = ({ children }) => {
       // 1. Optimistic update
       const current = user || {
         id: '1',
-        name: 'Tanvir Ahmed',
+        name: 'Arif Shahriar',
         phone: '+880 1711-111111',
-        email: 'tanvir@gencash.com',
+        email: 'arif@gencash.com',
       };
       const optimistic = formatUserWithAvatar({ ...current, ...updates }, baseUrl);
       setUser(optimistic);
@@ -157,9 +177,9 @@ export const AuthProvider = ({ children }) => {
       if (err.message && (err.message.includes('Network') || err.message.includes('network'))) {
         const demoUser = {
           id: '1',
-          name: 'Tanvir Ahmed',
+          name: 'Arif Shahriar',
           phone: phone || '01711111111',
-          email: 'tanvir@gencash.com',
+          email: 'arif@gencash.com',
         };
         const demoToken = 'mock_demo_jwt_token';
         setToken(demoToken);

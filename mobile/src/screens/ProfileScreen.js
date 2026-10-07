@@ -34,8 +34,8 @@ export const ProfileScreen = ({ navigation }) => {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // Editable Personal Information State
-  const [editName, setEditName] = useState(user?.name || 'Tanvir Ahmed');
-  const [editEmail, setEditEmail] = useState(user?.email || 'tanvir@gencash.com');
+  const [editName, setEditName] = useState(user?.name || 'Arif Shahriar');
+  const [editEmail, setEditEmail] = useState(user?.email || 'arif@gencash.com');
   const [editAddress, setEditAddress] = useState('Dhanmondi, Dhaka, Bangladesh');
 
   // Security Toggles

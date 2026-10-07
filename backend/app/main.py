@@ -14,6 +14,7 @@ from app.api.v1 import (
     ai,
     notifications,
     admin,
+    predict,
 )
 from seed_data import seed_initial_data
 
@@ -29,6 +30,14 @@ async def lifespan(app: FastAPI):
         seed_initial_data(db)
     finally:
         db.close()
+    
+    # Pre-warm active production ML model in memory for zero-latency inference
+    try:
+        from app.api.v1.predict import get_active_inference_model
+        get_active_inference_model()
+    except Exception as e:
+        print("Model pre-warm warning:", e)
+
     yield
     # Shutdown
 
@@ -60,6 +69,8 @@ app.include_router(offers.router, prefix=settings.API_V1_STR)
 app.include_router(ai.router, prefix=settings.API_V1_STR)
 app.include_router(notifications.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
+app.include_router(predict.router, prefix=settings.API_V1_STR)
+app.include_router(predict.router)  # Direct /v1/predict/uplift-nbo SLA microservice endpoint
 
 
 import os

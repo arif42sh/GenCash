@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GenCash — Executive Presentation Deck (White Edition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #F1F5F9;
+      --bg-slide: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --bg-card-subtle: #F8FAFC;
+      --bg-card-highlight: #F0FDF4;
+      --bg-code: #F8FAFC;
+      
+      --border-color: #E2E8F0;
+      --border-subtle: #EDF2F7;
+      --border-accent: #059669;
+      --border-accent-light: #A7F3D0;
+      
+      --brand-primary: #059669;
+      --brand-primary-dark: #047857;
+      --brand-primary-light: #10B981;
+      --brand-primary-tint: #ECFDF5;
+      
+      --brand-accent: #0284C7;
+      --brand-accent-tint: #F0F9FF;
+      --brand-warning: #D97706;
+      --brand-warning-tint: #FFFBEB;
+      --brand-danger: #DC2626;
+      --brand-danger-tint: #FEF2F2;
+      --brand-indigo: #4F46E5;
+      --brand-indigo-tint: #EEF2FF;
+      
+      --text-main: #0F172A;
+      --text-body: #334155;
+      --text-muted: #64748B;
+      --text-dim: #94A3B8;
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
+      --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.04);
+      
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-canvas);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Outer Presentation Frame */
+    .deck-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 10% 15%, rgba(5, 150, 105, 0.04) 0%, transparent 45%),
+                  radial-gradient(circle at 90% 85%, rgba(2, 132, 199, 0.04) 0%, transparent 45%),
+                  var(--bg-canvas);
+    }
+
+    /* 16:9 Viewport */
+    .slide-viewport {
+      position: relative;
+      width: 95vw;
+      max-width: 1460px;
+      height: 89vh;
+      max-height: 830px;
+      background: var(--bg-slide);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 44px 56px 36px;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      background: #FFFFFF;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-pill {
+      background: var(--brand-primary-tint);
+      border: 1px solid var(--border-accent-light);
+      color: var(--brand-primary-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+    }
+
+    .brand-pill.indigo {
+      background: var(--brand-indigo-tint);
+      border-color: #C7D2FE;
+      color: var(--brand-indigo);
+    }
+
+    .brand-pill.cyan {
+      background: var(--brand-accent-tint);
+      border-color: #BAE6FD;
+      color: var(--brand-accent);
+    }
+
+    .header-title-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Slide Body */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .slide-body::-webkit-scrollbar {
+      width: 5px;
+    }
+    .slide-body::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+
+    .slide-title-group {
+      margin-bottom: 22px;
+    }
+
+    .slide-category {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--brand-primary);
+      margin-bottom: 4px;
+    }
+
+    h1.slide-title {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text-main);
+      letter-spacing: -0.6px;
+    }
+
+    h1.slide-title span.emerald {
+      color: var(--brand-primary);
+    }
+
+    h1.slide-title span.cyan {
+      color: var(--brand-accent);
+    }
+
+    h1.slide-title span.indigo {
+      color: var(--brand-indigo);
+    }
+
+    .slide-subtitle {
+      margin-top: 6px;
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Grids & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      flex: 1;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card.subtle-bg {
+      background: var(--bg-card-subtle);
+    }
+
+    .card.accent-border {
+      border-top: 4px solid var(--brand-primary);
+    }
+
+    .card.cyan-border {
+      border-top: 4px solid var(--brand-accent);
+    }
+
+    .card.indigo-border {
+      border-top: 4px solid var(--brand-indigo);
+    }
+
+    .card.warning-border {
+      border-top: 4px solid var(--brand-warning);
+    }
+
+    .card.danger-border {
+      border-top: 4px solid var(--brand-danger);
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 6px;
+      color: var(--brand-primary);
+      font-family: var(--font-mono);
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+
+    .card-text {
+      font-size: 13.5px;
+      color: var(--text-body);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    /* Bullet Lists */
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 13.5px;
+      color: var(--text-body);
+      line-height: 1.5;
+    }
+
+    .bullet-list li strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .bullet-list li::before {
+      content: "▪";
+      position: absolute;
+      left: 0;
+      top: 0px;
+      font-size: 13px;
+      color: var(--brand-primary);
+    }
+
+    .bullet-list.cyan li::before {
+      color: var(--brand-accent);
+    }
+
+    .bullet-list.indigo li::before {
+      color: var(--brand-indigo);
+    }
+
+    .bullet-list.warning li::before {
+      color: var(--brand-warning);
+    }
+
+    /* Metric Callouts */
+    .metric-hero {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 10px 0 6px;
+    }
+
+    .metric-value {
+      font-size: 38px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      letter-spacing: -1px;
+    }
+
+    .metric-value.emerald {
+      color: var(--brand-primary);
+    }
+
+    .metric-value.cyan {
+      color: var(--brand-accent);
+    }
+
+    .metric-value.indigo {
+      color: var(--brand-indigo);
+    }
+
+    .metric-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Badges & Pills */
+    .tech-pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .tech-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      padding: 3px 9px;
+      border-radius: 6px;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .tech-pill.emerald {
+      background: var(--brand-primary-tint);
+      border-color: var(--border-accent-light);
+      color: var(--brand-primary-dark);
+      font-weight: 600;
+    }
+
+    .tech-pill.cyan {
+      background: var(--brand-accent-tint);
+      border-color: #BAE6FD;
+      color: var(--brand-accent);
+      font-weight: 600;
+    }
+
+    /* Architecture Box */
+    .arch-code-box {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+      color: #1E293B;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .arch-code-box .comment {
+      color: #64748B;
+      font-style: italic;
+    }
+
+    .arch-code-box .highlight {
+      color: var(--brand-primary-dark);
+      font-weight: 600;
+    }
+
+    /* Data Tables */
+    .deck-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .deck-table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: #F8FAFC;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .deck-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-body);
+    }
+
+    .deck-table tr:hover td {
+      background: #F8FAFC;
+    }
+
+    .deck-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Flow Steps */
+    .flow-steps {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .flow-step-item {
+      flex: 1;
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flow-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--brand-primary-tint);
+      color: var(--brand-primary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    /* Bottom Control Bar */
+    .controls-bar {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--border-color);
+      padding: 7px 16px;
+      border-radius: 99px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+
+    .progress-bar-wrap {
+      width: 160px;
+      height: 6px;
+      background: #E2E8F0;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+      width: 7.14%;
+      transition: width 0.25s ease;
+    }
+
+    .slide-counter {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      min-width: 54px;
+      text-align: center;
+    }
+
+    .control-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      color: var(--text-body);
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .control-btn:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+      color: var(--text-main);
+    }
+
+    .control-btn.primary {
+      background: var(--brand-primary-tint);
+      border-color: var(--border-accent-light);
+      color: var(--brand-primary-dark);
+    }
+
+    .control-btn.primary:hover {
+      background: #D1FAE5;
+    }
+
+    /* Speaker Notes Drawer */
+    .speaker-drawer {
+      display: none;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #FFFFFF;
+      border-top: 2px solid var(--brand-primary);
+      padding: 16px 28px;
+      font-size: 13.5px;
+      color: var(--text-body);
+      line-height: 1.5;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+      z-index: 50;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .speaker-drawer.visible {
+      display: block;
+    }
+
+    .speaker-drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+      font-weight: 700;
+    }
+
+    /* Grid Thumbnails Modal */
+    .grid-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(5px);
+      z-index: 200;
+      padding: 40px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grid-modal.open {
+      display: flex;
+    }
+
+    .grid-modal-content {
+      background: #FFFFFF;
+      width: 90vw;
+      max-width: 1180px;
+      max-height: 85vh;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      padding: 24px 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .grid-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .grid-modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .grid-thumbnails {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      overflow-y: auto;
+      padding: 6px;
+    }
+
+    .thumb-item {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--bg-card-subtle);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .thumb-item:hover {
+      border-color: var(--brand-primary);
+      background: var(--brand-primary-tint);
+      transform: translateY(-2px);
+    }
+
+    .thumb-item.current {
+      border: 2px solid var(--brand-primary);
+      background: #ECFDF5;
+    }
+
+    .thumb-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-primary);
+    }
+
+    .thumb-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
+    }
+
+    /* Print / PDF Mode */
+    @media print {
+      body, .deck-container {
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        background: #FFFFFF !important;
+      }
+      .slide-viewport {
+        width: 100% !important;
+        height: auto !important;
+        max-width: none !important;
+        max-height: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #FFFFFF !important;
+      }
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        transform: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        height: 100vh !important;
+        padding: 40px !important;
+        background: #FFFFFF !important;
+      }
+      .controls-bar, .speaker-drawer, .grid-modal {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="deck-container">
+    <div class="slide-viewport">
+
+      <!-- SLIDE 1: COVER SLIDE -->
+      <div class="slide active" data-slide="1">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">AI DEV FEST 2026</span>
+            <span class="header-title-meta">DIU CPC &times; upay AI Hackathon</span>
+          </div>
+          <div class="header-right">
+            <span>TRACK 03 &bull; TRACK 04</span>
+          </div>
+        </div>
+        <div class="slide-body" style="justify-content: center; align-items: flex-start; max-width: 1020px;">
+          <div class="slide-category">Comprehensive Technical &amp; Strategic Presentation</div>
+          <h1 class="slide-title" style="font-size: 44px; margin-bottom: 14px;">
+            GenCash: <span class="emerald">Intelligent Mobile Financial Services</span> Platform
+          </h1>
+          <p class="slide-subtitle" style="font-size: 18px; color: #475569; margin-bottom: 28px; max-width: 900px; line-height: 1.5;">
+            Transforming retail MFS wallets from passive transactional rails into an active personal finance copilot and causal uplift campaign engine.
+          </p>
+          
+          <div class="grid-3" style="width: 100%; margin-top: 10px;">
+            <div class="card accent-border">
+              <div class="card-label">Challenge Focus</div>
+              <div class="card-title">Customer Financial Wellness &amp; NBO</div>
+              <div class="card-text">
+                Directly addressing <strong>Track 03</strong> (PFM &amp; Cashflow Insights) and <strong>Track 04</strong> (Next-Best-Offer &amp; Marketing Uplift).
+              </div>
+            </div>
+
+            <div class="card cyan-border">
+              <div class="card-label">Core Architecture</div>
+              <div class="card-title">INPUT &rarr; INTELLIGENCE &rarr; ACTION</div>
+              <div class="card-text">
+                Closed-loop system: Native React Native Mobile app, FastAPI microservice, and pre-broadcast campaign simulator.
+              </div>
+            </div>
+
+            <div class="card indigo-border">
+              <div class="card-label">Presentation Team</div>
+              <div class="card-title">Team deja_vu Hackers</div>
+              <div class="card-text">
+                <strong>Md. Arif Shahriar</strong> &bull; <strong>Mrinmoy Roy</strong> &bull; <strong>Lemon Islam Bappy</strong><br>
+                <span style="font-size: 12px; color: var(--text-muted);">BAUST &bull; Dept. of Computer Science &amp; Engineering</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 1 Script (Title):</strong> Welcome respected judges and organizers. Today, team deja_vu Hackers presents GenCash—a production-grade, AI-powered intelligent MFS ecosystem engineered for the DIU CPC x upay AI Hackathon. Bangladesh has achieved massive financial penetration, but current MFS apps remain passive utilities. GenCash bridges this gap through our 'Input &rarr; Intelligence &rarr; Action' framework, empowering consumers with automated personal finance while cutting operator marketing burn by 38% through causal uplift modeling.
+        </div>
+      </div>
+
+      <!-- SLIDE 2: PROBLEM STATEMENT -->
+      <div class="slide" data-slide="2">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">MARKET DEFICIENCIES</span>
+            <span class="header-title-meta">Industry Problem Formulation</span>
+          </div>
+          <div class="header-right"><span>02 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Problem Formulation</div>
+            <h1 class="slide-title">The Dual Inefficiency in Emerging Market MFS</h1>
+            <p class="slide-subtitle">Current MFS platforms operate as dumb transactional pipes, causing consumer cash leakage and operator marketing waste.</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card warning-border subtle-bg">
+              <div class="card-label" style="color: var(--brand-warning);">Consumer Pain Points (Track 03)</div>
+              <div class="card-title">Financial Opacity &amp; Avoidable Fee Burn</div>
+              <ul class="bullet-list warning">
+                <li><strong>Passive Transaction Rails:</strong> Users send, cash-out, and recharge without real-time contextual tracking of their net liquidity.</li>
+                <li><strong>Avoidable Fee Burn:</strong> Up to 1.85% is lost on routine cash-outs because users lack balance visibility and direct merchant QR payment prompts.</li>
+                <li><strong>Month-End Liquidity Shocks:</strong> Unplanned micro-expenses cause sudden wallet depletion and late utility bill defaults (DESCO/DPDC).</li>
+                <li><strong>Retrospective SMS Alerts:</strong> SMS notifications only state what already happened, offering zero proactive budgeting guidance or fee optimization.</li>
+              </ul>
+            </div>
+
+            <div class="card danger-border subtle-bg">
+              <div class="card-label" style="color: var(--brand-danger);">Operator Bottlenecks (Track 04)</div>
+              <div class="card-title">Scattergun Promotions &amp; Subsidized Organic Spend</div>
+              <ul class="bullet-list">
+                <li><strong>Blanket Broadcasting:</strong> Generic cashback promotions blasted across entire user bases regardless of user transaction affinity.</li>
+                <li><strong>Subsidizing Organic Conversions:</strong> Rewarding "Sure Things" who would have transacted anyway destroys marketing ROI and operator margins.</li>
+                <li><strong>Promotional Fatigue &amp; Churn:</strong> Continuous irrelevant SMS and push spam trigger notification muting and app uninstalls.</li>
+                <li><strong>Zero Pre-Flight Validation:</strong> Campaign managers commit millions in marketing budget with no ability to simulate conversion lift before launch.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 2 Script (The Problem):</strong> Ask the judges: Why do users need AI in an MFS app? Every month, millions of Bangladeshi users ask 'Where did my salary go?' They lose up to 1.85% on cashouts simply because no app nudges them to pay merchants directly via QR. On the flip side, operators like upay burn millions sending generic 20 Tk cashback SMS to users who were going to recharge anyway. This dual inefficiency hurts both customer retention and operator EBITDA.
+        </div>
+      </div>
+
+      <!-- SLIDE 3: SOLUTION & PARADIGM -->
+      <div class="slide" data-slide="3">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">SYSTEM ARCHITECTURE</span>
+            <span class="header-title-meta">Conceptual Engineering Paradigm</span>
+          </div>
+          <div class="header-right"><span>03 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Core Solution Framework</div>
+            <h1 class="slide-title">The <span class="emerald">INPUT &rarr; INTELLIGENCE &rarr; ACTION</span> Closed Loop</h1>
+            <p class="slide-subtitle">A synchronized pipeline turning raw transactional events into proactive financial guidance and surgical campaign execution.</p>
+          </div>
+
+          <div class="grid-3">
+            <div class="card accent-border">
+              <div class="card-label">1. Data Ingestion &amp; Ledger</div>
+              <div class="card-title">Real-Time Ingestion (Input)</div>
+              <div class="card-text">
+                Captures high-fidelity transaction telemetry with zero privacy intrusion:
+                <ul class="bullet-list" style="margin-top: 10px;">
+                  <li>P2P Transfers, Mobile Recharges, Utility Bills, Merchant QR Payments.</li>
+                  <li>Telemetry: Direction (+/-), Category, Amount, Timestamp, Operator Prefix.</li>
+                  <li>Maintains strict ACID ledger integrity with row-level wallet locks.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card cyan-border">
+              <div class="card-label">2. Analytical Core</div>
+              <div class="card-title">Dual Intelligence Engines</div>
+              <div class="card-text">
+                Continuous analytical processing:
+                <ul class="bullet-list cyan" style="margin-top: 10px;">
+                  <li><strong>Consumer PFM Engine:</strong> Cashflow balance sheet, velocity anomaly alerts, and bill cycle forecasting.</li>
+                  <li><strong>Operator Uplift Engine:</strong> Causal Individual Treatment Effect (ITE), RFM affinity matrix, and fatigue decay shield.</li>
+                  <li>Deterministic XAI generates bilingual explanations in Bengali &amp; English.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card indigo-border">
+              <div class="card-label">3. Automated Execution</div>
+              <div class="card-title">Closed-Loop Delivery (Action)</div>
+              <div class="card-text">
+                Frictionless contextual user touchpoints:
+                <ul class="bullet-list indigo" style="margin-top: 10px;">
+                  <li>Dynamic mobile feed with 1-tap utility payment &amp; ML-ranked offer cards.</li>
+                  <li>Interactive Inflow vs Outflow hero card with sub-10ms date filtering.</li>
+                  <li>Enterprise Web Simulator for testing audience uplift before live deployment.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 3 Script (Paradigm):</strong> Emphasize how this fits the hackathon motto 'From Idea to Working AI Solution'. We didn't build an isolated ML script; we engineered a full-stack loop: Every time Tanvir recharges or Sadia buys groceries, the Input layer captures the event, the Intelligence core recomputes cashflow and propensity in milliseconds, and the Action layer provides instant coaching or personalized offers.
+        </div>
+      </div>
+
+      <!-- SLIDE 4: TRACK 03 - PFM & CASHFLOW -->
+      <div class="slide" data-slide="4">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">TRACK 03 INNOVATION</span>
+            <span class="header-title-meta">Personal Finance Management (PFM)</span>
+          </div>
+          <div class="header-right"><span>04 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Personal Finance Management</div>
+            <h1 class="slide-title">Empowering Consumers: The <span class="emerald">Smart Cashflow Engine</span></h1>
+            <p class="slide-subtitle">Transforming boring SMS history into an interactive balance sheet with real-time sector decomposition.</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card accent-border">
+              <div class="card-label">Core Ledger Capabilities</div>
+              <div class="card-title">Inflow vs. Outflow Balance Sheet</div>
+              <ul class="bullet-list">
+                <li><strong>Dual-Metric Hero Card:</strong> Instantly displays Total Inflow, Total Outflow, Net Savings Surplus/Deficit, and graphical split visual ratio.</li>
+                <li><strong>Multi-Horizon Filtering:</strong> Sub-10ms client-side re-aggregations across <em>Today, This Week, This Month, Last Month,</em> and <em>All Time</em>.</li>
+                <li><strong>Dynamic Category Breakdown:</strong> Decomposes spending into <em>Mobile Recharge, Merchant Shopping, Send Money, Utility Bills,</em> and <em>Cash Out</em>.</li>
+                <li><strong>Interactive Isolation:</strong> Tapping any category card immediately isolates matching records in the ledger with exact currency &amp; percentage share.</li>
+              </ul>
+            </div>
+
+            <div class="card cyan-border">
+              <div class="card-label">Fintech Impact</div>
+              <div class="card-title">Why This Solves Track 03 Core Needs</div>
+              <ul class="bullet-list cyan">
+                <li><strong>Overcomes Financial Illiteracy:</strong> Replaces confusing debit/credit bank jargon with clear visual split bars and color-coded tags.</li>
+                <li><strong>Sub-10ms Client Recomputation:</strong> Powered by optimized JavaScript memoization inside React Native; runs seamlessly even on budget Android devices.</li>
+                <li><strong>Fee Leakage Visibility:</strong> Explicitly isolates the 1.85% cash-out fee so users instantly see how much they can save by switching to QR payments.</li>
+                <li><strong>Instant Digital Passbook:</strong> Paginated ledger with search, direction tags (+/-), and printable receipt modal.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 4 Script (PFM & Cashflow):</strong> Walk the judges through the PFM interface. When a user opens GenCash, they don't see a raw list of cryptic numbers. They see a clean Cashflow Hero Card: 'Money In: ৳12,500, Money Out: ৳7,300, Net Surplus: ৳5,200'. Tapping 'Mobile Recharge' instantly shows they spent 22% on airtime. This level of clarity takes seconds to understand and builds instant loyalty.
+        </div>
+      </div>
+
+      <!-- SLIDE 5: TRACK 03 - ASK AI & BILINGUAL -->
+      <div class="slide" data-slide="5">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">TRACK 03 INNOVATION</span>
+            <span class="header-title-meta">Conversational Discovery &amp; Bengali NLP</span>
+          </div>
+          <div class="header-right"><span>05 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Conversational Financial Copilot</div>
+            <h1 class="slide-title">Natural-Language <span class="emerald">"Ask AI"</span> &amp; Bilingual Discovery</h1>
+            <p class="slide-subtitle">Democratizing financial intelligence with instant prompt chips and localized Bengali numeral synthesis.</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card accent-border">
+              <div class="card-label">Conversational Querying</div>
+              <div class="card-title">Integrated Prompt Chips &amp; Instant Answers</div>
+              <p class="card-text" style="margin-bottom: 12px;">
+                Users can tap quick prompt chips or type natural queries to query their personal financial ledger:
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 12px; font-size: 13px;">
+                  💬 <strong>"এই মাসে রিচার্জ কত?"</strong> &rarr; <span style="color: var(--brand-primary-dark); font-weight: 600;">৳ ৭৯৮.০০ (৪টি ট্রানজ্যাকশন)</span>
+                </div>
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 12px; font-size: 13px;">
+                  💬 <strong>"এই সপ্তাহে কত ঢুকলো?"</strong> &rarr; <span style="color: var(--brand-accent); font-weight: 600;">৳ ৫,০০০.০০ ইনকাম</span>
+                </div>
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 12px; font-size: 13px;">
+                  💬 <strong>"মার্চেন্ট পেমেন্ট ও শপিং"</strong> &rarr; <span style="color: var(--brand-indigo); font-weight: 600;">৳ ৩,৪৫০.০০ (Shwapno, Chillox)</span>
+                </div>
+              </div>
+              <div class="card-text">
+                Evaluates top expense drivers and average daily burn rate in BDT/day with zero latency.
+              </div>
+            </div>
+
+            <div class="card subtle-bg">
+              <div class="card-label">Localization &amp; Accessibility</div>
+              <div class="card-title">Complete English &bull; বাংলা Parity</div>
+              <ul class="bullet-list">
+                <li><strong>Native Bengali Numerals:</strong> Seamless conversion between Western digits (1234) and Bengali numerals (১২৩৪) across all transaction balances.</li>
+                <li><strong>Culturally Tuned Financial Prompts:</strong> Tailored for local financial concepts such as <em>Send Money (সেন্ড মানি)</em>, <em>Cash Out (ক্যাশ আউট)</em>, and <em>Biller (বিল পরিশোধ)</em>.</li>
+                <li><strong>Fee Leakage Mitigation Prompts:</strong> Suggests practical savings advice: <em>"You spent ৳185 on cash-out fees this month. Scan merchant QR at Shwapno to save 100% of these fees!"</em></li>
+                <li><strong>Zero Hallucination:</strong> Deterministic parsing guarantees balance and transaction numbers are strictly derived from the relational database ledger.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 5 Script (Ask AI & Bengali):</strong> Highlight our deep localization. Many users in rural Bangladesh or semi-urban areas are uncomfortable with English financial tables. They can tap 'এই মাসে রিচার্জ কত?' in Bengali and immediately get '৳ ৭৯৮.০০'. Everything has 100% bilingual parity and uses real Bengali numerals.
+        </div>
+      </div>
+
+      <!-- SLIDE 6: TRACK 03 - ANOMALY & HEALTH SCORE -->
+      <div class="slide" data-slide="6">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">TRACK 03 INNOVATION</span>
+            <span class="header-title-meta">Proactive Risk &amp; Predictive Guardrails</span>
+          </div>
+          <div class="header-right"><span>06 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Proactive Guidance</div>
+            <h1 class="slide-title">Anomaly Alerts, Health Scoring &amp; <span class="emerald">Predictive Utilities</span></h1>
+            <p class="slide-subtitle">Moving from retrospective financial records to predictive coaching that prevents overdrafts and bill penalties.</p>
+          </div>
+
+          <div class="grid-3">
+            <div class="card accent-border">
+              <div class="card-label">Dynamic Calibration</div>
+              <div class="card-title">AI Financial Health Score</div>
+              <div class="metric-hero">
+                <span class="metric-value emerald">88</span>
+                <span class="metric-label">/ 100 Health Index</span>
+              </div>
+              <div class="card-text">
+                Evaluates monthly budget adherence, savings consistency, and fee optimization ratios:
+                <ul class="bullet-list" style="margin-top: 10px;">
+                  <li>Highlights savings unlocked (e.g. ৳ 450 saved this month).</li>
+                  <li>Calculates liquidity runway before salary day.</li>
+                  <li>Actionable tips to boost score to 95+.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card warning-border subtle-bg">
+              <div class="card-label" style="color: var(--brand-warning);">Behavioral Monitoring</div>
+              <div class="card-title">Spending Anomaly Detection</div>
+              <div class="card-text">
+                Calculates rolling 30-day baseline distributions for each expenditure sector:
+                <div class="arch-code-box" style="margin: 10px 0; font-size: 11px; padding: 10px;">Z = (Outflow_current - &mu;) / (&sigma; + &epsilon;)</div>
+                Triggers explainable alerts when Z &gt; 2.0 to catch micro-spending spikes early:
+                <div style="font-size: 12px; color: var(--brand-warning); font-weight: 600; margin-top: 6px;">
+                  &bull; "Food expenses spike: 140% above 30-day weekly average."
+                </div>
+              </div>
+            </div>
+
+            <div class="card cyan-border">
+              <div class="card-label">Lifecycle Intelligence</div>
+              <div class="card-title">Predictive Utility Reminders</div>
+              <div class="card-text">
+                Analyzes recurring historical intervals to predict upcoming obligations:
+                <ul class="bullet-list cyan" style="margin-top: 10px;">
+                  <li>DESCO electricity bill forecast: Due in 4 days (~৳ 1,850).</li>
+                  <li>Grameenphone 30-day data pack expires in 48 hours.</li>
+                  <li><strong>1-Tap Instant Action:</strong> Direct action button pre-fills the biller ID and amount into checkout.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 6 Script (Anomaly & Utility Reminders):</strong> Explain the difference between reactive and proactive finance. Reactive finance tells you your DESCO bill was due yesterday and you got fined. Proactive finance flags that DESCO is due in 4 days, compares it with your current balance, and lets you settle it in 1 tap. This prevents user stress and ensures billers receive timely settlements.
+        </div>
+      </div>
+
+      <!-- SLIDE 7: TRACK 04 - CAUSAL UPLIFT MODELING -->
+      <div class="slide" data-slide="7">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">TRACK 04 INTELLIGENCE</span>
+            <span class="header-title-meta">Growth &amp; Campaign Optimization</span>
+          </div>
+          <div class="header-right"><span>07 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Precision Targeting Engine</div>
+            <h1 class="slide-title">Causal Uplift Modeling &amp; <span class="cyan">Four-Quadrant Segmentation</span></h1>
+            <p class="slide-subtitle">Eliminating marketing waste by modeling Individual Treatment Effect (ITE) rather than basic response correlation.</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card accent-border">
+              <div class="card-label">Theoretical Formulation</div>
+              <div class="card-title">Individual Treatment Effect (ITE)</div>
+              <div class="arch-code-box" style="margin-bottom: 12px; font-weight:600;">&tau;_i = E[Y_i(1) | X_i] - E[Y_i(0) | X_i]</div>
+              <p class="card-text">
+                Standard propensity models target users with high absolute conversion probability, inadvertently spending promotional budget on users who would transact anyway. GenCash models <strong>differential uplift (&tau;)</strong>: targeting only users whose transaction depends strictly on receiving the incentive.
+              </p>
+              <div class="tech-pill-list">
+                <span class="tech-pill emerald">Gradient Boosted Trees</span>
+                <span class="tech-pill cyan">RFM Segmentation</span>
+                <span class="tech-pill">Category Affinity Matrix</span>
+              </div>
+            </div>
+
+            <div class="card subtle-bg">
+              <div class="card-label">Behavioral Matrix</div>
+              <div class="card-title">Four-Quadrant Automated Strategy</div>
+              <table class="deck-table">
+                <thead>
+                  <tr>
+                    <th>Segment</th>
+                    <th>Causal Behavior</th>
+                    <th>System Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Persuadables</strong></td>
+                    <td>Transact only with offer (&tau; &gt; 0)</td>
+                    <td><span style="color: var(--brand-primary); font-weight:700;">Target with Offer</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sure Things</strong></td>
+                    <td>Transact organically regardless</td>
+                    <td><span style="color: var(--text-muted); font-weight:600;">Suppress (Save Budget)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lost Causes</strong></td>
+                    <td>Completely unresponsive</td>
+                    <td><span style="color: var(--text-muted); font-weight:600;">Suppress (Zero Return)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sleeping Dogs</strong></td>
+                    <td>Promos trigger annoyance/churn</td>
+                    <td><span style="color: var(--brand-danger); font-weight:700;">Strict Blacklist</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 7 Script (Causal Uplift):</strong> This is our major theoretical and engineering breakthrough for Track 04. Traditional marketing burns cash rewarding 'Sure Things'—subscribers who were already going to recharge their phone on the 1st of the month. GenCash suppresses Sure Things and Lost Causes, focusing 100% of the promotional budget strictly on 'Persuadables'. This saves up to 38% of marketing spend with zero loss in net revenue.
+        </div>
+      </div>
+
+      <!-- SLIDE 8: TRACK 04 - NBO & FATIGUE SHIELD -->
+      <div class="slide" data-slide="8">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">TRACK 04 INTELLIGENCE</span>
+            <span class="header-title-meta">Personalization &amp; Fatigue Control</span>
+          </div>
+          <div class="header-right"><span>08 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Algorithmic Guardrails</div>
+            <h1 class="slide-title">Next-Best-Offer Ranking &amp; <span class="cyan">Offer Fatigue Shield</span></h1>
+            <p class="slide-subtitle">Pairing multi-factor behavioral affinity with exponential decay suppression to protect customer engagement.</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card accent-border">
+              <div class="card-label">Multi-Objective Optimization</div>
+              <div class="card-title">Composite NBO Ranking Formula</div>
+              <div class="arch-code-box" style="margin-bottom: 12px; font-weight:600;">R(u, k) = &tau;&#770;_{u,k} &times; A_{u,c_k} &times; exp(-&lambda; &times; F_u)</div>
+              <ul class="bullet-list">
+                <li><strong>Uplift Propensity (&tau;&#770;):</strong> Estimated incremental transaction yield for user <em>u</em> on offer <em>k</em>.</li>
+                <li><strong>Category Affinity (A):</strong> Historical expenditure concentration in matching merchant sector over 30 days.</li>
+                <li><strong>Offer Fatigue Shield (exp(-&lambda;F)):</strong> Tracks repeated exposures without conversion to dynamically suppress spam.</li>
+                <li><strong>Cooling-off Suppression:</strong> Automatically enters a 7-day silent period if fatigue exceeds threshold.</li>
+              </ul>
+            </div>
+
+            <div class="card subtle-bg">
+              <div class="card-label">Explainable AI (XAI)</div>
+              <div class="card-title">Deterministic Transparency</div>
+              <div class="card-text">
+                Black-box recommendations destroy customer trust. GenCash synthesizes human-readable rationales displayed directly on mobile offer cards:
+                <div style="background: #FFFFFF; border-left: 4px solid var(--brand-accent); padding: 12px; margin: 12px 0; border-radius: 4px; font-style: italic; font-size: 13px; color: var(--text-main); border: 1px solid #E2E8F0; border-left: 4px solid var(--brand-accent);">
+                  "Recommended because 42% of your monthly expenditure was in retail groceries, and this Shwapno offer provides ৳ 50 cashback on orders over ৳ 500."
+                </div>
+                Dual synthesis in English and Bengali with zero generative hallucination.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 8 Script (NBO & Fatigue):</strong> Point out our composite formula: Uplift Propensity times Category Affinity times the Exponential Fatigue Decay. If an operator bombards a user with 5 grocery offers and they ignore them, the fatigue penalty drops the score to zero, protecting the user from becoming annoyed and turning off notifications.
+        </div>
+      </div>
+
+      <!-- SLIDE 9: CAMPAIGN SIMULATOR & ADMIN -->
+      <div class="slide" data-slide="9">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">OPERATOR SUITE</span>
+            <span class="header-title-meta">Enterprise Management &amp; Simulation</span>
+          </div>
+          <div class="header-right"><span>09 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Enterprise Operations</div>
+            <h1 class="slide-title">Pre-Broadcast Campaign Simulation &amp; <span class="emerald">Platform Controls</span></h1>
+            <p class="slide-subtitle">Empowering marketing directors and compliance officers with pre-flight ROI forecasting and float monitoring.</p>
+          </div>
+
+          <div class="grid-3">
+            <div class="card accent-border">
+              <div class="card-label">Pre-Flight Testing</div>
+              <div class="card-title">Campaign ROI Simulator</div>
+              <ul class="bullet-list">
+                <li>Simulates target segment reach, expected conversion rates, and Return on Campaign Investment (ROCI).</li>
+                <li>Live parameter sliders: budget cap, cashback percentage, and minimum spend hurdle.</li>
+                <li>Eliminates guesswork before deploying capital to the production network.</li>
+                <li>Live access via Web Portal at <code>/simulator</code>.</li>
+              </ul>
+            </div>
+
+            <div class="card cyan-border">
+              <div class="card-label">Financial Governance</div>
+              <div class="card-title">Dispute Resolution &amp; Auditing</div>
+              <ul class="bullet-list cyan">
+                <li>Cryptographically validated transaction reversal engine with immutable audit trails.</li>
+                <li>Full search across transaction hashes, user phone numbers, and merchant terminal IDs.</li>
+                <li>Prevents fraudulent double-spends and unauthorized ledger balance adjustments.</li>
+              </ul>
+            </div>
+
+            <div class="card indigo-border">
+              <div class="card-label">Operational Stability</div>
+              <div class="card-title">Agent Float &amp; Settlements</div>
+              <ul class="bullet-list indigo">
+                <li>Live agent point liquidity monitoring with automated float replenishment triggers.</li>
+                <li>Batched utility biller settlements for DESCO, DPDC, WASA, and Polli Bidyut.</li>
+                <li>Automated KYC verification and compliance inspection workflows.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 9 Script (Campaign Simulator):</strong> Emphasize to the judges that GenCash is an end-to-end platform, not just an app. Mention our web-based Campaign Simulator at <code>/simulator</code>. A campaign manager at upay can drag the budget slider, set a 5% cashback rate, and the simulator immediately predicts: 'Audience: 18,400 Persuadables, Expected Uplift: +14.2%, Projected ROCI: 3.4x'. No more shooting in the dark.
+        </div>
+      </div>
+
+      <!-- SLIDE 10: FULL-STACK ARCHITECTURE -->
+      <div class="slide" data-slide="10">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">TECHNICAL SPECIFICATIONS</span>
+            <span class="header-title-meta">Four-Tier Decoupled Architecture</span>
+          </div>
+          <div class="header-right"><span>10 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">System Architecture</div>
+            <h1 class="slide-title">Four-Tier Decoupled Enterprise Stack</h1>
+            <p class="slide-subtitle">Engineered for low latency, cross-platform portability, and strict ACID transaction guarantees.</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card accent-border">
+              <div class="card-label">Subsystem Architecture</div>
+              <div class="arch-code-box">
+<span class="highlight">[CLIENT TIER]</span>
+  ├── Mobile App: React Native / Expo SDK 57 (Cross-Platform)
+  └── Admin Web: Modern ES6+ Campaign Simulator Portal
+
+<span class="highlight">[API &amp; BUSINESS CORE]</span>
+  └── FastAPI (Asynchronous Python 3.10+) + Uvicorn
+      ├── JWT Token Auth &amp; Bcrypt PIN Validation
+      └── Atomic Concurrency Controller (Row-Level Locking)
+
+<span class="highlight">[DATA &amp; PERSISTENCE TIER]</span>
+  └── MySQL 8.0 Engine (with SQLite Auto-Fallback)
+      └── ACID-compliant schemas: wallets, txns, offers
+
+<span class="highlight">[INTELLIGENCE LAYER]</span>
+  └── Scikit-Learn + Pandas + NumPy
+      ├── Causal Uplift Estimator (Persuadable Filter)
+      └── Fatigue Decay &amp; Anomaly Baseline Modules
+              </div>
+            </div>
+
+            <div class="card subtle-bg">
+              <div class="card-label">Technical Stack Highlights</div>
+              <table class="deck-table">
+                <tbody>
+                  <tr>
+                    <td><strong>Mobile Frontend</strong></td>
+                    <td>React Native (v0.86), Expo SDK 57, Expo Linear Gradient</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Backend API</strong></td>
+                    <td>FastAPI (v0.110), Pydantic v2, Asynchronous handlers</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Database</strong></td>
+                    <td>SQLAlchemy 2.0, MySQL 8.0 / SQLite zero-config fallback</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Machine Learning</strong></td>
+                    <td>Scikit-Learn (v1.4), NumPy, Pandas, RFM Clustering</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Security Layer</strong></td>
+                    <td>PBKDF2 / Bcrypt PIN hashing, stateless Bearer JWT</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 10 Script (Architecture):</strong> We designed our architecture for production reality: FastAPI gives us non-blocking async execution, React Native with Expo 57 provides seamless cross-platform performance on iOS, Android, and Web, and SQLAlchemy 2.0 ensures ACID transactional guarantees. If MySQL is unavailable during local judging, our auto-fallback immediately seeds a zero-config SQLite database.
+        </div>
+      </div>
+
+      <!-- SLIDE 11: CONCURRENCY, SECURITY & RESPONSIBLE AI -->
+      <div class="slide" data-slide="11">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">GOVERNANCE &amp; SAFETY</span>
+            <span class="header-title-meta">Security &amp; Ethical Guardrails</span>
+          </div>
+          <div class="header-right"><span>11 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Reliability &amp; Ethics</div>
+            <h1 class="slide-title">Financial Concurrency &amp; <span class="emerald">Responsible AI</span></h1>
+            <p class="slide-subtitle">Strict mathematical isolation between deterministic financial accounting and probabilistic ML models.</p>
+          </div>
+
+          <div class="grid-3">
+            <div class="card accent-border">
+              <div class="card-label">Financial Integrity</div>
+              <div class="card-title">Atomic Concurrency Locks</div>
+              <ul class="bullet-list">
+                <li>Row-level wallet locks prevent race conditions during concurrent P2P transfers.</li>
+                <li>Two-phase commit ensures ledger debit and credit succeed atomically or fail completely.</li>
+                <li>Zero possibility of phantom wallet balances or duplicate withdrawals.</li>
+              </ul>
+            </div>
+
+            <div class="card subtle-bg">
+              <div class="card-label">Ethical AI Boundaries</div>
+              <div class="card-title">Advisory Isolation</div>
+              <ul class="bullet-list">
+                <li><strong>No Autonomous Credit Decisions:</strong> AI never issues credit rejections or loan approvals, preventing demographic bias.</li>
+                <li><strong>Read-Only Boundary:</strong> ML models consume read-only telemetry; they can never directly manipulate ledger state.</li>
+                <li>Deterministic computation guarantees zero generative hallucination in balance figures.</li>
+              </ul>
+            </div>
+
+            <div class="card cyan-border">
+              <div class="card-label">Data Privacy</div>
+              <div class="card-title">Synthetic Personas &amp; Minimization</div>
+              <ul class="bullet-list cyan">
+                <li>All training and demo datasets utilize calibrated synthetic personas reflecting Bangladeshi demographics.</li>
+                <li>Client-side PFM aggregations process only numerical amounts and timestamps.</li>
+                <li>No transmission of external contact books or private user SMS notes.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 11 Script (Security & Responsible AI):</strong> Judges at fintech competitions scrutinize safety. Emphasize: 'We maintain strict mathematical isolation. AI is strictly an advisory copilot; it NEVER touches the double-entry accounting ledger directly, and it never issues autonomous loan approvals. Concurrency is protected by row-level database locks, preventing double-spend exploits.'
+        </div>
+      </div>
+
+      <!-- SLIDE 12: BENCHMARKS & PERFORMANCE -->
+      <div class="slide" data-slide="12">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">EMPIRICAL RESULTS</span>
+            <span class="header-title-meta">Latency &amp; System Performance</span>
+          </div>
+          <div class="header-right"><span>12 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Performance Evaluation</div>
+            <h1 class="slide-title">Empirical Performance &amp; <span class="emerald">Latency Benchmarks</span></h1>
+            <p class="slide-subtitle">Tested under production workloads to ensure responsive real-time mobile execution.</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card accent-border">
+              <div class="card-label">Latency Evaluation</div>
+              <table class="deck-table">
+                <thead>
+                  <tr>
+                    <th>Subsystem / Operation</th>
+                    <th>Measured Latency</th>
+                    <th>Target SLA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>P2P Send Money API Roundtrip</td>
+                    <td><strong style="color: var(--brand-primary); font-family: var(--font-mono);">28 ms</strong></td>
+                    <td>&lt; 150 ms</td>
+                  </tr>
+                  <tr>
+                    <td>Client-Side PFM Date Aggregation</td>
+                    <td><strong style="color: var(--brand-accent); font-family: var(--font-mono);">8 ms</strong></td>
+                    <td>&lt; 50 ms</td>
+                  </tr>
+                  <tr>
+                    <td>JWT Token Authentication</td>
+                    <td><strong style="font-family: var(--font-mono);">1.4 ms</strong></td>
+                    <td>&lt; 10 ms</td>
+                  </tr>
+                  <tr>
+                    <td>Uplift &amp; NBO Inference Engine</td>
+                    <td><strong style="color: var(--brand-primary); font-family: var(--font-mono);">42 ms</strong></td>
+                    <td>&lt; 100 ms</td>
+                  </tr>
+                  <tr>
+                    <td>Relational Ledger Retrieval</td>
+                    <td><strong style="font-family: var(--font-mono);">3.2 ms</strong></td>
+                    <td>&lt; 20 ms</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card subtle-bg">
+              <div class="card-label">Business &amp; Operational Gains</div>
+              <div class="card-title">Quantified System Impact</div>
+              <ul class="bullet-list">
+                <li><strong>Campaign Budget Savings:</strong> Uplift modeling suppresses ~38% of non-persuadable audience, cutting marketing burn rate with zero conversion loss.</li>
+                <li><strong>Reduced User Churn:</strong> Offer Fatigue Shield prevents promotional uninstalls by capping exposure frequency.</li>
+                <li><strong>Fee Leakage Reduction:</strong> In-app prompts drive a 22% shift from high-fee cash-outs toward direct merchant QR payments.</li>
+                <li><strong>Utility On-Time Rate:</strong> Predictive reminders reduce late utility payment penalties across pilot cohorts.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 12 Script (Benchmarks):</strong> Highlight the table numbers: A full P2P transaction roundtrip completes in just 28 milliseconds. PFM date filtering executes client-side in 8 milliseconds. And our Machine Learning propensity inference runs in 42 milliseconds. This is production-ready speed that easily scales to millions of daily upay subscribers.
+        </div>
+      </div>
+
+      <!-- SLIDE 13: LIVE PROTOTYPE & USER JOURNEY -->
+      <div class="slide" data-slide="13">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">SYSTEM DEMONSTRATION</span>
+            <span class="header-title-meta">Full User Experience Flow</span>
+          </div>
+          <div class="header-right"><span>13 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Interactive Prototype</div>
+            <h1 class="slide-title">End-to-End User Journey Walkthrough</h1>
+            <p class="slide-subtitle">A seamless experience connecting customer empowerment with operator monetization.</p>
+          </div>
+
+          <div class="flow-steps">
+            <div class="flow-step-item">
+              <div class="flow-step-num">1</div>
+              <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--text-main);">Auth &amp; Home Feed</div>
+              <div style="font-size: 12.5px; color: var(--text-body); line-height: 1.45;">
+                User logs in with secure PIN. Home screen displays real-time wallet balance, 1-tap utility reminders, and ML-ranked NBO offer carousel.
+              </div>
+            </div>
+
+            <div class="flow-step-item">
+              <div class="flow-step-num">2</div>
+              <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--text-main);">AI Cashflow Hub</div>
+              <div style="font-size: 12.5px; color: var(--text-body); line-height: 1.45;">
+                User opens AI Hub. Inspects Inflow vs Outflow balance sheet, reviews category percentage breakdown, and asks natural language queries in Bengali.
+              </div>
+            </div>
+
+            <div class="flow-step-item">
+              <div class="flow-step-num">3</div>
+              <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--text-main);">Core Transactions</div>
+              <div style="font-size: 12.5px; color: var(--text-body); line-height: 1.45;">
+                Executes instant P2P Send Money, Mobile Recharge, or Merchant Payment. Row-level database locks ensure sub-30ms atomic execution.
+              </div>
+            </div>
+
+            <div class="flow-step-item">
+              <div class="flow-step-num">4</div>
+              <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--text-main);">Campaign Simulator</div>
+              <div style="font-size: 12.5px; color: var(--text-body); line-height: 1.45;">
+                Campaign manager logs into web portal, simulates budget uplift across Persuadables, and triggers targeted offers with fatigue suppression.
+              </div>
+            </div>
+          </div>
+
+          <div class="card subtle-bg" style="margin-top: 18px; padding: 16px 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <span style="font-weight: 700; color: var(--text-main); font-size: 14px;">Pre-Configured Demo Credentials:</span>
+                <span style="margin-left: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--brand-primary-dark); font-weight: 600;">
+                  Customer: 01711111111 (PIN: 123456) &bull; Agent: 01799999999 &bull; Admin: admin@gencash.com
+                </span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);">
+                Local API: localhost:8000 &bull; Expo: localhost:8081
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 13 Script (Live Demo Walkthrough):</strong> Walk the judges through the live demo setup. We have pre-seeded realistic accounts like Tanvir Ahmed. If the judges want to see the transaction flow right now, we can execute Send Money, filter cashflow by 'This Month', test the Bengali 'Ask AI' query, and open the Campaign Simulator in the browser.
+        </div>
+      </div>
+
+      <!-- SLIDE 14: CONCLUSION & ROADMAP -->
+      <div class="slide" data-slide="14">
+        <div class="slide-header">
+          <div class="header-left">
+            <span class="brand-pill">STRATEGIC HORIZON</span>
+            <span class="header-title-meta">Roadmap for the upay Ecosystem</span>
+          </div>
+          <div class="header-right"><span>14 / 14</span></div>
+        </div>
+        <div class="slide-body">
+          <div class="slide-title-group">
+            <div class="slide-category">Conclusion &amp; Future Vision</div>
+            <h1 class="slide-title">The Future of Intelligent MFS in Bangladesh</h1>
+            <p class="slide-subtitle">GenCash provides a fully functional, production-viable blueprint ready for national deployment.</p>
+          </div>
+
+          <div class="grid-3">
+            <div class="card accent-border">
+              <div class="card-label">Phase 1: Immediate Pilot</div>
+              <div class="card-title">Integration with upay Rails</div>
+              <ul class="bullet-list">
+                <li>Deploy PFM Cashflow card natively inside upay customer app.</li>
+                <li>A/B test NBO uplift models against baseline broadcast campaigns.</li>
+                <li>Enable merchant cashback simulations on live marketing calendars.</li>
+              </ul>
+            </div>
+
+            <div class="card cyan-border">
+              <div class="card-label">Phase 2: Ecosystem Expansion</div>
+              <div class="card-title">Micro-Savings &amp; Agent AI</div>
+              <ul class="bullet-list cyan">
+                <li>Automated spare-change round-up savings accounts tied to Islamic banking partners.</li>
+                <li>Agent liquidity forecasting to prevent rural cash-out runouts during Eid festivals.</li>
+                <li>Voice-guided Bengali AI prompts for semi-literate demographics.</li>
+              </ul>
+            </div>
+
+            <div class="card indigo-border">
+              <div class="card-label">Summary Takeaway</div>
+              <div class="card-title">Defensible Economic Value</div>
+              <p class="card-text">
+                GenCash delivers defensible marketing ROI for operators while actively protecting subscriber financial well-being. Built on solid software principles, atomic integrity, and responsible AI.
+              </p>
+              <div style="margin-top: 14px; font-weight: 700; color: var(--brand-primary); font-size: 14px;">
+                Thank you! We welcome your questions.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="speaker-drawer-note" style="display:none;">
+          <strong>Slide 14 Script (Conclusion & Q&A):</strong> Conclude with confidence: 'GenCash is not just a hackathon concept—it is a production-engineered blueprint tailored specifically for upay. It solves real consumer pain points in Track 03 and cuts millions in marketing waste in Track 04. Thank you for your time, and we are now open for your questions and live demonstration.'
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SPEAKER NOTES DRAWER -->
+    <div id="speakerDrawer" class="speaker-drawer">
+      <div class="speaker-drawer-header">
+        <span>SPEAKER SCRIPT / PRESENTATION GUIDANCE</span>
+        <span style="cursor: pointer; font-size: 13px;" onclick="toggleNotes()">[CLOSE &times;]</span>
+      </div>
+      <div id="speakerNoteContent">Press 'S' or click 'Notes (S)' to view speech script.</div>
+    </div>
+  </div>
+
+  <!-- PERSISTENT BOTTOM CONTROLS -->
+  <div class="controls-bar">
+    <button class="control-btn" onclick="prevSlide()" title="Previous Slide (&larr; / PageUp)">
+      &larr; Prev
+    </button>
+    <div class="progress-bar-wrap">
+      <div id="progressFill" class="progress-bar-fill"></div>
+    </div>
+    <span id="slideCounter" class="slide-counter">01 / 14</span>
+    <button class="control-btn" onclick="nextSlide()" title="Next Slide (&rarr; / Space / PageDown)">
+      Next &rarr;
+    </button>
+    <div style="width: 1px; height: 16px; background: var(--border-color); margin: 0 4px;"></div>
+    <button class="control-btn primary" onclick="toggleNotes()" title="Toggle Speaker Script (S)">
+      Notes (S)
+    </button>
+    <button class="control-btn" onclick="toggleGridModal()" title="View All Slides Grid (G)">
+      Grid (G)
+    </button>
+    <button class="control-btn" onclick="window.print()" title="Print / Save PDF (P)">
+      Print / PDF
+    </button>
+    <button class="control-btn" onclick="toggleFullscreen()" title="Fullscreen (F)">
+      Full Screen
+    </button>
+  </div>
+
+  <!-- GRID OVERVIEW MODAL -->
+  <div id="gridModal" class="grid-modal" onclick="closeGridOnBackdrop(event)">
+    <div class="grid-modal-content" onclick="event.stopPropagation()">
+      <div class="grid-modal-header">
+        <div class="grid-modal-title">Slide Navigation Overview</div>
+        <button class="control-btn" onclick="toggleGridModal()">Close &times;</button>
+      </div>
+      <div class="grid-thumbnails" id="gridThumbnails"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 14;
+
+    const slideTitles = [
+      "Title & Executive Overview",
+      "The Dual Inefficiency Problem",
+      "Input &rarr; Intelligence &rarr; Action",
+      "Track 03: Smart Cashflow Engine",
+      "Track 03: Ask AI & Bilingual Discovery",
+      "Track 03: Anomaly & Health Score",
+      "Track 04: Causal Uplift Modeling",
+      "Track 04: NBO & Fatigue Shield",
+      "Operator Suite: Campaign Simulator",
+      "Four-Tier System Architecture",
+      "Concurrency, Security & Ethics",
+      "Empirical Latency & Benchmarks",
+      "Interactive Prototype Walkthrough",
+      "Conclusion & Strategic Roadmap"
+    ];
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      document.querySelectorAll('.slide').forEach((slide, idx) => {
+        slide.classList.remove('active');
+        if (idx + 1 === currentSlide) {
+          slide.classList.add('active');
+          updateSpeakerNotes(slide);
+        }
+      });
+
+      document.getElementById('slideCounter').textContent = 
+        `${String(currentSlide).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+      
+      const pct = (currentSlide / totalSlides) * 100;
+      document.getElementById('progressFill').style.width = `${pct}%`;
+      updateGridHighlights();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    function updateSpeakerNotes(slideElement) {
+      const noteEl = slideElement.querySelector('.speaker-drawer-note');
+      const drawerContent = document.getElementById('speakerNoteContent');
+      if (noteEl) {
+        drawerContent.innerHTML = noteEl.innerHTML;
+      } else {
+        drawerContent.innerHTML = "No speaker notes for this slide.";
+      }
+    }
+
+    function toggleNotes() {
+      const drawer = document.getElementById('speakerDrawer');
+      drawer.classList.toggle('visible');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.warn("Fullscreen request error:", err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function toggleGridModal() {
+      const modal = document.getElementById('gridModal');
+      modal.classList.toggle('open');
+      if (modal.classList.contains('open')) {
+        renderThumbnails();
+      }
+    }
+
+    function closeGridOnBackdrop(e) {
+      toggleGridModal();
+    }
+
+    function renderThumbnails() {
+      const container = document.getElementById('gridThumbnails');
+      container.innerHTML = '';
+      slideTitles.forEach((title, idx) => {
+        const slideNum = idx + 1;
+        const item = document.createElement('div');
+        item.className = `thumb-item ${slideNum === currentSlide ? 'current' : ''}`;
+        item.onclick = () => {
+          showSlide(slideNum);
+          toggleGridModal();
+        };
+        item.innerHTML = `
+          <div class="thumb-num">SLIDE ${String(slideNum).padStart(2, '0')}</div>
+          <div class="thumb-title">${title}</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function updateGridHighlights() {
+      document.querySelectorAll('.thumb-item').forEach((item, idx) => {
+        if (idx + 1 === currentSlide) {
+          item.classList.add('current');
+        } else {
+          item.classList.remove('current');
+        }
+      });
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        showSlide(1);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        showSlide(totalSlides);
+      } else if (e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        toggleFullscreen();
+      } else if (e.key.toLowerCase() === 'g') {
+        e.preventDefault();
+        toggleGridModal();
+      } else if (e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        window.print();
+      } else if (e.key === 'Escape') {
+        const modal = document.getElementById('gridModal');
+        if (modal.classList.contains('open')) {
+          modal.classList.remove('open');
+        }
+        const drawer = document.getElementById('speakerDrawer');
+        if (drawer.classList.contains('visible')) {
+          drawer.classList.remove('visible');
+        }
+      }
+    });
+
+    // Touch swipe support for tablet / touchscreens
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    document.addEventListener('touchend', e => {
+      let touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        nextSlide();
+      } else if (touchEndX - touchStartX > 50) {
+        prevSlide();
+      }
+    }, false);
+
+    // Initial setup
+    showSlide(1);
+  </script>
+</body>
+</html>

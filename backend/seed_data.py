@@ -75,7 +75,7 @@ def seed_initial_data(db: Session):
 
         # 4. Demo Customer Users
         users_info = [
-            ("Tanvir Ahmed", "01711111111", "tanvir@example.com", "123456", 12500.00),
+            ("Arif Shahriar", "01711111111", "arif@gencash.com", "123456", 12500.00),
             ("Sadia Rahman", "01822222222", "sadia@example.com", "123456", 8200.00),
             ("Rafiqul Islam", "01933333333", "rafiq@example.com", "123456", 4500.00),
             ("Demo Cash Agent", "01799999999", "agent@gencash.com", "123456", 50000.00),
