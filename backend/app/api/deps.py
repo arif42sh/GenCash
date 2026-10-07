@@ -91,7 +91,7 @@ def get_current_admin(
         )
 
     role = payload.get("role")
-    if role not in ["SUPER_ADMIN", "ADMIN", "ANALYST"]:
+    if role not in ["SUPER_ADMIN", "ADMIN", "ANALYST", "AUDITOR"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Insufficient administrative privileges."
@@ -103,3 +103,36 @@ def get_current_admin(
         raise HTTPException(status_code=404, detail="Admin account not found.")
 
     return admin
+
+
+def require_role(allowed_roles: list):
+    """
+    Enterprise Role-Based Access Control (RBAC) Dependency.
+    Enforces authorization boundaries: ADMIN, AUDITOR, USER.
+    """
+    def rbac_checker(
+        token: Optional[str] = Depends(oauth2_scheme),
+        db: Session = Depends(get_db)
+    ):
+        if not token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Authentication credentials required for RBAC verification.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        payload = decode_access_token(token)
+        if not payload:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired authentication credentials."
+            )
+        role = payload.get("role", "USER")
+        if role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access denied. Required roles: {allowed_roles}, Assigned role: '{role}'."
+            )
+        return payload
+
+    return rbac_checker
+

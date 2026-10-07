@@ -146,3 +146,36 @@ def read_user_wallet(
     if not wallet:
         raise HTTPException(status_code=404, detail="Wallet not found for this user.")
     return WalletResponse.model_validate(wallet)
+
+
+from pydantic import BaseModel, Field
+
+class UserConsentRequest(BaseModel):
+    promotional_nudge_opt_in: bool = Field(..., description="Opt-in consent toggle for AI promotional nudges")
+
+
+@router.patch("/{user_id}/consent")
+def update_user_consent(
+    user_id: int,
+    consent_data: UserConsentRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Responsible AI & User Privacy:
+    Mobile app toggle endpoint for promotional campaign nudges.
+    Allows user to opt in or opt out of AI-driven marketing notifications.
+    """
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Cannot modify consent for another user.")
+
+    from app.services.consent_service import record_user_consent
+    res = record_user_consent(user_id, consent_data.promotional_nudge_opt_in)
+    return {
+        "status": "SUCCESS",
+        "user_id": user_id,
+        "promotional_nudge_opt_in": consent_data.promotional_nudge_opt_in,
+        "message": "User marketing consent updated successfully.",
+        "updated_at": res["updated_at"]
+    }
+

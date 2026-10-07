@@ -127,28 +127,23 @@ Create a `.env` file inside the `backend/` directory.
 | Variable Name | Required | Default Value | Purpose / Description |
 | :--- | :---: | :--- | :--- |
 | `PROJECT_NAME` | No | `GenCash` | Name of the platform |
-| `SECRET_KEY` | **Yes** | `gencash_jwt_secret_key_prod_2026` | Secret key used for signing JWT authentication tokens |
+| `SECRET_KEY` | **Yes** | *None (Zero Fallback)* | **Mandatory 256-bit cryptographic secret** (>= 32 chars). Server terminates if omitted. |
 | `ALGORITHM` | No | `HS256` | JWT signing algorithm |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | No | `1440` | Token expiration time in minutes (24 hours) |
 | `DB_HOST` | No | `127.0.0.1` | MySQL host address |
 | `DB_PORT` | No | `3306` | MySQL port |
 | `DB_USER` | No | `root` | MySQL username |
-| `DB_PASSWORD` | No | `""` *(empty for XAMPP)* | MySQL password (use placeholder in public configs) |
-| `DB_NAME` | No | `gencash_db` | MySQL database name (auto-created on startup) |
+| `DB_PASSWORD` | No | `""` | MySQL password |
+| `DB_NAME` | No | `gencash_db` | MySQL database name |
 | `USE_SQLITE_FALLBACK` | No | `True` | Automatically falls back to SQLite if MySQL is unreachable |
+| `RATE_LIMIT_AUTH_PER_MINUTE` | No | `5/minute` | SlowAPI rate limit on authentication endpoints |
 | `DEFAULT_FEE_SEND_MONEY` | No | `5.00` | Flat transaction fee for P2P Send Money (BDT) |
 | `DEFAULT_FEE_CASH_OUT_PERCENT`| No | `1.85` | Agent cash-out service fee percentage |
 
 ```env
-# Sample backend/.env
-PROJECT_NAME="GenCash"
-SECRET_KEY="your-secure-jwt-secret-key-placeholder"
-DB_HOST="127.0.0.1"
-DB_PORT=3306
-DB_USER="root"
-DB_PASSWORD=""
-DB_NAME="gencash_db"
-USE_SQLITE_FALLBACK=True
+# Copy from .env.example
+cp .env.example backend/.env
+# Edit backend/.env and insert your secure 256-bit SECRET_KEY
 ```
 
 ---
@@ -194,16 +189,18 @@ npm run tunnel
 
 ## 9. 🧪 Testing Instructions
 
-### Pre-Configured Demo Personas
-The system automatically seeds realistic accounts on first boot:
+### Seeded Sandbox Personas (Local Development)
+The database seeds realistic accounts with bcrypt-hashed credentials on first boot:
 
-| Name | Role / Persona | Mobile Number | PIN / Password | Initial Balance |
+| Name | Role / Persona | Mobile Number | Credentials Status | Initial Balance |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tanvir Ahmed** | Primary Customer | `01711111111` | `123456` | ৳ 12,500.00 |
-| **Sadia Rahman** | P2P Recipient / Merchant | `01822222222` | `123456` | ৳ 8,200.00 |
-| **Rafiqul Islam** | Student Persona | `01933333333` | `123456` | ৳ 4,500.00 |
-| **Demo Cash Agent** | Cash-Out Agent Point | `01799999999` | `123456` | ৳ 50,000.00 |
-| **Platform Admin** | Super Administrator | `admin@gencash.com` | `admin123456` | N/A |
+| **Tanvir Ahmed** | Primary Customer | `01711111111` | Bcrypt-hashed (Standard Seed) | ৳ 12,500.00 |
+| **Sadia Rahman** | P2P Recipient / Merchant | `01822222222` | Bcrypt-hashed (Standard Seed) | ৳ 8,200.00 |
+| **Rafiqul Islam** | Student Persona | `01933333333` | Bcrypt-hashed (Standard Seed) | ৳ 4,500.00 |
+| **Demo Cash Agent** | Cash-Out Agent Point | `01799999999` | Bcrypt-hashed (Standard Seed) | ৳ 50,000.00 |
+| **Platform Admin** | Super Administrator | `admin@gencash.com` | RBAC Protected | N/A |
+
+> **Security Note:** In production, all initial credentials are provisioned via secure out-of-band activation (SMS OTP / E-KYC). Plaintext default passwords have been removed from documentation.
 
 ### Verification Steps
 1. **Authentication Test:**

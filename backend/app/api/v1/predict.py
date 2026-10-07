@@ -21,6 +21,7 @@ from pydantic import BaseModel, Field
 from fastapi import APIRouter, Response, status
 from app.ml.model_registry import model_registry
 from app.ml.streaming_feature_pipeline import streaming_pipeline
+from app.services.consent_service import is_user_opted_in, log_model_decision
 
 router = APIRouter(tags=["Production Model Inference"])
 
@@ -118,6 +119,31 @@ def predict_uplift_nbo(request: MFSInferenceRequest, response: Response):
     """
     t_start = time.perf_counter()
 
+    # 0. User Consent & Opt-Out Guardrail (Dimension 7: Responsible AI)
+    if not is_user_opted_in(request.user_id):
+        t_end = time.perf_counter()
+        lat_ms = round((t_end - t_start) * 1000.0, 2)
+        log_model_decision(
+            user_id=request.user_id,
+            model_version="GOVERNANCE_SUPPRESSED",
+            uplift_score=0.0,
+            segment="OPTED_OUT",
+            treatment_assigned=False,
+            opt_in_status=False,
+            latency_ms=lat_ms,
+            action_type="CONSENT_OPT_OUT_SUPPRESSION"
+        )
+        return MFSInferenceResponse(
+            user_id=request.user_id,
+            model_version="GOVERNANCE_SUPPRESSED",
+            model_sha256="N/A_USER_OPTED_OUT",
+            segment="OPTED_OUT",
+            primary_uplift_score=0.0,
+            ranked_offers=[],
+            inference_latency_ms=lat_ms,
+            sla_compliant=True
+        )
+
     # 1. Load active production model from cache
     model, version, checksum, feature_cols = get_active_inference_model()
 
@@ -178,11 +204,23 @@ def predict_uplift_nbo(request: MFSInferenceRequest, response: Response):
     for rank_idx, off in enumerate(ranked_offers):
         off.recommendation_priority = rank_idx + 1
 
-    # 7. SLA Telemetry Computation
+    # 7. SLA Telemetry & Immutable Model Decision Logging
     t_end = time.perf_counter()
     latency_ms = round((t_end - t_start) * 1000.0, 2)
     response.headers["X-Inference-Latency-Ms"] = str(latency_ms)
     response.headers["X-Model-Version"] = version
+
+    # Decoupled decision logging (isolated from core transaction ledger mutations)
+    log_model_decision(
+        user_id=request.user_id,
+        model_version=version,
+        uplift_score=cate,
+        segment=segment,
+        treatment_assigned=bool(segment == "PERSUADABLE"),
+        opt_in_status=True,
+        latency_ms=latency_ms,
+        action_type="PRODUCTION_INFERENCE"
+    )
 
     return MFSInferenceResponse(
         user_id=request.user_id,
