@@ -306,6 +306,9 @@ class TransactionService:
         try:
             sender_wallet.balance = round(Decimal(str(sender_wallet.balance)) - total_debit, 2)
 
+            if merchant:
+                merchant.unsettled_balance = Decimal(str(merchant.unsettled_balance or 0.00)) + amount
+
             txn_code = generate_txn_code("TXN-PM")
             txn = Transaction(
                 transaction_code=txn_code,
@@ -316,7 +319,7 @@ class TransactionService:
                 transaction_type=TransactionType.MERCHANT_PAYMENT.value,
                 status=TransactionStatus.COMPLETED.value,
                 recipient_phone=request.merchant_phone or (merchant.phone if merchant else None),
-                note=request.note or f"Payment to {merchant_name}",
+                note=(request.note or f"Payment to {merchant_name}")[:250],
                 location="Dhaka, Bangladesh",
                 transaction_time=datetime.utcnow()
             )
@@ -334,6 +337,9 @@ class TransactionService:
             db.refresh(txn)
 
             return TransactionService._format_transaction(txn, current_user_id=sender.id)
+        except HTTPException:
+            db.rollback()
+            raise
         except Exception as e:
             db.rollback()
             raise HTTPException(status_code=500, detail=f"Payment failed: {str(e)}")
