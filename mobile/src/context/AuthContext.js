@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
 
       if (storedToken && storedUser) {
         let currentUser = JSON.parse(storedUser);
-        if (currentUser.name === 'Tanvir Ahmed') {
+        if (currentUser.name === 'Arif Shahriar') {
           currentUser.name = 'Arif Shahriar';
           await storage.setItem('@gencash_user', JSON.stringify(currentUser));
         }
